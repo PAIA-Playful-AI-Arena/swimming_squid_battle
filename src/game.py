@@ -36,7 +36,7 @@ class EasyGame(PaiaGame):
 
     def __init__(
             self,
-            level: int = 1,
+            level: int = -1,
             level_file: str = None,
             sound: str = "off",
             *args, **kwargs):
@@ -49,17 +49,8 @@ class EasyGame(PaiaGame):
         self.foods = pygame.sprite.Group()
         self.sound_controller = SoundController(sound)
 
-        if path.isfile(self._level_file) or self._level_file == "":
-            # set by injected file
-            self._init_game_by_file(self._level_file)
-            pass
+        self._init_game()
 
-        else:
-            self._init_game_by_level(self._level)
-
-    def _init_game_by_level(self, level: int):
-        level_file_path = os.path.join(LEVEL_PATH, f"{level:03d}.json")
-        self._init_game_by_file(level_file_path)
 
     def _init_game_by_file(self, level_file_path: str):
         try:
@@ -82,8 +73,8 @@ class EasyGame(PaiaGame):
                 self._playground_w,
                 self._playground_h
             )
-            self._green_food_count = game_params["green_food_count"]
-            self._red_food_count = game_params["black_food_count"]
+            self._good_food_count = game_params["good_food_count"]
+            self._bad_food_count = game_params["bad_food_count"]
             self._score_to_pass = int(game_params["score_to_pass"])
             self._frame_limit = int(game_params["time_to_play"])
             self.playground.center = (WIDTH / 2, HEIGHT / 2)
@@ -94,12 +85,12 @@ class EasyGame(PaiaGame):
             self.score = 0
 
             # todo validate food count
-            self._create_foods(GoodFoodLv1, self._green_food_count[0])
-            self._create_foods(GoodFoodLv2, self._green_food_count[1])
-            self._create_foods(GoodFoodLv3, self._green_food_count[2])
-            self._create_foods(BadFoodLv1, self._red_food_count[0])
-            self._create_foods(BadFoodLv2, self._red_food_count[1])
-            self._create_foods(BadFoodLv3, self._red_food_count[2])
+            self._create_foods(GoodFoodLv1, self._good_food_count[0])
+            self._create_foods(GoodFoodLv2, self._good_food_count[1])
+            self._create_foods(GoodFoodLv3, self._good_food_count[2])
+            self._create_foods(BadFoodLv1, self._bad_food_count[0])
+            self._create_foods(BadFoodLv2, self._bad_food_count[1])
+            self._create_foods(BadFoodLv3, self._bad_food_count[2])
 
             self.frame_count = 0
             self._frame_count_down = self._frame_limit
@@ -182,18 +173,23 @@ class EasyGame(PaiaGame):
     def reset(self):
 
         if self.is_passed:
-            self.sound_controller.play_cheer()
-
-        if self._level_file:
-            pass
-        elif self.is_passed and self._level != -1:
-            #     win and use level will enter next level
             self._level += 1
-            self._init_game_by_level(self._level)
+            self.sound_controller.play_cheer()
 
         self._init_game()
 
+
+
         pass
+
+    def _init_game(self):
+        if path.isfile(self._level_file) or self._level_file == "":
+            # set by injected file
+            self._init_game_by_file(self._level_file)
+            pass
+        else:
+            level_file_path = os.path.join(LEVEL_PATH, f"{self._level:03d}.json")
+            self._init_game_by_file(level_file_path)
 
     @property
     def is_passed(self):

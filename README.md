@@ -65,7 +65,8 @@ game = EasyGame(
 
 ```bash
 # 在easy game中，打開終端機
-python -m mlgame -i ./ml/ml_play_template.py ./ --time_to_play 1200 --green_food_count 15 --red_food_count 10 --score_to_pass 10 --playground_size 100,200
+python -m mlgame -i ./ml/ml_play_template.py ./ --level 3
+python -m mlgame -i ./ml/ml_play_template.py ./ --level_file /path_to_file/level_file.json
 ```
 
 ## ＡＩ範例
