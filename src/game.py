@@ -41,7 +41,6 @@ class EasyGame(PaiaGame):
             sound: str = "off",
             *args, **kwargs):
         super().__init__(user_num=1)
-        # TODO reduce game config and use level file
         self.game_result_state = GameResultState.FAIL
         self.scene = Scene(width=WIDTH, height=HEIGHT, color=BG_COLOR, bias_x=0, bias_y=0)
         self._level = level
@@ -84,12 +83,18 @@ class EasyGame(PaiaGame):
             self.foods.empty()
 
             # todo validate food count
-            self._create_foods(GoodFoodLv1, self._good_food_count[0])
-            self._create_foods(GoodFoodLv2, self._good_food_count[1])
-            self._create_foods(GoodFoodLv3, self._good_food_count[2])
-            self._create_foods(BadFoodLv1, self._bad_food_count[0])
-            self._create_foods(BadFoodLv2, self._bad_food_count[1])
-            self._create_foods(BadFoodLv3, self._bad_food_count[2])
+            if not isinstance(self._good_food_count,list) or len(self._good_food_count)<3:
+                raise Exception("你的關卡檔案格式有誤，請在'good_food_count' 欄位後面填入一個長度為3的陣列，舉例： [1,2,3]")
+            elif not isinstance(self._bad_food_count, list) or len(self._bad_food_count) < 3:
+                raise Exception("你的關卡檔案格式有誤，請在'bad_food_count' 欄位後面填入一個長度為3的陣列，舉例： [1,2,3]")
+
+            else:
+                self._create_foods(GoodFoodLv1, self._good_food_count[0])
+                self._create_foods(GoodFoodLv2, self._good_food_count[1])
+                self._create_foods(GoodFoodLv3, self._good_food_count[2])
+                self._create_foods(BadFoodLv1, self._bad_food_count[0])
+                self._create_foods(BadFoodLv2, self._bad_food_count[1])
+                self._create_foods(BadFoodLv3, self._bad_food_count[2])
 
             self.frame_count = 0
             self._frame_count_down = self._frame_limit

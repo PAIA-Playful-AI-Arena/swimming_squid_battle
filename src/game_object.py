@@ -18,8 +18,6 @@ class Ball(pygame.sprite.Sprite):
         self.rect.center = (400, 300)
         self._score = 0
         self._vel = BALL_VEL
-        # TODO refactor score
-        # TODO add velocity and size in Ball
 
 
     def update(self, motion):
