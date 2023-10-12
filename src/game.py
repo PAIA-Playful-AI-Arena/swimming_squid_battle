@@ -131,8 +131,8 @@ class EasyGame(PaiaGame):
         if hits:
             for food in hits:
                 # self.ball.score += food.score
-                self.ball.eat_food(food)
-                # TODO if growth play special sound
+                # growth play special sound
+                self.ball.eat_food_and_change_level_and_play_sound(food,self.sound_controller)
                 self._create_foods(food.__class__, 1)
                 if isinstance(food, (GoodFoodLv1,GoodFoodLv2,GoodFoodLv3,)):
                     self.sound_controller.play_eating_good()
