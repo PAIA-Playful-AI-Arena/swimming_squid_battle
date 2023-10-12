@@ -10,10 +10,13 @@ PG_COLOR = "#B3E5FC"
 
 # ball
 BALL_COLOR = "#FFEB3B"
-BALL_VEL = 10.5
+BALL_VEL = 10
 BALL_H = 30
 BALL_W = 30
-
+BALL_GROWTH_STEP = 10
+BALL_H_MAX = 80
+BALL_W_MAX = 80
+BALL_VEL_MAX = 25
 
 # food
 class FoodTypeEnum(StringEnum):

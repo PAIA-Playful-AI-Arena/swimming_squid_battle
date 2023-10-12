@@ -13,20 +13,26 @@ class Ball(pygame.sprite.Sprite):
         self.color = BALL_COLOR
         self.rect = self.image.get_rect()
         self.rect.center = (400, 300)
+        self.score = 0
+        self.vel = BALL_VEL
+        # TODO refactor score
+        # TODO add velocity and size in Ball
 
 
     def update(self, motion):
         # for motion in motions:
         if motion == "UP":
-            self.rect.centery -= BALL_VEL
+            self.rect.centery -= self.vel
         elif motion == "DOWN":
-            self.rect.centery += BALL_VEL
+            self.rect.centery += self.vel
         elif motion == "LEFT":
-            self.rect.centerx -= BALL_VEL
+            self.rect.centerx -= self.vel
             # self.angle += 5
         elif motion == "RIGHT":
-            self.rect.centerx += BALL_VEL
+            self.rect.centerx += self.vel
             # self.angle -= 5
+
+
         # self.image = pygame.transform.rotate(self.origin_image, self.angle)
         # print(self.angle)
         # center = self.rect.center
