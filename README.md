@@ -65,7 +65,8 @@ game = EasyGame(
 
 ```bash
 # 在easy game中，打開終端機
-python -m mlgame -i ./ml/ml_play_template.py ./ --time_to_play 1200 --green_food_count 15 --red_food_count 10 --score_to_pass 10 --playground_size 100,200
+python -m mlgame -i ./ml/ml_play_template.py ./ --level 3
+python -m mlgame -i ./ml/ml_play_template.py ./ --level_file /path_to_file/level_file.json
 ```
 
 ## ＡＩ範例
@@ -100,8 +101,10 @@ class MLPlay:
 ```json
 {
   "frame": 25,
-  "ball_x": 425,
-  "ball_y": 306,
+  "player_x": 425,
+  "player_y": 306,
+  "player_size": 90,
+  "player_vel": 16,
   "foods": [
     {
       "x": 656,
@@ -124,8 +127,10 @@ class MLPlay:
 ```
 
 - `frame`：遊戲畫面更新的編號
-- `ball_x`：主角方塊的Ｘ座標，表示方塊的左邊座標值。
-- `ball_y`：主角方塊的Ｙ座標，表示方塊的上方座標值。
+- `player_x`：主角方塊的Ｘ座標，表示方塊的`中心點`座標值，單位 pixel。
+- `player_y`：主角方塊的Ｙ座標，表示方塊的`中心點`座標值，單位 pixel。
+- `player_size`：主角方塊的大小，表示方塊的長寬，單位 pixel。
+- `player_vel`：主角方塊的速度，表示方塊每幀移動的像素，單位 pixel。
 - `foods`：食物的清單，清單內每一個物件都是一個食物的左上方座標值，也會提供此食物是什麼類型和分數多少。
   -  `type` 食物類型： `GOOD_1`, `GOOD_2`, `GOOD_3`, `BAD_1`, `BAD_2`, `BAD_3`
 - `score`：目前得到的分數

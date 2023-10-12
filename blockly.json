@@ -9,8 +9,10 @@
     "SCENE_INFO": [
         ["scene_info['frame']", "# frame", "# 幀數"],
         ["scene_info['status']", "game status", "遊戲狀態"],
-        ["scene_info['ball_x']", "x coordinate of ball", "球的 x 座標"],
-        ["scene_info['ball_y']", "y coordinate of ball", "球的 y 座標"],
+        ["scene_info['player_x']", "x coordinate of player", "玩家角色的 x 座標"],
+        ["scene_info['player_y']", "y coordinate of player", "玩家角色的 y 座標"],
+        ["scene_info['player_size']", "y coordinate of player", "玩家角色的大小"],
+        ["scene_info['player_vel']", "velocity of player", "玩家角色的速度"],
         ["scene_info['score']", "score", "目前的分數"],
         ["scene_info['foods']", "list of foods positions", "點點的位置清單"],
         ["scene_info['score_to_pass']", "the score for next level", "通關分數"],
@@ -21,8 +23,7 @@
         [800, "right boundary", "右邊界"],
         [0, "top boundary", "上邊界"],
         [600, "bottom boundary", "下邊界"],
-        [30, "ball width", "球身的寬度"],
-        [30, "ball height", "球身的高度"],
+        [30, "player size", "玩家角色的初始大小"],
         [8, "food lv1 size", "等級一食物的寬高度"],
         [12, "food lv2 size", "等級二食物的高度"],
         [16, "food lv3 size", "等級三食物的高度"]

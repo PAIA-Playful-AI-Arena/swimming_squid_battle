@@ -36,12 +36,11 @@ class EasyGame(PaiaGame):
 
     def __init__(
             self,
-            level: int = 1,
-            level_file: str = None,
+            level: int = -1,
+            level_file: str = "",
             sound: str = "off",
             *args, **kwargs):
         super().__init__(user_num=1)
-        # TODO reduce game config and use level file
         self.game_result_state = GameResultState.FAIL
         self.scene = Scene(width=WIDTH, height=HEIGHT, color=BG_COLOR, bias_x=0, bias_y=0)
         self._level = level
@@ -49,17 +48,8 @@ class EasyGame(PaiaGame):
         self.foods = pygame.sprite.Group()
         self.sound_controller = SoundController(sound)
 
-        if path.isfile(self._level_file) or self._level_file == "":
-            # set by injected file
-            self._init_game_by_file(self._level_file)
-            pass
+        self._init_game()
 
-        else:
-            self._init_game_by_level(self._level)
-
-    def _init_game_by_level(self, level: int):
-        level_file_path = os.path.join(LEVEL_PATH, f"{level:03d}.json")
-        self._init_game_by_file(level_file_path)
 
     def _init_game_by_file(self, level_file_path: str):
         try:
@@ -82,8 +72,8 @@ class EasyGame(PaiaGame):
                 self._playground_w,
                 self._playground_h
             )
-            self._green_food_count = game_params["green_food_count"]
-            self._red_food_count = game_params["black_food_count"]
+            self._good_food_count = game_params["good_food_count"]
+            self._bad_food_count = game_params["bad_food_count"]
             self._score_to_pass = int(game_params["score_to_pass"])
             self._frame_limit = int(game_params["time_to_play"])
             self.playground.center = (WIDTH / 2, HEIGHT / 2)
@@ -91,15 +81,19 @@ class EasyGame(PaiaGame):
             # init game
             self.ball = Ball()
             self.foods.empty()
-            self.score = 0
 
-            # todo validate food count
-            self._create_foods(GoodFoodLv1, self._green_food_count[0])
-            self._create_foods(GoodFoodLv2, self._green_food_count[1])
-            self._create_foods(GoodFoodLv3, self._green_food_count[2])
-            self._create_foods(BadFoodLv1, self._red_food_count[0])
-            self._create_foods(BadFoodLv2, self._red_food_count[1])
-            self._create_foods(BadFoodLv3, self._red_food_count[2])
+            if not isinstance(self._good_food_count,list) or len(self._good_food_count)<3:
+                raise Exception("你的關卡檔案格式有誤，請在'good_food_count' 欄位後面填入一個長度為3的陣列，舉例： [1,2,3]")
+            elif not isinstance(self._bad_food_count, list) or len(self._bad_food_count) < 3:
+                raise Exception("你的關卡檔案格式有誤，請在'bad_food_count' 欄位後面填入一個長度為3的陣列，舉例： [1,2,3]")
+
+            else:
+                self._create_foods(GoodFoodLv1, self._good_food_count[0])
+                self._create_foods(GoodFoodLv2, self._good_food_count[1])
+                self._create_foods(GoodFoodLv3, self._good_food_count[2])
+                self._create_foods(BadFoodLv1, self._bad_food_count[0])
+                self._create_foods(BadFoodLv2, self._bad_food_count[1])
+                self._create_foods(BadFoodLv3, self._bad_food_count[2])
 
             self.frame_count = 0
             self._frame_count_down = self._frame_limit
@@ -136,7 +130,9 @@ class EasyGame(PaiaGame):
         hits = pygame.sprite.spritecollide(self.ball, self.foods, True)
         if hits:
             for food in hits:
-                self.score += food.score
+                # self.ball.score += food.score
+                # growth play special sound
+                self.ball.eat_food_and_change_level_and_play_sound(food,self.sound_controller)
                 self._create_foods(food.__class__, 1)
                 if isinstance(food, (GoodFoodLv1,GoodFoodLv2,GoodFoodLv3,)):
                     self.sound_controller.play_eating_good()
@@ -151,17 +147,22 @@ class EasyGame(PaiaGame):
         to_players_data = {}
         foods_data = []
         for food in self.foods:
-            # TODO add good food and bad food
-
+            # TODO 確認要提供中心點座標還是左上角座標。
             foods_data.append({"x": food.rect.x, "y": food.rect.y, "type": food.type, "score": food.score})
+
         data_to_1p = {
             "frame": self.frame_count,
-            "ball_x": self.ball.rect.centerx,
-            "ball_y": self.ball.rect.centery,
+            # TODO 確認要提供中心點座標還是左上角座標。
+            "player_x": self.ball.rect.centerx,
+            "player_y": self.ball.rect.centery,
+            "player_size":self.ball.rect.width,
+            "player_vel":self.ball.vel,
             "foods": foods_data,
-            "score": self.score,
+
+            "score": self.ball.score,
             "score_to_pass":self._score_to_pass,
             "status": self.get_game_status()
+
         }
 
         to_players_data[get_ai_name(0)] = data_to_1p
@@ -182,22 +183,27 @@ class EasyGame(PaiaGame):
     def reset(self):
 
         if self.is_passed:
-            self.sound_controller.play_cheer()
-
-        if self._level_file:
-            pass
-        elif self.is_passed and self._level != -1:
-            #     win and use level will enter next level
             self._level += 1
-            self._init_game_by_level(self._level)
+            self.sound_controller.play_cheer()
 
         self._init_game()
 
+
+
         pass
+
+    def _init_game(self):
+        if path.isfile(self._level_file):
+            # set by injected file
+            self._init_game_by_file(self._level_file)
+            pass
+        else:
+            level_file_path = os.path.join(LEVEL_PATH, f"{self._level:03d}.json")
+            self._init_game_by_file(level_file_path)
 
     @property
     def is_passed(self):
-        return self.score > self._score_to_pass
+        return self.ball.score > self._score_to_pass
 
     @property
     def is_running(self):
@@ -239,7 +245,7 @@ class EasyGame(PaiaGame):
 
         ]
         toggle_objs = [
-            create_text_view_data(f"Score:{self.score:04d}", 600, 50, "#A5D6A7", "24px Arial BOLD"),
+            create_text_view_data(f"Score:{self.ball.score:04d}", 600, 50, "#A5D6A7", "24px Arial BOLD"),
             create_text_view_data(f" Next:{self._score_to_pass:04d}", 600, 100, "#FF4081", "24px Arial BOLD"),
             create_text_view_data(f" Time:{self._frame_count_down:04d}", 600, 150, "#FF5722", "24px Arial BOLD"),
 
@@ -262,7 +268,7 @@ class EasyGame(PaiaGame):
                     {
                         "player": get_ai_name(0),
                         "rank": 1,
-                        "score": self.score,
+                        "score": self.ball.score,
                         "passed": self.is_passed
                     }
                 ]
