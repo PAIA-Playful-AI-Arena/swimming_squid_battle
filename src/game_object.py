@@ -19,7 +19,6 @@ class Ball(pygame.sprite.Sprite):
         self._score = 0
         self._vel = BALL_VEL
 
-
     def update(self, motion):
         # for motion in motions:
         if motion == "UP":
@@ -32,7 +31,6 @@ class Ball(pygame.sprite.Sprite):
         elif motion == "RIGHT":
             self.rect.centerx += self._vel
             # self.angle -= 5
-
 
         # self.image = pygame.transform.rotate(self.origin_image, self.angle)
         # print(self.angle)
@@ -51,14 +49,17 @@ class Ball(pygame.sprite.Sprite):
             self.color
         )
 
-    def eat_food(self, food:Food):
-        self._score+=food.score
-        lv = math.ceil((self._score+1) / BALL_GROWTH_SCORE_STEP)
-        self.rect.width = min(BALL_W + lv*BALL_GROWTH_SIZE_STEP,BALL_SIZE_MAX)
-        self.rect.height = min(BALL_H + lv*BALL_GROWTH_SIZE_STEP,BALL_SIZE_MAX)
-        self._vel = min(BALL_VEL +lv*BALL_GROWTH_VEL_STEP,BALL_VEL_MAX)
+    def eat_food(self, food: Food):
+        self._score += food.score
+        lv = math.ceil((self._score + 1) / BALL_GROWTH_SCORE_STEP)
+        self.rect.width = min(BALL_W + lv * BALL_GROWTH_SIZE_STEP, BALL_SIZE_MAX)
+        self.rect.height = min(BALL_H + lv * BALL_GROWTH_SIZE_STEP, BALL_SIZE_MAX)
+        self._vel = min(BALL_VEL + lv * BALL_GROWTH_VEL_STEP, BALL_VEL_MAX)
         pass
+
     @property
     def score(self):
         return self._score
-
+    @property
+    def vel(self):
+        return self._vel

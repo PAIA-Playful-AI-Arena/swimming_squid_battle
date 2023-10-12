@@ -82,7 +82,6 @@ class EasyGame(PaiaGame):
             self.ball = Ball()
             self.foods.empty()
 
-            # todo validate food count
             if not isinstance(self._good_food_count,list) or len(self._good_food_count)<3:
                 raise Exception("你的關卡檔案格式有誤，請在'good_food_count' 欄位後面填入一個長度為3的陣列，舉例： [1,2,3]")
             elif not isinstance(self._bad_food_count, list) or len(self._bad_food_count) < 3:
@@ -148,16 +147,18 @@ class EasyGame(PaiaGame):
         to_players_data = {}
         foods_data = []
         for food in self.foods:
-
+            # TODO 確認要提供中心點座標還是左上角座標。
             foods_data.append({"x": food.rect.x, "y": food.rect.y, "type": food.type, "score": food.score})
-        # TODO add velocity and ball_size
-        # TODO change ball to player
 
         data_to_1p = {
             "frame": self.frame_count,
-            "ball_x": self.ball.rect.centerx,
-            "ball_y": self.ball.rect.centery,
+            # TODO 確認要提供中心點座標還是左上角座標。
+            "player_x": self.ball.rect.centerx,
+            "player_y": self.ball.rect.centery,
+            "player_size":self.ball.rect.width,
+            "player_vel":self.ball.vel,
             "foods": foods_data,
+
             "score": self.ball.score,
             "score_to_pass":self._score_to_pass,
             "status": self.get_game_status()
