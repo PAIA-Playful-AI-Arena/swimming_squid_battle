@@ -82,7 +82,6 @@ class EasyGame(PaiaGame):
             # init game
             self.ball = Ball()
             self.foods.empty()
-            self.score = 0
 
             # todo validate food count
             self._create_foods(GoodFoodLv1, self._good_food_count[0])
@@ -127,7 +126,9 @@ class EasyGame(PaiaGame):
         hits = pygame.sprite.spritecollide(self.ball, self.foods, True)
         if hits:
             for food in hits:
-                self.score += food.score
+                # self.ball.score += food.score
+                self.ball.eat_food(food)
+                # TODO if growth play special sound
                 self._create_foods(food.__class__, 1)
                 if isinstance(food, (GoodFoodLv1,GoodFoodLv2,GoodFoodLv3,)):
                     self.sound_controller.play_eating_good()
@@ -142,17 +143,20 @@ class EasyGame(PaiaGame):
         to_players_data = {}
         foods_data = []
         for food in self.foods:
-            # TODO add good food and bad food
 
             foods_data.append({"x": food.rect.x, "y": food.rect.y, "type": food.type, "score": food.score})
+        # TODO add velocity and ball_size
+        # TODO change ball to player
+
         data_to_1p = {
             "frame": self.frame_count,
             "ball_x": self.ball.rect.centerx,
             "ball_y": self.ball.rect.centery,
             "foods": foods_data,
-            "score": self.score,
+            "score": self.ball.score,
             "score_to_pass":self._score_to_pass,
             "status": self.get_game_status()
+
         }
 
         to_players_data[get_ai_name(0)] = data_to_1p
@@ -193,7 +197,7 @@ class EasyGame(PaiaGame):
 
     @property
     def is_passed(self):
-        return self.score > self._score_to_pass
+        return self.ball.score > self._score_to_pass
 
     @property
     def is_running(self):
@@ -235,7 +239,7 @@ class EasyGame(PaiaGame):
 
         ]
         toggle_objs = [
-            create_text_view_data(f"Score:{self.score:04d}", 600, 50, "#A5D6A7", "24px Arial BOLD"),
+            create_text_view_data(f"Score:{self.ball.score:04d}", 600, 50, "#A5D6A7", "24px Arial BOLD"),
             create_text_view_data(f" Next:{self._score_to_pass:04d}", 600, 100, "#FF4081", "24px Arial BOLD"),
             create_text_view_data(f" Time:{self._frame_count_down:04d}", 600, 150, "#FF5722", "24px Arial BOLD"),
 
@@ -258,7 +262,7 @@ class EasyGame(PaiaGame):
                     {
                         "player": get_ai_name(0),
                         "rank": 1,
-                        "score": self.score,
+                        "score": self.ball.score,
                         "passed": self.is_passed
                     }
                 ]

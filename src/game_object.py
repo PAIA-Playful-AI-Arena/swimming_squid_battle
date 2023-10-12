@@ -1,6 +1,9 @@
+import math
+
 import pygame.sprite
 
-from games.easy_game.src.env import BALL_COLOR, BALL_VEL, BALL_H, BALL_W
+from games.easy_game.src.env import BALL_COLOR, BALL_VEL, BALL_H, BALL_W, BALL_GROWTH_SCORE_STEP, BALL_GROWTH_SIZE_STEP, \
+    BALL_SIZE_MAX, BALL_GROWTH_VEL_STEP, BALL_VEL_MAX
 from games.easy_game.src.foods import Food
 from mlgame.view.view_model import create_rect_view_data
 
@@ -13,8 +16,8 @@ class Ball(pygame.sprite.Sprite):
         self.color = BALL_COLOR
         self.rect = self.image.get_rect()
         self.rect.center = (400, 300)
-        self.score = 0
-        self.vel = BALL_VEL
+        self._score = 0
+        self._vel = BALL_VEL
         # TODO refactor score
         # TODO add velocity and size in Ball
 
@@ -22,14 +25,14 @@ class Ball(pygame.sprite.Sprite):
     def update(self, motion):
         # for motion in motions:
         if motion == "UP":
-            self.rect.centery -= self.vel
+            self.rect.centery -= self._vel
         elif motion == "DOWN":
-            self.rect.centery += self.vel
+            self.rect.centery += self._vel
         elif motion == "LEFT":
-            self.rect.centerx -= self.vel
+            self.rect.centerx -= self._vel
             # self.angle += 5
         elif motion == "RIGHT":
-            self.rect.centerx += self.vel
+            self.rect.centerx += self._vel
             # self.angle -= 5
 
 
@@ -50,4 +53,14 @@ class Ball(pygame.sprite.Sprite):
             self.color
         )
 
+    def eat_food(self, food:Food):
+        self._score+=food.score
+        lv = math.ceil((self._score+1) / BALL_GROWTH_SCORE_STEP)
+        self.rect.width = min(BALL_W + lv*BALL_GROWTH_SIZE_STEP,BALL_SIZE_MAX)
+        self.rect.height = min(BALL_H + lv*BALL_GROWTH_SIZE_STEP,BALL_SIZE_MAX)
+        self._vel = min(BALL_VEL +lv*BALL_GROWTH_VEL_STEP,BALL_VEL_MAX)
+        pass
+    @property
+    def score(self):
+        return self._score
 
