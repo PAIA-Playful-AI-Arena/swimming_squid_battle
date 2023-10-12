@@ -3,7 +3,7 @@ import math
 import pygame.sprite
 
 from games.easy_game.src.env import BALL_COLOR, BALL_VEL, BALL_H, BALL_W, BALL_GROWTH_SCORE_STEP, BALL_GROWTH_SIZE_STEP, \
-    BALL_SIZE_MAX, BALL_GROWTH_VEL_STEP, BALL_VEL_MAX
+    BALL_SIZE_MAX, BALL_GROWTH_VEL_STEP, BALL_VEL_MAX, BALL_SIZE_MIN, BALL_VEL_MIN
 from games.easy_game.src.foods import Food
 from games.easy_game.src.sound_controller import SoundController
 from mlgame.view.view_model import create_rect_view_data
@@ -54,9 +54,9 @@ class Ball(pygame.sprite.Sprite):
     def eat_food_and_change_level_and_play_sound(self, food: Food,sound_controller:SoundController):
         self._score += food.score
         new_lv = math.ceil((self._score + 1) / BALL_GROWTH_SCORE_STEP)
-        self.rect.width = min(BALL_W + new_lv * BALL_GROWTH_SIZE_STEP, BALL_SIZE_MAX)
-        self.rect.height = min(BALL_H + new_lv * BALL_GROWTH_SIZE_STEP, BALL_SIZE_MAX)
-        self._vel = min(BALL_VEL + new_lv * BALL_GROWTH_VEL_STEP, BALL_VEL_MAX)
+        self.rect.width = max(BALL_SIZE_MIN,min(BALL_W + new_lv * BALL_GROWTH_SIZE_STEP, BALL_SIZE_MAX))
+        self.rect.height = max(BALL_SIZE_MIN,min(BALL_H + new_lv * BALL_GROWTH_SIZE_STEP, BALL_SIZE_MAX))
+        self._vel = max(BALL_VEL_MIN,min(BALL_VEL + new_lv * BALL_GROWTH_VEL_STEP, BALL_VEL_MAX))
         if new_lv > self._lv:
             sound_controller.play_lv_up()
         elif new_lv < self._lv:
