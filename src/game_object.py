@@ -53,7 +53,7 @@ class Ball(pygame.sprite.Sprite):
 
     def eat_food_and_change_level_and_play_sound(self, food: Food,sound_controller:SoundController):
         self._score += food.score
-        new_lv = math.ceil((self._score + 1) / BALL_GROWTH_SCORE_STEP)
+        new_lv = math.ceil((self._score-BALL_GROWTH_SCORE_STEP + 1) / BALL_GROWTH_SCORE_STEP)
         self.rect.width = max(BALL_SIZE_MIN,min(BALL_W + new_lv * BALL_GROWTH_SIZE_STEP, BALL_SIZE_MAX))
         self.rect.height = max(BALL_SIZE_MIN,min(BALL_H + new_lv * BALL_GROWTH_SIZE_STEP, BALL_SIZE_MAX))
         self._vel = max(BALL_VEL_MIN,min(BALL_VEL + new_lv * BALL_GROWTH_VEL_STEP, BALL_VEL_MAX))
