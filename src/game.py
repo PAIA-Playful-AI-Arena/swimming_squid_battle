@@ -37,7 +37,7 @@ class EasyGame(PaiaGame):
     def __init__(
             self,
             level: int = -1,
-            level_file: str = None,
+            level_file: str = "",
             sound: str = "off",
             *args, **kwargs):
         super().__init__(user_num=1)
@@ -193,7 +193,7 @@ class EasyGame(PaiaGame):
         pass
 
     def _init_game(self):
-        if path.isfile(self._level_file) or self._level_file == "":
+        if path.isfile(self._level_file):
             # set by injected file
             self._init_game_by_file(self._level_file)
             pass
