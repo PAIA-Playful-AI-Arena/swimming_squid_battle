@@ -2,10 +2,10 @@ import math
 
 import pygame.sprite
 
-from games.easy_game.src.env import BALL_COLOR, BALL_VEL, BALL_H, BALL_W, BALL_GROWTH_SCORE_STEP, BALL_GROWTH_SIZE_STEP, \
+from .env import BALL_COLOR, BALL_VEL, BALL_H, BALL_W, BALL_GROWTH_SCORE_STEP, BALL_GROWTH_SIZE_STEP, \
     BALL_SIZE_MAX, BALL_GROWTH_VEL_STEP, BALL_VEL_MAX, BALL_SIZE_MIN, BALL_VEL_MIN
-from games.easy_game.src.foods import Food
-from games.easy_game.src.sound_controller import SoundController
+from .foods import Food
+from .sound_controller import SoundController
 from mlgame.view.view_model import create_rect_view_data
 
 

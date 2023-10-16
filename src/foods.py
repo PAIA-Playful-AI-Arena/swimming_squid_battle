@@ -1,6 +1,6 @@
 import pygame.sprite
 
-from games.easy_game.src.env import FoodTypeEnum, FOOD_COLOR_MAP, FOOD_LV1_SIZE, FOOD_LV2_SIZE, FOOD_LV3_SIZE
+from .env import FoodTypeEnum, FOOD_COLOR_MAP, FOOD_LV1_SIZE, FOOD_LV2_SIZE, FOOD_LV3_SIZE
 from mlgame.view.view_model import create_rect_view_data
 
 
