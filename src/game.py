@@ -62,7 +62,7 @@ class EasyGame(PaiaGame):
             with open(os.path.join(LEVEL_PATH, "001.json")) as f:
                 game_params = json.load(f)
                 self._level = 1
-                self._level_file = None
+                self._level_file = ""
         finally:
             # set game params
             self._playground_w = int(game_params["playground_size"][0])
