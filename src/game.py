@@ -185,7 +185,8 @@ class EasyGame(PaiaGame):
         if self.is_passed:
             self._level += 1
             self.sound_controller.play_cheer()
-
+        else:
+            self.sound_controller.play_fail()
         self._init_game()
 
 
