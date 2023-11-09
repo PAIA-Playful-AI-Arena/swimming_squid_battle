@@ -4,7 +4,7 @@ import pygame.sprite
 from pygame import Rect
 
 from .env import FoodTypeEnum, FOOD_COLOR_MAP, FOOD_LV1_SIZE, FOOD_LV2_SIZE, FOOD_LV3_SIZE
-from mlgame.view.view_model import create_rect_view_data
+from mlgame.view.view_model import create_rect_view_data, create_image_view_data
 
 FOOD1_VEL = 1
 
@@ -100,6 +100,15 @@ class Food1(Food):
             self._vel = FOOD1_VEL
         elif self.rect.right > playground.right and self._vel>0.0:
             self._vel = - FOOD1_VEL
+    @property
+    def game_object_data(self):
+        return create_image_view_data(
+            "food01",
+            self.rect.x,
+            self.rect.y,
+            self.rect.width,
+            self.rect.height
+        )
 
 
 

@@ -221,9 +221,11 @@ class EasyGame(PaiaGame):
         # background = create_asset_init_data(
         #     "background", WIDTH, HEIGHT, bg_path,
         #     github_raw_url="https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/easy_game/main/asset/img/background.jpg")
+        food01_path = path.join(ASSET_IMAGE_DIR, "food_01.png")
+        food01_url = food01_path
         scene_init_data = {"scene": self.scene.__dict__,
                            "assets": [
-                               # background
+                               create_asset_init_data("food01", 20, 20, food01_path,food01_url)
                            ],
                            # "audios": {}
                            }

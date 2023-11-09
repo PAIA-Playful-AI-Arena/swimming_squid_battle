@@ -21,6 +21,7 @@ BALL_SIZE_MIN = 10
 BALL_VEL_MAX = 25
 BALL_VEL_MIN = 10
 
+ASSET_IMAGE_DIR = path.join(path.dirname(__file__), "../asset/img")
 # food
 class FoodTypeEnum(StringEnum):
     GOOD_1 = auto()
@@ -38,7 +39,7 @@ FOOD_COLOR_MAP = {
     FoodTypeEnum.BAD_2: "#FF1744",
     FoodTypeEnum.BAD_3: "#FF1744"
 }
-FOOD_LV1_SIZE = 8
+FOOD_LV1_SIZE = 20
 FOOD_LV2_SIZE = 12
 FOOD_LV3_SIZE = 16
 
