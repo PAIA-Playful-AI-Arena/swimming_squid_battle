@@ -1,5 +1,7 @@
 import math
+from typing import List
 
+import pydantic
 import pygame.sprite
 
 from .env import BALL_COLOR, BALL_VEL, BALL_H, BALL_W, BALL_GROWTH_SCORE_STEP, BALL_GROWTH_SIZE_STEP, \
@@ -8,6 +10,15 @@ from .foods import Food
 from .sound_controller import SoundController
 from mlgame.view.view_model import create_rect_view_data
 
+class LevelParams(pydantic.BaseModel):
+    playground_w:int=100
+    playground_h:int=200
+    score_to_pass:int=10
+    time_to_play:int=300
+
+    good_food_count:List[int] =[]
+    bad_food_count:List[int] =[]
+    fish:int=0
 
 class Ball(pygame.sprite.Sprite):
     def __init__(self):

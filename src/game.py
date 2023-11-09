@@ -3,14 +3,16 @@ import json
 import os.path
 
 import pygame
+from orjson import orjson
 
 from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
+from mlgame.utils.prof import timeit_in_perf
 from mlgame.view.decorator import check_game_progress, check_game_result
 from mlgame.view.view_model import *
 from .env import *
 from .foods import *
-from .game_object import Ball
+from .game_object import Ball, LevelParams
 from .sound_controller import SoundController
 
 
@@ -51,10 +53,12 @@ class EasyGame(PaiaGame):
         self._init_game()
 
 
+    @timeit_in_perf
     def _init_game_by_file(self, level_file_path: str):
         try:
             with open(level_file_path) as f:
-                game_params = json.load(f)
+                game_params = LevelParams(**json.load(f))
+
         except:
             # If the file doesn't exist, use default parameters
             print("此關卡檔案不存在，遊戲將會會自動使用第一關檔案 001.json。")
@@ -65,17 +69,15 @@ class EasyGame(PaiaGame):
                 self._level_file = ""
         finally:
             # set game params
-            self._playground_w = int(game_params["playground_size"][0])
-            self._playground_h = int(game_params["playground_size"][1])
             self.playground = pygame.Rect(
                 0, 0,
-                self._playground_w,
-                self._playground_h
+                game_params.playground_w,
+                game_params.playground_h
             )
-            self._good_food_count = game_params["good_food_count"]
-            self._bad_food_count = game_params["bad_food_count"]
-            self._score_to_pass = int(game_params["score_to_pass"])
-            self._frame_limit = int(game_params["time_to_play"])
+            self._good_food_count = game_params.good_food_count
+            self._bad_food_count = game_params.bad_food_count
+            self._score_to_pass = game_params.score_to_pass
+            self._frame_limit = game_params.time_to_play
             self.playground.center = (WIDTH / 2, HEIGHT / 2)
 
             # init game
@@ -94,6 +96,7 @@ class EasyGame(PaiaGame):
                 self._create_foods(BadFoodLv1, self._bad_food_count[0])
                 self._create_foods(BadFoodLv2, self._bad_food_count[1])
                 self._create_foods(BadFoodLv3, self._bad_food_count[2])
+                self._create_foods(Fish, game_params.fish)
 
             self.frame_count = 0
             self._frame_count_down = self._frame_limit
@@ -112,7 +115,7 @@ class EasyGame(PaiaGame):
         self.ball.update(action)
         revise_ball(self.ball, self.playground)
         # update sprite
-        self.foods.update()
+        self.foods.update(playground=self.playground)
 
         # handle collision
 
@@ -298,6 +301,9 @@ class EasyGame(PaiaGame):
         for i in range(count):
             # add food to group
             food = FOOD_TYPE(self.foods)
-            food.rect.centerx = random.randint(self.playground.left, self.playground.right)
-            food.rect.centery = random.randint(self.playground.top, self.playground.bottom)
+            food.set_center_x_and_y(
+                random.randint(self.playground.left, self.playground.right),
+                random.randint(self.playground.top, self.playground.bottom)
+            )
+
         pass

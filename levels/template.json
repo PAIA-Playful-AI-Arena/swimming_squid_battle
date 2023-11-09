@@ -1,11 +1,10 @@
 {
   "time_to_play": 300,
-  "playground_size": [
-    100,
-    200
-  ],
+  "playground_w":100,
+  "playground_h":200,
   "score_to_pass": 10,
   "good_food_count": [3,0,0],
-  "bad_food_count": [0,0,0]
+  "bad_food_count": [0,0,0],
+  "fish": 0
 
 }
