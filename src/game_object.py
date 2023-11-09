@@ -18,7 +18,13 @@ class LevelParams(pydantic.BaseModel):
 
     good_food_count:List[int] =[]
     bad_food_count:List[int] =[]
-    fish:int=0
+
+    food_1:int=0
+    food_2:int=0
+    food_3:int=0
+    garbage_1:int=0
+    garbage_2:int=0
+    garbage_3:int=0
 
 class Ball(pygame.sprite.Sprite):
     def __init__(self):

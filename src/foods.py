@@ -1,4 +1,3 @@
-import math
 import random
 
 import pygame.sprite
@@ -6,6 +5,8 @@ from pygame import Rect
 
 from .env import FoodTypeEnum, FOOD_COLOR_MAP, FOOD_LV1_SIZE, FOOD_LV2_SIZE, FOOD_LV3_SIZE
 from mlgame.view.view_model import create_rect_view_data
+
+FOOD1_VEL = 1
 
 
 class Food(pygame.sprite.Sprite):
@@ -18,10 +19,12 @@ class Food(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.angle = 0
-    def set_center_x_and_y(self,x:int,y:int):
+
+    def set_center_x_and_y(self, x: int, y: int):
         self.rect.centerx = x
         self.rect.centery = y
-    def update(self,*args,**kwargs) -> None:
+
+    def update(self, *args, **kwargs) -> None:
         pass
 
     @property
@@ -45,6 +48,7 @@ class GoodFoodLv1(Food):
         self.score = 1
         self.rect = self.image.get_rect()
 
+
 class GoodFoodLv2(Food):
     def __init__(self, group):
         super().__init__(group)
@@ -55,6 +59,7 @@ class GoodFoodLv2(Food):
         self.score = 2
         self.rect = self.image.get_rect()
 
+
 class GoodFoodLv3(Food):
     def __init__(self, group):
         super().__init__(group)
@@ -64,7 +69,9 @@ class GoodFoodLv3(Food):
         self.color = FOOD_COLOR_MAP[self.type]
         self.score = 4
         self.rect = self.image.get_rect()
-class Fish(Food):
+
+
+class Food1(Food):
     def __init__(self, group):
         super().__init__(group)
 
@@ -73,39 +80,26 @@ class Fish(Food):
         self.color = FOOD_COLOR_MAP[self.type]
         self.score = 1
         self.rect = self.image.get_rect()
-        self._target_x=400
-        self._target_y=400
-        self._direction = 1
-        self._vel=2
-        self._vely=1
-    def update(self,playground:Rect):
+        self.rect_float_x = 0
+        self.rect_float_y = 0
+        self._vel = FOOD1_VEL
+    def set_center_x_and_y(self, x: int, y: int):
+        self.rect.centerx = x
+        self.rect.centery = y
+        self.rect_float_x = self.rect.centerx
+        self.rect_float_y = self.rect.centery
 
+    def update(self, playground: Rect, squid: pygame.sprite.Sprite):
 
-        if self._direction==1:
-            if self.rect.centerx > self._target_x:
-                #     change
-                self._direction= - self._direction
-                self._target_x = random.randint(playground.left, playground.right)
-                self._target_y = self.rect.centery + random.randint(-20,20)
-                self._vely = self._vel * ((self._target_y - self.rect.centery)/(self._target_x - self.rect.centerx) )
+        self.rect_float_x += self._vel
+        self.rect_float_y += random.choice([-0.3,-0.5,-0.7,0,0.3,0.5,0.7])
+        self.rect.centerx = self.rect_float_x
+        self.rect.centery = self.rect_float_y
 
-                pass
-            # move to right
-            self.rect.centerx += self._vel
-            self.rect.centery = self.rect.centery +self._vely
-        elif self._direction==-1:
-            if self.rect.centerx < self._target_x:
-                #     change
-                self._direction= - self._direction
-                self._target_x = random.randint(playground.left, playground.right)
-                self._target_y = self.rect.centery + random.randint(-50,50)
-                self.rect.centery = self.rect.centery + self._vely
-
-                pass
-            self.rect.centerx -= self._vel
-            self.rect.centery -= math.sin(self.rect.centerx)
-            pass
-        pass
+        if self.rect.left < playground.left and self._vel < 0.0:
+            self._vel = FOOD1_VEL
+        elif self.rect.right > playground.right and self._vel>0.0:
+            self._vel = - FOOD1_VEL
 
 
 
@@ -119,6 +113,7 @@ class BadFoodLv1(Food):
         self.rect = self.image.get_rect()
         self.angle = 0
 
+
 class BadFoodLv2(Food):
     def __init__(self, group):
         super().__init__(group)
@@ -128,6 +123,7 @@ class BadFoodLv2(Food):
         self.color = FOOD_COLOR_MAP[self.type]
         self.score = -2
         self.rect = self.image.get_rect()
+
 
 class BadFoodLv3(Food):
     def __init__(self, group):

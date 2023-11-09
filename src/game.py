@@ -96,7 +96,7 @@ class EasyGame(PaiaGame):
                 self._create_foods(BadFoodLv1, self._bad_food_count[0])
                 self._create_foods(BadFoodLv2, self._bad_food_count[1])
                 self._create_foods(BadFoodLv3, self._bad_food_count[2])
-                self._create_foods(Fish, game_params.fish)
+                self._create_foods(Food1, game_params.food_1)
 
             self.frame_count = 0
             self._frame_count_down = self._frame_limit
@@ -115,7 +115,7 @@ class EasyGame(PaiaGame):
         self.ball.update(action)
         revise_ball(self.ball, self.playground)
         # update sprite
-        self.foods.update(playground=self.playground)
+        self.foods.update(playground=self.playground,squid=self.ball)
 
         # handle collision
 
