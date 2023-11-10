@@ -27,18 +27,11 @@ class FoodTypeEnum(StringEnum):
     FOOD_1 = auto()
     FOOD_2 = auto()
     FOOD_3 = auto()
-    BAD_1 = auto()
-    BAD_2 = auto()
-    BAD_3 = auto()
+    GARBAGE_1 = auto()
+    GARBAGE_2 = auto()
+    GARBAGE_3 = auto()
 
-FOOD_COLOR_MAP = {
-    FoodTypeEnum.FOOD_1: "#009688",
-    FoodTypeEnum.FOOD_2: "#009688",
-    FoodTypeEnum.FOOD_3: "#009688",
-    FoodTypeEnum.BAD_1: "#FF1744",
-    FoodTypeEnum.BAD_2: "#FF1744",
-    FoodTypeEnum.BAD_3: "#FF1744"
-}
+
 FOOD_LV1_SIZE = 30
 FOOD_LV2_SIZE = 40
 FOOD_LV3_SIZE = 50

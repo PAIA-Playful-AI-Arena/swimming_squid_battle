@@ -138,7 +138,7 @@ class EasyGame(PaiaGame):
         foods_data = []
         for food in self.foods:
             # TODO 確認要提供中心點座標還是左上角座標。
-            foods_data.append({"x": food.rect.x, "y": food.rect.y, "type": food.type, "score": food.score})
+            foods_data.append({"x": food.rect.centerx, "y": food.rect.centery, "type": food.type, "score": food.score})
 
         data_to_1p = {
             "frame": self.frame_count,
@@ -248,9 +248,9 @@ class EasyGame(PaiaGame):
 
         ]
         toggle_objs = [
-            create_text_view_data(f"Score:{self.ball.score:04d}", 600, 50, "#A5D6A7", "24px Arial BOLD"),
-            create_text_view_data(f" Next:{self._score_to_pass:04d}", 600, 100, "#FF4081", "24px Arial BOLD"),
-            create_text_view_data(f" Time:{self._frame_count_down:04d}", 600, 150, "#FF5722", "24px Arial BOLD"),
+            create_text_view_data(f"Score: {self.ball.score:04d}", 750, 50, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Next : {self._score_to_pass:04d}", 750, 100, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Time : {self._frame_count_down:04d}", 750, 150, "#EEEEEE", "24px Arial BOLD"),
 
         ]
         scene_progress = create_scene_progress_data(frame=self.frame_count, background=backgrounds,

@@ -102,7 +102,7 @@ class Food3(Food):
 
 class Garbage1(Food):
     def __init__(self, group):
-        super().__init__(group, FoodTypeEnum.BAD_1, "garbage01",
+        super().__init__(group, FoodTypeEnum.GARBAGE_1, "garbage01",
                          [FOOD_LV1_SIZE, FOOD_LV1_SIZE], -1)
         self._vel = FOOD1_VEL
 
@@ -121,7 +121,7 @@ class Garbage1(Food):
 
 class Garbage2(Food):
     def __init__(self, group):
-        super().__init__(group, FoodTypeEnum.BAD_2, "garbage02",
+        super().__init__(group, FoodTypeEnum.GARBAGE_2, "garbage02",
                          [FOOD_LV2_SIZE, FOOD_LV2_SIZE], -1)
         self._vel = FOOD2_VEL
 
@@ -140,7 +140,7 @@ class Garbage2(Food):
 
 class Garbage3(Food):
     def __init__(self, group):
-        super().__init__(group, FoodTypeEnum.BAD_3, "garbage03",
+        super().__init__(group, FoodTypeEnum.GARBAGE_3, "garbage03",
                          [FOOD_LV3_SIZE, FOOD_LV3_SIZE], -1)
         self._vel = FOOD1_VEL
 

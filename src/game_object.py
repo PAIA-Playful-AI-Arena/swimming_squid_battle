@@ -14,7 +14,8 @@ from mlgame.view.view_model import create_rect_view_data, create_image_view_data
 
 
 class LevelParams(pydantic.BaseModel):
-    # TODO max and min
+    # TODO max w 700 and min 100
+    # TODO max h 600 and min 100
     playground_size_w: int = 300
     playground_size_h: int = 300
     score_to_pass: int = 10
