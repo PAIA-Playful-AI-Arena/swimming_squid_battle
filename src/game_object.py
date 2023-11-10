@@ -6,8 +6,8 @@ from typing import List
 import pydantic
 import pygame.sprite
 
-from .env import  BALL_VEL, BALL_H, BALL_W, BALL_GROWTH_SCORE_STEP, BALL_GROWTH_SIZE_STEP, \
-    BALL_SIZE_MAX, BALL_GROWTH_VEL_STEP, BALL_VEL_MAX, BALL_SIZE_MIN, BALL_VEL_MIN
+from .env import  SQUID_VEL, SQUID_H, SQUID_W, SQUID_GROWTH_SCORE_STEP, SQUID_GROWTH_SIZE_STEP, \
+    SQUID_SIZE_MAX, SQUID_GROWTH_VEL_STEP, SQUID_VEL_MAX, SQUID_SIZE_MIN, SQUID_VEL_MIN
 from .foods import Food
 from .sound_controller import SoundController
 from mlgame.view.view_model import create_rect_view_data, create_image_view_data
@@ -20,8 +20,6 @@ class LevelParams(pydantic.BaseModel):
     score_to_pass: int = 10
     time_to_play: int = 300
 
-    good_food_count: List[int] = []
-    bad_food_count: List[int] = []
 
     food_1: int = 3
     food_2: int = 0
@@ -36,12 +34,12 @@ class Squid(pygame.sprite.Sprite):
     ANGLE_TO_LEFT = math.radians(10)
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.origin_image = pygame.Surface([BALL_W, BALL_H])
+        self.origin_image = pygame.Surface([SQUID_W, SQUID_H])
         self.image = self.origin_image
         self.rect = self.image.get_rect()
         self.rect.center = (400, 300)
         self._score = 0
-        self._vel = BALL_VEL
+        self._vel = SQUID_VEL
         self._lv = 1
         self.angle =0
     def update(self, motion):
@@ -79,10 +77,10 @@ class Squid(pygame.sprite.Sprite):
 
     def eat_food_and_change_level_and_play_sound(self, food: Food, sound_controller: SoundController):
         self._score += food.score
-        new_lv = math.ceil((self._score - BALL_GROWTH_SCORE_STEP + 1) / BALL_GROWTH_SCORE_STEP)
-        self.rect.width = max(BALL_SIZE_MIN, min(BALL_W + new_lv * BALL_GROWTH_SIZE_STEP, BALL_SIZE_MAX))
-        self.rect.height = max(BALL_SIZE_MIN, min(BALL_H + new_lv * BALL_GROWTH_SIZE_STEP, BALL_SIZE_MAX))
-        self._vel = max(BALL_VEL_MIN, min(BALL_VEL + new_lv * BALL_GROWTH_VEL_STEP, BALL_VEL_MAX))
+        new_lv = math.ceil((self._score - SQUID_GROWTH_SCORE_STEP + 1) / SQUID_GROWTH_SCORE_STEP)
+        self.rect.width = max(SQUID_SIZE_MIN, min(SQUID_W + new_lv * SQUID_GROWTH_SIZE_STEP, SQUID_SIZE_MAX))
+        self.rect.height = max(SQUID_SIZE_MIN, min(SQUID_H + new_lv * SQUID_GROWTH_SIZE_STEP, SQUID_SIZE_MAX))
+        self._vel = max(SQUID_VEL_MIN, min(SQUID_VEL + new_lv * SQUID_GROWTH_VEL_STEP, SQUID_VEL_MAX))
         if new_lv > self._lv:
             sound_controller.play_lv_up()
         elif new_lv < self._lv:

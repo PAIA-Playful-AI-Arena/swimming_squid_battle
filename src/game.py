@@ -72,8 +72,7 @@ class EasyGame(PaiaGame):
                 game_params.playground_size_h,
                 game_params.playground_size_w
             )
-            self._good_food_count = game_params.good_food_count
-            self._bad_food_count = game_params.bad_food_count
+
             self._score_to_pass = game_params.score_to_pass
             self._frame_limit = game_params.time_to_play
             self.playground.center = (WIDTH / 2, HEIGHT / 2)
@@ -81,21 +80,9 @@ class EasyGame(PaiaGame):
             # init game
             self.ball = Squid()
             self.foods.empty()
-
-            if not isinstance(self._good_food_count, list) or len(self._good_food_count) < 3:
-                raise Exception(
-                    "你的關卡檔案格式有誤，請在'good_food_count' 欄位後面填入一個長度為3的陣列，舉例： [1,2,3]")
-            elif not isinstance(self._bad_food_count, list) or len(self._bad_food_count) < 3:
-                raise Exception("你的關卡檔案格式有誤，請在'bad_food_count' 欄位後面填入一個長度為3的陣列，舉例： [1,2,3]")
-
-            else:
-                self._create_foods(GoodFoodLv1, self._good_food_count[0])
-                self._create_foods(GoodFoodLv2, self._good_food_count[1])
-                self._create_foods(GoodFoodLv3, self._good_food_count[2])
-                self._create_foods(BadFoodLv1, self._bad_food_count[0])
-                self._create_foods(BadFoodLv2, self._bad_food_count[1])
-                self._create_foods(BadFoodLv3, self._bad_food_count[2])
-                self._create_foods(Food1, game_params.food_1)
+            self._create_foods(Food1, game_params.food_1)
+            self._create_foods(Food2, game_params.food_2)
+            self._create_foods(Food3, game_params.food_3)
 
             self.frame_count = 0
             self._frame_count_down = self._frame_limit
@@ -134,7 +121,7 @@ class EasyGame(PaiaGame):
                 # growth play special sound
                 self.ball.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
                 self._create_foods(food.__class__, 1)
-                if isinstance(food, (GoodFoodLv1, GoodFoodLv2, GoodFoodLv3,)):
+                if isinstance(food, (Food1, Food2, Food3,)):
                     self.sound_controller.play_eating_good()
                 elif isinstance(food, (BadFoodLv1, BadFoodLv2, BadFoodLv3,)):
                     self.sound_controller.play_eating_bad()
@@ -216,20 +203,15 @@ class EasyGame(PaiaGame):
         # background = create_asset_init_data(
         #     "background", WIDTH, HEIGHT, bg_path,
         #     github_raw_url="https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/easy_game/main/asset/img/background.jpg")
-        bg_path = path.join(ASSET_IMAGE_DIR, "background.png")
-        squid_path =  path.join(ASSET_IMAGE_DIR, "squid.png")
-        food01_path = path.join(ASSET_IMAGE_DIR, "food_01.png")
 
-        # TODO
-        food01_url = food01_path
-        bg_url = bg_path
-        squid_url = squid_path
         scene_init_data = {
             "scene": self.scene.__dict__,
             "assets": [
-                create_asset_init_data("bg", 1000, 1000, bg_path, bg_url),
-                create_asset_init_data("squid", BALL_W, BALL_H, squid_path, squid_url),
-                create_asset_init_data("food01", 20, 20, food01_path, food01_url)
+                create_asset_init_data("bg", 1000, 1000, BG_PATH, BG_URL),
+                create_asset_init_data("squid", SQUID_W, SQUID_H, SQUID_PATH, SQUID_URL),
+                create_asset_init_data("food01", FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_PATH, FOOD01_URL),
+                create_asset_init_data("food02", FOOD_LV2_SIZE,FOOD_LV2_SIZE, FOOD02_PATH, FOOD02_URL),
+                create_asset_init_data("food03", FOOD_LV3_SIZE,FOOD_LV3_SIZE, FOOD03_PATH, FOOD03_URL),
             ],
             "background": [
                 create_image_view_data(
