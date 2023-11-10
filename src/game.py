@@ -136,18 +136,17 @@ class EasyGame(PaiaGame):
         to_players_data = {}
         foods_data = []
         for food in self.foods:
-            # TODO 確認要提供中心點座標還是左上角座標。
             foods_data.append({"x": food.rect.centerx, "y": food.rect.centery, "type": food.type, "score": food.score})
 
         data_to_1p = {
             "frame": self.frame_count,
-            # TODO 確認要提供中心點座標還是左上角座標。
-            "player_x": self.squid.rect.centerx,
-            "player_y": self.squid.rect.centery,
-            "player_size": self.squid.rect.width,
-            "player_vel": self.squid.vel,
+            "squid_x": self.squid.rect.centerx,
+            "squid_y": self.squid.rect.centery,
+            "squid_w": self.squid.rect.width,
+            "squid_h": self.squid.rect.height,
+            "squid_vel": self.squid.vel,
+            "squid_lv": self.squid.lv,
             "foods": foods_data,
-
             "score": self.squid.score,
             "score_to_pass": self._score_to_pass,
             "status": self.get_game_status()
@@ -253,12 +252,12 @@ class EasyGame(PaiaGame):
 
         ]
         toggle_objs = [
-            create_text_view_data(f"Lv   : {self.squid.lv:4d}", 750, 50, "#EEEEEE", "24px Arial BOLD"),
-            create_text_view_data(f"Vel  : {self.squid.vel:4d}", 750, 80, "#EEEEEE", "24px Arial BOLD"),
-            create_text_view_data(f"Score: {self.squid.score:04d}", 750, 110, "#EEEEEE", "24px Arial BOLD"),
-            create_text_view_data(f"Lv_up: {LEVEL_THRESHOLDS[self.squid.lv-1]:4d}", 750, 140, "#EEEEEE", "24px Arial BOLD"),
-            create_text_view_data(f"Time : {self._frame_count_down:04d}", 750, 200, "#EEEEEE", "24px Arial BOLD"),
-            create_text_view_data(f"ToPass: {self._score_to_pass:04d}", 750, 230, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Lv   : {self.squid.lv:4d}", 720, 50, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Vel  : {self.squid.vel:4d}", 720, 80, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Score: {self.squid.score:04d}", 720, 110, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Lv_up: {LEVEL_THRESHOLDS[self.squid.lv-1]:4d}", 720, 140, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Time : {self._frame_count_down:04d}", 720, 200, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"ToPass: {self._score_to_pass:04d}", 720, 230, "#EEEEEE", "24px Arial BOLD"),
 
         ]
         scene_progress = create_scene_progress_data(frame=self.frame_count, background=backgrounds,

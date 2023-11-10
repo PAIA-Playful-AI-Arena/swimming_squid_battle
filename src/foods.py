@@ -127,7 +127,7 @@ class Garbage1(Food):
 class Garbage2(Food):
     def __init__(self, group):
         super().__init__(group, FoodTypeEnum.GARBAGE_2, "garbage02",
-                         [FOOD_LV2_SIZE, FOOD_LV2_SIZE], -1)
+                         [FOOD_LV2_SIZE, FOOD_LV2_SIZE], -4)
         self._vel = FOOD2_VEL
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
@@ -146,7 +146,7 @@ class Garbage2(Food):
 class Garbage3(Food):
     def __init__(self, group):
         super().__init__(group, FoodTypeEnum.GARBAGE_3, "garbage03",
-                         [FOOD_LV3_SIZE, FOOD_LV3_SIZE], -1)
+                         [FOOD_LV3_SIZE, FOOD_LV3_SIZE], -10)
         self._vel = FOOD1_VEL
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
