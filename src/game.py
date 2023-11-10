@@ -83,6 +83,9 @@ class EasyGame(PaiaGame):
             self._create_foods(Food1, game_params.food_1)
             self._create_foods(Food2, game_params.food_2)
             self._create_foods(Food3, game_params.food_3)
+            self._create_foods(Garbage1, game_params.garbage_1)
+            self._create_foods(Garbage2, game_params.garbage_2)
+            self._create_foods(Garbage3, game_params.garbage_3)
 
             self.frame_count = 0
             self._frame_count_down = self._frame_limit
@@ -123,7 +126,7 @@ class EasyGame(PaiaGame):
                 self._create_foods(food.__class__, 1)
                 if isinstance(food, (Food1, Food2, Food3,)):
                     self.sound_controller.play_eating_good()
-                elif isinstance(food, (BadFoodLv1, BadFoodLv2, BadFoodLv3,)):
+                elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
                     self.sound_controller.play_eating_bad()
 
     def get_data_from_game_to_player(self):
@@ -212,6 +215,9 @@ class EasyGame(PaiaGame):
                 create_asset_init_data("food01", FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_PATH, FOOD01_URL),
                 create_asset_init_data("food02", FOOD_LV2_SIZE,FOOD_LV2_SIZE, FOOD02_PATH, FOOD02_URL),
                 create_asset_init_data("food03", FOOD_LV3_SIZE,FOOD_LV3_SIZE, FOOD03_PATH, FOOD03_URL),
+                create_asset_init_data("garbage01", FOOD_LV1_SIZE,FOOD_LV1_SIZE, GARBAGE01_PATH, GARBAGE01_URL),
+                create_asset_init_data("garbage02", FOOD_LV2_SIZE,FOOD_LV2_SIZE, GARBAGE02_PATH, GARBAGE02_URL),
+                create_asset_init_data("garbage03", FOOD_LV3_SIZE,FOOD_LV3_SIZE, GARBAGE03_PATH, GARBAGE03_URL),
             ],
             "background": [
                 create_image_view_data(

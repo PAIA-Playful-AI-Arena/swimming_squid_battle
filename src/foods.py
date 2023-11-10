@@ -101,34 +101,30 @@ class Food3(Food):
             self._vel = - FOOD3_VEL
 
 
-class BadFoodLv1(Food):
+class Garbage1(Food):
     def __init__(self, group):
-        super().__init__(group)
-        self.image = pygame.Surface([FOOD_LV1_SIZE, FOOD_LV1_SIZE])
-        self.type = FoodTypeEnum.BAD_1
-        self.color = FOOD_COLOR_MAP[self.type]
-        self.score = -1
-        self.rect = self.image.get_rect()
-        self.angle = 0
+        super().__init__(group, FoodTypeEnum.BAD_1, "garbage01",
+                         [FOOD_LV1_SIZE, FOOD_LV1_SIZE], -1)
+        # self._vel = FOOD1_VEL
 
+    def update(self, playground: Rect, squid: pygame.sprite.Sprite):
 
-class BadFoodLv2(Food):
+        pass
+class Garbage2(Food):
     def __init__(self, group):
-        super().__init__(group)
+        super().__init__(group, FoodTypeEnum.BAD_2, "garbage02",
+                         [FOOD_LV2_SIZE, FOOD_LV2_SIZE], -1)
+        # self._vel = FOOD1_VEL
 
-        self.image = pygame.Surface([FOOD_LV2_SIZE, FOOD_LV2_SIZE])
-        self.type = FoodTypeEnum.BAD_2
-        self.color = FOOD_COLOR_MAP[self.type]
-        self.score = -2
-        self.rect = self.image.get_rect()
+    def update(self, playground: Rect, squid: pygame.sprite.Sprite):
 
-
-class BadFoodLv3(Food):
+        pass
+class Garbage3(Food):
     def __init__(self, group):
-        super().__init__(group)
+        super().__init__(group, FoodTypeEnum.BAD_3, "garbage03",
+                         [FOOD_LV3_SIZE, FOOD_LV3_SIZE], -1)
+        # self._vel = FOOD1_VEL
 
-        self.image = pygame.Surface([FOOD_LV3_SIZE, FOOD_LV3_SIZE])
-        self.type = FoodTypeEnum.BAD_3
-        self.color = FOOD_COLOR_MAP[self.type]
-        self.score = -4
-        self.rect = self.image.get_rect()
+    def update(self, playground: Rect, squid: pygame.sprite.Sprite):
+
+        pass
