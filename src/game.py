@@ -10,11 +10,11 @@ from mlgame.view.decorator import check_game_progress, check_game_result
 from mlgame.view.view_model import *
 from .env import *
 from .foods import *
-from .game_object import Ball
+from .game_object import Squid, LevelParams
 from .sound_controller import SoundController
 
 
-def revise_ball(ball: Ball, playground: pygame.Rect):
+def revise_ball(ball: Squid, playground: pygame.Rect):
     ball_rect = copy.deepcopy(ball.rect)
     if ball_rect.left < playground.left:
         ball_rect.left = playground.left
@@ -50,56 +50,44 @@ class EasyGame(PaiaGame):
 
         self._init_game()
 
-
     def _init_game_by_file(self, level_file_path: str):
         try:
             with open(level_file_path) as f:
-                game_params = json.load(f)
+                game_params = LevelParams(**json.load(f))
+
         except:
             # If the file doesn't exist, use default parameters
             print("此關卡檔案不存在，遊戲將會會自動使用第一關檔案 001.json。")
             print("This level file is not existed , game will load 001.json automatically.")
             with open(os.path.join(LEVEL_PATH, "001.json")) as f:
-                game_params = json.load(f)
+                game_params = LevelParams(**json.load(f))
                 self._level = 1
                 self._level_file = ""
         finally:
             # set game params
-            self._playground_w = int(game_params["playground_size"][0])
-            self._playground_h = int(game_params["playground_size"][1])
             self.playground = pygame.Rect(
                 0, 0,
-                self._playground_w,
-                self._playground_h
+                game_params.playground_size_w,
+                game_params.playground_size_h
             )
-            self._good_food_count = game_params["good_food_count"]
-            self._bad_food_count = game_params["bad_food_count"]
-            self._score_to_pass = int(game_params["score_to_pass"])
-            self._frame_limit = int(game_params["time_to_play"])
-            self.playground.center = (WIDTH / 2, HEIGHT / 2)
+
+            self._score_to_pass = game_params.score_to_pass
+            self._frame_limit = game_params.time_to_play
+            self.playground.center = ((WIDTH-200) / 2, HEIGHT / 2)
 
             # init game
-            self.ball = Ball()
+            self.squid = Squid()
             self.foods.empty()
-
-            if not isinstance(self._good_food_count,list) or len(self._good_food_count)<3:
-                raise Exception("你的關卡檔案格式有誤，請在'good_food_count' 欄位後面填入一個長度為3的陣列，舉例： [1,2,3]")
-            elif not isinstance(self._bad_food_count, list) or len(self._bad_food_count) < 3:
-                raise Exception("你的關卡檔案格式有誤，請在'bad_food_count' 欄位後面填入一個長度為3的陣列，舉例： [1,2,3]")
-
-            else:
-                self._create_foods(GoodFoodLv1, self._good_food_count[0])
-                self._create_foods(GoodFoodLv2, self._good_food_count[1])
-                self._create_foods(GoodFoodLv3, self._good_food_count[2])
-                self._create_foods(BadFoodLv1, self._bad_food_count[0])
-                self._create_foods(BadFoodLv2, self._bad_food_count[1])
-                self._create_foods(BadFoodLv3, self._bad_food_count[2])
+            self._create_foods(Food1, game_params.food_1)
+            self._create_foods(Food2, game_params.food_2)
+            self._create_foods(Food3, game_params.food_3)
+            self._create_foods(Garbage1, game_params.garbage_1)
+            self._create_foods(Garbage2, game_params.garbage_2)
+            self._create_foods(Garbage3, game_params.garbage_3)
 
             self.frame_count = 0
             self._frame_count_down = self._frame_limit
             self.sound_controller.play_music()
-
-
 
     def update(self, commands):
         # handle command
@@ -109,10 +97,10 @@ class EasyGame(PaiaGame):
         else:
             action = "NONE"
 
-        self.ball.update(action)
-        revise_ball(self.ball, self.playground)
+        self.squid.update(action)
+        revise_ball(self.squid, self.playground)
         # update sprite
-        self.foods.update()
+        self.foods.update(playground=self.playground, squid=self.squid)
 
         # handle collision
 
@@ -127,16 +115,16 @@ class EasyGame(PaiaGame):
             return "RESET"
 
     def _check_foods_collision(self):
-        hits = pygame.sprite.spritecollide(self.ball, self.foods, True)
+        hits = pygame.sprite.spritecollide(self.squid, self.foods, True)
         if hits:
             for food in hits:
                 # self.ball.score += food.score
                 # growth play special sound
-                self.ball.eat_food_and_change_level_and_play_sound(food,self.sound_controller)
+                self.squid.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
                 self._create_foods(food.__class__, 1)
-                if isinstance(food, (GoodFoodLv1,GoodFoodLv2,GoodFoodLv3,)):
+                if isinstance(food, (Food1, Food2, Food3,)):
                     self.sound_controller.play_eating_good()
-                elif isinstance(food, (BadFoodLv1,BadFoodLv2,BadFoodLv3,)):
+                elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
                     self.sound_controller.play_eating_bad()
 
     def get_data_from_game_to_player(self):
@@ -147,20 +135,23 @@ class EasyGame(PaiaGame):
         to_players_data = {}
         foods_data = []
         for food in self.foods:
-            # TODO 確認要提供中心點座標還是左上角座標。
-            foods_data.append({"x": food.rect.x, "y": food.rect.y, "type": food.type, "score": food.score})
+            foods_data.append(
+                {"x": food.rect.centerx, "y": food.rect.centery,
+                 "w":food.rect.width,"h":food.rect.height,
+                 "type": str(food.type), "score": food.score}
+            )
 
         data_to_1p = {
             "frame": self.frame_count,
-            # TODO 確認要提供中心點座標還是左上角座標。
-            "player_x": self.ball.rect.centerx,
-            "player_y": self.ball.rect.centery,
-            "player_size":self.ball.rect.width,
-            "player_vel":self.ball.vel,
+            "squid_x": self.squid.rect.centerx,
+            "squid_y": self.squid.rect.centery,
+            "squid_w": self.squid.rect.width,
+            "squid_h": self.squid.rect.height,
+            "squid_vel": self.squid.vel,
+            "squid_lv": self.squid.lv,
             "foods": foods_data,
-
-            "score": self.ball.score,
-            "score_to_pass":self._score_to_pass,
+            "score": self.squid.score,
+            "score_to_pass": self._score_to_pass,
             "status": self.get_game_status()
 
         }
@@ -185,10 +176,9 @@ class EasyGame(PaiaGame):
         if self.is_passed:
             self._level += 1
             self.sound_controller.play_cheer()
-
+        else:
+            self.sound_controller.play_fail()
         self._init_game()
-
-
 
         pass
 
@@ -203,7 +193,7 @@ class EasyGame(PaiaGame):
 
     @property
     def is_passed(self):
-        return self.ball.score > self._score_to_pass
+        return self.squid.score > self._score_to_pass
 
     @property
     def is_running(self):
@@ -217,12 +207,29 @@ class EasyGame(PaiaGame):
         # background = create_asset_init_data(
         #     "background", WIDTH, HEIGHT, bg_path,
         #     github_raw_url="https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/easy_game/main/asset/img/background.jpg")
-        scene_init_data = {"scene": self.scene.__dict__,
-                           "assets": [
-                               # background
-                           ],
-                           # "audios": {}
-                           }
+
+        scene_init_data = {
+            "scene": self.scene.__dict__,
+            "assets": [
+                create_asset_init_data("bg", 1000, 1000, BG_PATH, BG_URL),
+                create_asset_init_data("squid", SQUID_W, SQUID_H, SQUID_PATH, SQUID_URL),
+                create_asset_init_data(IMG_ID_FOOD01_L, FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_L_PATH, FOOD01_L_URL),
+                create_asset_init_data(IMG_ID_FOOD02_L, FOOD_LV2_SIZE, FOOD_LV2_SIZE, FOOD02_L_PATH, FOOD02_L_URL),
+                create_asset_init_data(IMG_ID_FOOD03_L, FOOD_LV3_SIZE, FOOD_LV3_SIZE, FOOD03_L_PATH, FOOD03_L_URL),
+                create_asset_init_data(IMG_ID_FOOD01_R, FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_R_PATH, FOOD01_R_URL),
+                create_asset_init_data(IMG_ID_FOOD02_R, FOOD_LV2_SIZE, FOOD_LV2_SIZE, FOOD02_R_PATH, FOOD02_R_URL),
+                create_asset_init_data(IMG_ID_FOOD03_R, FOOD_LV3_SIZE, FOOD_LV3_SIZE, FOOD03_R_PATH, FOOD03_R_URL),
+                create_asset_init_data("garbage01", FOOD_LV1_SIZE,FOOD_LV1_SIZE, GARBAGE01_PATH, GARBAGE01_URL),
+                create_asset_init_data("garbage02", FOOD_LV2_SIZE,FOOD_LV2_SIZE, GARBAGE02_PATH, GARBAGE02_URL),
+                create_asset_init_data("garbage03", FOOD_LV3_SIZE,FOOD_LV3_SIZE, GARBAGE03_PATH, GARBAGE03_URL),
+            ],
+            "background": [
+                # create_image_view_data(
+                #     'bg', self.playground.x, self.playground.y,
+                #     self.playground.w, self.playground.h)
+            ]
+            # "audios": {}
+        }
         return scene_init_data
 
     @check_game_progress
@@ -233,21 +240,27 @@ class EasyGame(PaiaGame):
         foods_data = []
         for food in self.foods:
             foods_data.append(food.game_object_data)
-        game_obj_list = [self.ball.game_object_data]
+        game_obj_list = [self.squid.game_object_data]
         game_obj_list.extend(foods_data)
         backgrounds = [
             # create_image_view_data("background", 0, 0, WIDTH, HEIGHT),
-            create_rect_view_data(
-                "playground", self.playground.x, self.playground.y,
-                self.playground.w, self.playground.h, PG_COLOR)
+            # create_rect_view_data(
+            #     "playground", self.playground.x, self.playground.y,
+            #     self.playground.w, self.playground.h, PG_COLOR)
+            create_image_view_data(
+                'bg', self.playground.x, self.playground.y,
+                self.playground.w, self.playground.h)
         ]
         foregrounds = [
 
         ]
         toggle_objs = [
-            create_text_view_data(f"Score:{self.ball.score:04d}", 600, 50, "#A5D6A7", "24px Arial BOLD"),
-            create_text_view_data(f" Next:{self._score_to_pass:04d}", 600, 100, "#FF4081", "24px Arial BOLD"),
-            create_text_view_data(f" Time:{self._frame_count_down:04d}", 600, 150, "#FF5722", "24px Arial BOLD"),
+            create_text_view_data(f"Lv   : {self.squid.lv:4d}", 720, 50, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Vel  : {self.squid.vel:4d}", 720, 80, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Score: {self.squid.score:04d}", 720, 110, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Lv_up: {LEVEL_THRESHOLDS[self.squid.lv-1]:4d}", 720, 140, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Time : {self._frame_count_down:04d}", 720, 200, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"ToPass: {self._score_to_pass:04d}", 720, 230, "#EEEEEE", "24px Arial BOLD"),
 
         ]
         scene_progress = create_scene_progress_data(frame=self.frame_count, background=backgrounds,
@@ -268,7 +281,7 @@ class EasyGame(PaiaGame):
                     {
                         "player": get_ai_name(0),
                         "rank": 1,
-                        "score": self.ball.score,
+                        "score": self.squid.score,
                         "passed": self.is_passed
                     }
                 ]
@@ -297,6 +310,9 @@ class EasyGame(PaiaGame):
         for i in range(count):
             # add food to group
             food = FOOD_TYPE(self.foods)
-            food.rect.centerx = random.randint(self.playground.left, self.playground.right)
-            food.rect.centery = random.randint(self.playground.top, self.playground.bottom)
+            food.set_center_x_and_y(
+                random.randint(self.playground.left, self.playground.right),
+                random.randint(self.playground.top, self.playground.bottom)
+            )
+
         pass

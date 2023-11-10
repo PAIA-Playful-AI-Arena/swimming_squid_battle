@@ -1,4 +1,6 @@
 import random
+
+import orjson
 import pygame
 
 
@@ -10,7 +12,7 @@ class MLPlay:
         """
         Generate the command according to the received scene information
         """
-        # print("AI received data from game :", json.dumps(scene_info))
+        # print("AI received data from game :", orjson.dumps(scene_info))
         # print(scene_info)
         actions = []
 
