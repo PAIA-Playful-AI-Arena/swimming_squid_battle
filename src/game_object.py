@@ -1,13 +1,12 @@
 import math
 
-
 from typing import List
 
 import pydantic
 import pygame.sprite
 
-from .env import  SQUID_VEL, SQUID_H, SQUID_W, SQUID_GROWTH_SCORE_STEP, SQUID_GROWTH_SIZE_STEP, \
-    SQUID_SIZE_MAX, SQUID_GROWTH_VEL_STEP, SQUID_VEL_MAX, SQUID_SIZE_MIN, SQUID_VEL_MIN
+from .env import SQUID_VEL, SQUID_H, SQUID_W, SQUID_GROWTH_SCORE_STEP, SQUID_GROWTH_SIZE_STEP, \
+    SQUID_SIZE_W_MAX, SQUID_GROWTH_VEL_STEP, SQUID_VEL_MAX, SQUID_SIZE_W_MIN, SQUID_VEL_MIN
 from .foods import Food
 from .sound_controller import SoundController
 from mlgame.view.view_model import create_rect_view_data, create_image_view_data
@@ -21,7 +20,6 @@ class LevelParams(pydantic.BaseModel):
     score_to_pass: int = 10
     time_to_play: int = 300
 
-
     food_1: int = 3
     food_2: int = 0
     food_3: int = 0
@@ -30,9 +28,22 @@ class LevelParams(pydantic.BaseModel):
     garbage_3: int = 0
 
 
+# level_thresholds = [10, 15, 20, 25, 30]
+LEVEL_THRESHOLDS = [10, 30, 60, 100, 150]
+LEVEL_PROPERTIES = {
+    1: {'size_ratio': 1.0, 'vel': 10},
+    2: {'size_ratio': 1.2, 'vel': 12},
+    3: {'size_ratio': 1.4, 'vel': 15},
+    4: {'size_ratio': 1.6, 'vel': 18},
+    5: {'size_ratio': 1.8, 'vel': 21},
+    6: {'size_ratio': 2.0, 'vel': 25},
+}
+
+
 class Squid(pygame.sprite.Sprite):
     ANGLE_TO_RIGHT = math.radians(-10)
     ANGLE_TO_LEFT = math.radians(10)
+
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.origin_image = pygame.Surface([SQUID_W, SQUID_H])
@@ -42,7 +53,8 @@ class Squid(pygame.sprite.Sprite):
         self._score = 0
         self._vel = SQUID_VEL
         self._lv = 1
-        self.angle =0
+        self.angle = 0
+
     def update(self, motion):
         # for motion in motions:
         if motion == "UP":
@@ -78,10 +90,11 @@ class Squid(pygame.sprite.Sprite):
 
     def eat_food_and_change_level_and_play_sound(self, food: Food, sound_controller: SoundController):
         self._score += food.score
-        new_lv = math.ceil((self._score - SQUID_GROWTH_SCORE_STEP + 1) / SQUID_GROWTH_SCORE_STEP)
-        self.rect.width = max(SQUID_SIZE_MIN, min(SQUID_W + new_lv * SQUID_GROWTH_SIZE_STEP, SQUID_SIZE_MAX))
-        self.rect.height = max(SQUID_SIZE_MIN, min(SQUID_H + new_lv * SQUID_GROWTH_SIZE_STEP, SQUID_SIZE_MAX))
-        self._vel = max(SQUID_VEL_MIN, min(SQUID_VEL + new_lv * SQUID_GROWTH_VEL_STEP, SQUID_VEL_MAX))
+        new_lv = get_current_level(self._score)
+        self.rect.width = SQUID_W * LEVEL_PROPERTIES[new_lv]['size_ratio']
+        self.rect.height = SQUID_H * LEVEL_PROPERTIES[new_lv]['size_ratio']
+
+        self._vel = LEVEL_PROPERTIES[new_lv]['vel']
         if new_lv > self._lv:
             sound_controller.play_lv_up()
         elif new_lv < self._lv:
@@ -96,3 +109,17 @@ class Squid(pygame.sprite.Sprite):
     @property
     def vel(self):
         return self._vel
+
+
+def get_current_level(score: int) -> int:
+    """
+    Determines the current level based on the player's score.
+
+    :param score: int - The current score of the player.
+    :return: int - The current level of the player.
+    """
+
+    for level, threshold in enumerate(LEVEL_THRESHOLDS, start=1):
+        if score < threshold:
+            return level
+    return len(LEVEL_THRESHOLDS) + 1  # Return the next level if score is beyond all thresholds

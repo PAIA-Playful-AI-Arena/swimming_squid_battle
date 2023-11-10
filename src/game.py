@@ -68,8 +68,8 @@ class EasyGame(PaiaGame):
             # set game params
             self.playground = pygame.Rect(
                 0, 0,
-                game_params.playground_size_h,
-                game_params.playground_size_w
+                game_params.playground_size_w,
+                game_params.playground_size_h
             )
 
             self._score_to_pass = game_params.score_to_pass
