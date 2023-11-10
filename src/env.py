@@ -3,21 +3,21 @@ from os import path
 
 from mlgame.utils.enum import StringEnum
 # game
-WIDTH = 800
+WIDTH = 900
 HEIGHT = 600
-BG_COLOR = "#111111"
+BG_COLOR = "#2B2B49"
 PG_COLOR = "#B3E5FC"
 
 # ball
 BALL_COLOR = "#FFEB3B"
 BALL_VEL = 10
-BALL_H = 30
-BALL_W = 30
+BALL_H = 50
+BALL_W = 50
 BALL_GROWTH_SCORE_STEP = 15
 BALL_GROWTH_SIZE_STEP=10
 BALL_GROWTH_VEL_STEP=3
-BALL_SIZE_MAX = 100
-BALL_SIZE_MIN = 10
+BALL_SIZE_MAX = 125
+BALL_SIZE_MIN = 20
 BALL_VEL_MAX = 25
 BALL_VEL_MIN = 10
 
@@ -39,9 +39,9 @@ FOOD_COLOR_MAP = {
     FoodTypeEnum.BAD_2: "#FF1744",
     FoodTypeEnum.BAD_3: "#FF1744"
 }
-FOOD_LV1_SIZE = 20
-FOOD_LV2_SIZE = 12
-FOOD_LV3_SIZE = 16
+FOOD_LV1_SIZE = 30
+FOOD_LV2_SIZE = 40
+FOOD_LV3_SIZE = 50
 
 # path of assets
 ASSET_PATH = path.join(path.dirname(__file__), "..", "asset")

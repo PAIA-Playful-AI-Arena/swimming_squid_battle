@@ -12,15 +12,16 @@ from mlgame.view.view_model import create_rect_view_data
 
 
 class LevelParams(pydantic.BaseModel):
-    playground_w: int = 100
-    playground_h: int = 200
+    # TODO max and min
+    playground_size_w: int = 300
+    playground_size_h: int = 300
     score_to_pass: int = 10
     time_to_play: int = 300
 
     good_food_count: List[int] = []
     bad_food_count: List[int] = []
 
-    food_1: int = 0
+    food_1: int = 3
     food_2: int = 0
     food_3: int = 0
     garbage_1: int = 0

@@ -3,7 +3,6 @@ import json
 import os.path
 
 import pygame
-from orjson import orjson
 
 from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
@@ -52,7 +51,6 @@ class EasyGame(PaiaGame):
 
         self._init_game()
 
-
     @timeit_in_perf
     def _init_game_by_file(self, level_file_path: str):
         try:
@@ -71,8 +69,8 @@ class EasyGame(PaiaGame):
             # set game params
             self.playground = pygame.Rect(
                 0, 0,
-                game_params.playground_w,
-                game_params.playground_h
+                game_params.playground_size_h,
+                game_params.playground_size_w
             )
             self._good_food_count = game_params.good_food_count
             self._bad_food_count = game_params.bad_food_count
@@ -84,8 +82,9 @@ class EasyGame(PaiaGame):
             self.ball = Ball()
             self.foods.empty()
 
-            if not isinstance(self._good_food_count,list) or len(self._good_food_count)<3:
-                raise Exception("你的關卡檔案格式有誤，請在'good_food_count' 欄位後面填入一個長度為3的陣列，舉例： [1,2,3]")
+            if not isinstance(self._good_food_count, list) or len(self._good_food_count) < 3:
+                raise Exception(
+                    "你的關卡檔案格式有誤，請在'good_food_count' 欄位後面填入一個長度為3的陣列，舉例： [1,2,3]")
             elif not isinstance(self._bad_food_count, list) or len(self._bad_food_count) < 3:
                 raise Exception("你的關卡檔案格式有誤，請在'bad_food_count' 欄位後面填入一個長度為3的陣列，舉例： [1,2,3]")
 
@@ -102,8 +101,6 @@ class EasyGame(PaiaGame):
             self._frame_count_down = self._frame_limit
             self.sound_controller.play_music()
 
-
-
     def update(self, commands):
         # handle command
         ai_1p_cmd = commands[get_ai_name(0)]
@@ -115,7 +112,7 @@ class EasyGame(PaiaGame):
         self.ball.update(action)
         revise_ball(self.ball, self.playground)
         # update sprite
-        self.foods.update(playground=self.playground,squid=self.ball)
+        self.foods.update(playground=self.playground, squid=self.ball)
 
         # handle collision
 
@@ -135,11 +132,11 @@ class EasyGame(PaiaGame):
             for food in hits:
                 # self.ball.score += food.score
                 # growth play special sound
-                self.ball.eat_food_and_change_level_and_play_sound(food,self.sound_controller)
+                self.ball.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
                 self._create_foods(food.__class__, 1)
-                if isinstance(food, (GoodFoodLv1,GoodFoodLv2,GoodFoodLv3,)):
+                if isinstance(food, (GoodFoodLv1, GoodFoodLv2, GoodFoodLv3,)):
                     self.sound_controller.play_eating_good()
-                elif isinstance(food, (BadFoodLv1,BadFoodLv2,BadFoodLv3,)):
+                elif isinstance(food, (BadFoodLv1, BadFoodLv2, BadFoodLv3,)):
                     self.sound_controller.play_eating_bad()
 
     def get_data_from_game_to_player(self):
@@ -158,12 +155,12 @@ class EasyGame(PaiaGame):
             # TODO 確認要提供中心點座標還是左上角座標。
             "player_x": self.ball.rect.centerx,
             "player_y": self.ball.rect.centery,
-            "player_size":self.ball.rect.width,
-            "player_vel":self.ball.vel,
+            "player_size": self.ball.rect.width,
+            "player_vel": self.ball.vel,
             "foods": foods_data,
 
             "score": self.ball.score,
-            "score_to_pass":self._score_to_pass,
+            "score_to_pass": self._score_to_pass,
             "status": self.get_game_status()
 
         }
@@ -192,8 +189,6 @@ class EasyGame(PaiaGame):
             self.sound_controller.play_fail()
         self._init_game()
 
-
-
         pass
 
     def _init_game(self):
@@ -221,14 +216,25 @@ class EasyGame(PaiaGame):
         # background = create_asset_init_data(
         #     "background", WIDTH, HEIGHT, bg_path,
         #     github_raw_url="https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/easy_game/main/asset/img/background.jpg")
+        bg_path = path.join(ASSET_IMAGE_DIR, "background.png")
         food01_path = path.join(ASSET_IMAGE_DIR, "food_01.png")
+        # TODO
         food01_url = food01_path
-        scene_init_data = {"scene": self.scene.__dict__,
-                           "assets": [
-                               create_asset_init_data("food01", 20, 20, food01_path,food01_url)
-                           ],
-                           # "audios": {}
-                           }
+        bg_url = bg_path
+
+        scene_init_data = {
+            "scene": self.scene.__dict__,
+            "assets": [
+                create_asset_init_data("bg", 1000, 1000, bg_path, bg_url),
+                create_asset_init_data("food01", 20, 20, food01_path, food01_url)
+            ],
+            "background": [
+                create_image_view_data(
+                    'bg', self.playground.x, self.playground.y,
+                    self.playground.w, self.playground.h)
+            ]
+            # "audios": {}
+        }
         return scene_init_data
 
     @check_game_progress
@@ -243,9 +249,9 @@ class EasyGame(PaiaGame):
         game_obj_list.extend(foods_data)
         backgrounds = [
             # create_image_view_data("background", 0, 0, WIDTH, HEIGHT),
-            create_rect_view_data(
-                "playground", self.playground.x, self.playground.y,
-                self.playground.w, self.playground.h, PG_COLOR)
+            # create_rect_view_data(
+            #     "playground", self.playground.x, self.playground.y,
+            #     self.playground.w, self.playground.h, PG_COLOR)
         ]
         foregrounds = [
 
