@@ -46,17 +46,6 @@ game = EasyGame(
 
 1. 時間結束前，吃到的食物少於`score`，即算失敗。
 
-## 遊戲系統
-
-1. 行動機制
-    
-    上下左右的行動，每次移動`10.5px`
-    
-2. 座標系統
-    - 螢幕大小 800 x 600
-    - 主角方塊 30 x 30
-    - 食物方塊 8 x 8
-
 ---
 
 # 進階說明
@@ -100,39 +89,79 @@ class MLPlay:
 
 ```json
 {
-  "frame": 25,
-  "player_x": 425,
-  "player_y": 306,
-  "player_size": 90,
-  "player_vel": 16,
+  "frame": 15,
+  "score": 8,
+  "score_to_pass": 10,
+  "squid_x": 350,
+  "squid_y": 300,
+  "squid_h": 60,
+  "squid_w": 40,
+  "squid_lv": 1,
+  "squid_vel": 10,
+  "status": "GAME_ALIVE",
   "foods": [
     {
-      "x": 656,
-      "y": 210,
-      "type": "GOOD_1",
-      "score": 1
+      "h": 30,
+      "score": 1,
+      "type": "FOOD_1",
+      "w": 30,
+      "x": 40,
+      "y": 134
     },
-...,
     {
-      "x": 371,
-      "y": 217,
-      "type": "BAD_1",
-      "score": -1
+      "h": 40,
+      "score": 2,
+      "type": "FOOD_2",
+      "w": 40,
+      "x": 422,
+      "y": 192
+    },
+    {
+      "h": 50,
+      "score": 4,
+      "type": "FOOD_3",
+      "w": 50,
+      "x": 264,
+      "y": 476
+    },
+    {
+      "h": 30,
+      "score": -1,
+      "type": "GARBAGE_1",
+      "w": 30,
+      "x": 100,
+      "y": 496
+    },
+    {
+      "h": 40,
+      "score": -4,
+      "type": "GARBAGE_2",
+      "w": 40,
+      "x": 633,
+      "y": 432
+    },
+    {
+      "h": 50,
+      "score": -10,
+      "type": "GARBAGE_3",
+      "w": 50,
+      "x": 54,
+      "y": 194
     }
-    
-  ],
-  "score": 0,
-  "status": "GAME_ALIVE"
+  ]
+
 }
 ```
 
 - `frame`：遊戲畫面更新的編號
-- `player_x`：主角方塊的Ｘ座標，表示方塊的`中心點`座標值，單位 pixel。
-- `player_y`：主角方塊的Ｙ座標，表示方塊的`中心點`座標值，單位 pixel。
-- `player_size`：主角方塊的大小，表示方塊的長寬，單位 pixel。
-- `player_vel`：主角方塊的速度，表示方塊每幀移動的像素，單位 pixel。
-- `foods`：食物的清單，清單內每一個物件都是一個食物的左上方座標值，也會提供此食物是什麼類型和分數多少。
-  -  `type` 食物類型： `GOOD_1`, `GOOD_2`, `GOOD_3`, `BAD_1`, `BAD_2`, `BAD_3`
+- `squid_x`：玩家角色的Ｘ座標，表示方塊的`中心點`座標值，單位 pixel。
+- `squid_y`：玩家角色的Ｙ座標，表示方塊的`中心點`座標值，單位 pixel。
+- `squid_w`：玩家角色的寬度，單位 pixel。
+- `squid_h`：玩家角色的高度，單位 pixel。
+- `squid_vel`：玩家角色的速度，表示方塊每幀移動的像素，單位 pixel。
+- `squid_lv`：玩家角色的等級，最小 1 ，最大 6。
+- `foods`：食物的清單，清單內每一個物件都是一個食物的`中心點`座標值，也會提供此食物是什麼類型和分數多少。
+  -  `type` 食物類型： `FOOD_1`, `FOOD_2`, `FOOD_3`, `GARBAGE_1`, `GARBAGE_2`, `GARBAGE_3`
 - `score`：目前得到的分數
 - `score_to_pass`：通關分數
 - `status`： 目前遊戲的狀態
@@ -159,7 +188,7 @@ class MLPlay:
   "state": "FAIL",
   "attachment": [
     {
-      "player": "1P",
+      "squid": "1P",
       "score": 0,
       "rank": 1,
       "passed": false
@@ -173,7 +202,7 @@ class MLPlay:
     - `FAIL`：遊戲失敗
     - `FINISH`：遊戲完成
 - `attachment`：紀錄遊戲各個玩家的結果與分數等資訊
-    - `player`：玩家編號
+    - `squid`：玩家編號
     - `score`：吃到的食物總數
     - `rank`：排名
     - `passed`：是否通關
