@@ -77,7 +77,7 @@ class EasyGame(PaiaGame):
             self.playground.center = ((WIDTH-200) / 2, HEIGHT / 2)
 
             # init game
-            self.ball = Squid()
+            self.squid = Squid()
             self.foods.empty()
             self._create_foods(Food1, game_params.food_1)
             self._create_foods(Food2, game_params.food_2)
@@ -98,10 +98,10 @@ class EasyGame(PaiaGame):
         else:
             action = "NONE"
 
-        self.ball.update(action)
-        revise_ball(self.ball, self.playground)
+        self.squid.update(action)
+        revise_ball(self.squid, self.playground)
         # update sprite
-        self.foods.update(playground=self.playground, squid=self.ball)
+        self.foods.update(playground=self.playground, squid=self.squid)
 
         # handle collision
 
@@ -116,12 +116,12 @@ class EasyGame(PaiaGame):
             return "RESET"
 
     def _check_foods_collision(self):
-        hits = pygame.sprite.spritecollide(self.ball, self.foods, True)
+        hits = pygame.sprite.spritecollide(self.squid, self.foods, True)
         if hits:
             for food in hits:
                 # self.ball.score += food.score
                 # growth play special sound
-                self.ball.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
+                self.squid.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
                 self._create_foods(food.__class__, 1)
                 if isinstance(food, (Food1, Food2, Food3,)):
                     self.sound_controller.play_eating_good()
@@ -142,13 +142,13 @@ class EasyGame(PaiaGame):
         data_to_1p = {
             "frame": self.frame_count,
             # TODO 確認要提供中心點座標還是左上角座標。
-            "player_x": self.ball.rect.centerx,
-            "player_y": self.ball.rect.centery,
-            "player_size": self.ball.rect.width,
-            "player_vel": self.ball.vel,
+            "player_x": self.squid.rect.centerx,
+            "player_y": self.squid.rect.centery,
+            "player_size": self.squid.rect.width,
+            "player_vel": self.squid.vel,
             "foods": foods_data,
 
-            "score": self.ball.score,
+            "score": self.squid.score,
             "score_to_pass": self._score_to_pass,
             "status": self.get_game_status()
 
@@ -191,7 +191,7 @@ class EasyGame(PaiaGame):
 
     @property
     def is_passed(self):
-        return self.ball.score > self._score_to_pass
+        return self.squid.score > self._score_to_pass
 
     @property
     def is_running(self):
@@ -238,7 +238,7 @@ class EasyGame(PaiaGame):
         foods_data = []
         for food in self.foods:
             foods_data.append(food.game_object_data)
-        game_obj_list = [self.ball.game_object_data]
+        game_obj_list = [self.squid.game_object_data]
         game_obj_list.extend(foods_data)
         backgrounds = [
             # create_image_view_data("background", 0, 0, WIDTH, HEIGHT),
@@ -253,9 +253,12 @@ class EasyGame(PaiaGame):
 
         ]
         toggle_objs = [
-            create_text_view_data(f"Score: {self.ball.score:04d}", 750, 50, "#EEEEEE", "24px Arial BOLD"),
-            create_text_view_data(f"Next : {self._score_to_pass:04d}", 750, 100, "#EEEEEE", "24px Arial BOLD"),
-            create_text_view_data(f"Time : {self._frame_count_down:04d}", 750, 150, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Lv   : {self.squid.lv:4d}", 750, 50, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Vel  : {self.squid.vel:4d}", 750, 80, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Score: {self.squid.score:04d}", 750, 110, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Lv_up: {LEVEL_THRESHOLDS[self.squid.lv-1]:4d}", 750, 140, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"Time : {self._frame_count_down:04d}", 750, 200, "#EEEEEE", "24px Arial BOLD"),
+            create_text_view_data(f"ToPass: {self._score_to_pass:04d}", 750, 230, "#EEEEEE", "24px Arial BOLD"),
 
         ]
         scene_progress = create_scene_progress_data(frame=self.frame_count, background=backgrounds,
@@ -276,7 +279,7 @@ class EasyGame(PaiaGame):
                     {
                         "player": get_ai_name(0),
                         "rank": 1,
-                        "score": self.ball.score,
+                        "score": self.squid.score,
                         "passed": self.is_passed
                     }
                 ]

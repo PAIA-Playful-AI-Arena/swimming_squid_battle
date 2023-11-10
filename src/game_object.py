@@ -36,6 +36,7 @@ class Squid(pygame.sprite.Sprite):
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
+
         self.origin_image = pygame.Surface([SQUID_W, SQUID_H])
         self.image = self.origin_image
         self.rect = self.image.get_rect()
@@ -99,6 +100,9 @@ class Squid(pygame.sprite.Sprite):
     @property
     def vel(self):
         return self._vel
+    @property
+    def lv(self):
+        return self._lv
 
 
 def get_current_level(score: int) -> int:
@@ -111,5 +115,5 @@ def get_current_level(score: int) -> int:
 
     for level, threshold in enumerate(LEVEL_THRESHOLDS, start=1):
         if score < threshold:
-            return level
-    return len(LEVEL_THRESHOLDS) + 1  # Return the next level if score is beyond all thresholds
+            return min(level,6)
+    return len(LEVEL_THRESHOLDS) # Return the next level if score is beyond all thresholds
