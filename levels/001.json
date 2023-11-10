@@ -3,13 +3,10 @@
   "playground_size_w":300,
   "playground_size_h":300,
   "score_to_pass": 10,
-  "good_food_count": [0,0,0],
-  "bad_food_count": [0,0,0],
   "food_1": 3,
-  "food_2": 1,
-  "food_3": 1,
-  "garbage_1": 3,
-  "garbage_2": 1,
-  "garbage_3": 1
-
+  "food_2": 0,
+  "food_3": 0,
+  "garbage_1": 0,
+  "garbage_2": 0,
+  "garbage_3": 0
 }

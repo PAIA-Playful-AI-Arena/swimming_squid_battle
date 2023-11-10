@@ -75,7 +75,7 @@ class EasyGame(PaiaGame):
 
             self._score_to_pass = game_params.score_to_pass
             self._frame_limit = game_params.time_to_play
-            self.playground.center = (WIDTH / 2, HEIGHT / 2)
+            self.playground.center = ((WIDTH-200) / 2, HEIGHT / 2)
 
             # init game
             self.ball = Squid()
@@ -220,9 +220,9 @@ class EasyGame(PaiaGame):
                 create_asset_init_data("garbage03", FOOD_LV3_SIZE,FOOD_LV3_SIZE, GARBAGE03_PATH, GARBAGE03_URL),
             ],
             "background": [
-                create_image_view_data(
-                    'bg', self.playground.x, self.playground.y,
-                    self.playground.w, self.playground.h)
+                # create_image_view_data(
+                #     'bg', self.playground.x, self.playground.y,
+                #     self.playground.w, self.playground.h)
             ]
             # "audios": {}
         }
@@ -243,6 +243,9 @@ class EasyGame(PaiaGame):
             # create_rect_view_data(
             #     "playground", self.playground.x, self.playground.y,
             #     self.playground.w, self.playground.h, PG_COLOR)
+            create_image_view_data(
+                'bg', self.playground.x, self.playground.y,
+                self.playground.w, self.playground.h)
         ]
         foregrounds = [
 

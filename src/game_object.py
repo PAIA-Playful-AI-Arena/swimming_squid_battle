@@ -38,7 +38,7 @@ class Squid(pygame.sprite.Sprite):
         self.origin_image = pygame.Surface([SQUID_W, SQUID_H])
         self.image = self.origin_image
         self.rect = self.image.get_rect()
-        self.rect.center = (400, 300)
+        self.rect.center = (350, 300)
         self._score = 0
         self._vel = SQUID_VEL
         self._lv = 1
