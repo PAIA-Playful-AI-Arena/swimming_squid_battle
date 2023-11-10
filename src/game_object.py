@@ -1,14 +1,16 @@
 import math
+
+
 from typing import List
 
 import pydantic
 import pygame.sprite
 
-from .env import BALL_COLOR, BALL_VEL, BALL_H, BALL_W, BALL_GROWTH_SCORE_STEP, BALL_GROWTH_SIZE_STEP, \
+from .env import  BALL_VEL, BALL_H, BALL_W, BALL_GROWTH_SCORE_STEP, BALL_GROWTH_SIZE_STEP, \
     BALL_SIZE_MAX, BALL_GROWTH_VEL_STEP, BALL_VEL_MAX, BALL_SIZE_MIN, BALL_VEL_MIN
 from .foods import Food
 from .sound_controller import SoundController
-from mlgame.view.view_model import create_rect_view_data
+from mlgame.view.view_model import create_rect_view_data, create_image_view_data
 
 
 class LevelParams(pydantic.BaseModel):
@@ -29,18 +31,19 @@ class LevelParams(pydantic.BaseModel):
     garbage_3: int = 0
 
 
-class Ball(pygame.sprite.Sprite):
+class Squid(pygame.sprite.Sprite):
+    ANGLE_TO_RIGHT = math.radians(-10)
+    ANGLE_TO_LEFT = math.radians(10)
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.origin_image = pygame.Surface([BALL_W, BALL_H])
         self.image = self.origin_image
-        self.color = BALL_COLOR
         self.rect = self.image.get_rect()
         self.rect.center = (400, 300)
         self._score = 0
         self._vel = BALL_VEL
         self._lv = 1
-
+        self.angle =0
     def update(self, motion):
         # for motion in motions:
         if motion == "UP":
@@ -49,11 +52,12 @@ class Ball(pygame.sprite.Sprite):
             self.rect.centery += self._vel
         elif motion == "LEFT":
             self.rect.centerx -= self._vel
-            # self.angle += 5
+            self.angle = self.ANGLE_TO_LEFT
         elif motion == "RIGHT":
             self.rect.centerx += self._vel
-            # self.angle -= 5
-
+            self.angle = self.ANGLE_TO_RIGHT
+        else:
+            self.angle = 0
         # self.image = pygame.transform.rotate(self.origin_image, self.angle)
         # print(self.angle)
         # center = self.rect.center
@@ -62,13 +66,15 @@ class Ball(pygame.sprite.Sprite):
 
     @property
     def game_object_data(self):
-        return create_rect_view_data(
-            "ball",
+
+        return create_image_view_data(
+            "squid",
             self.rect.x,
             self.rect.y,
             self.rect.width,
             self.rect.height,
-            self.color
+            self.angle
+
         )
 
     def eat_food_and_change_level_and_play_sound(self, food: Food, sound_controller: SoundController):

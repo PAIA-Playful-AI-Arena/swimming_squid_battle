@@ -11,11 +11,11 @@ from mlgame.view.decorator import check_game_progress, check_game_result
 from mlgame.view.view_model import *
 from .env import *
 from .foods import *
-from .game_object import Ball, LevelParams
+from .game_object import Squid, LevelParams
 from .sound_controller import SoundController
 
 
-def revise_ball(ball: Ball, playground: pygame.Rect):
+def revise_ball(ball: Squid, playground: pygame.Rect):
     ball_rect = copy.deepcopy(ball.rect)
     if ball_rect.left < playground.left:
         ball_rect.left = playground.left
@@ -79,7 +79,7 @@ class EasyGame(PaiaGame):
             self.playground.center = (WIDTH / 2, HEIGHT / 2)
 
             # init game
-            self.ball = Ball()
+            self.ball = Squid()
             self.foods.empty()
 
             if not isinstance(self._good_food_count, list) or len(self._good_food_count) < 3:
@@ -217,15 +217,18 @@ class EasyGame(PaiaGame):
         #     "background", WIDTH, HEIGHT, bg_path,
         #     github_raw_url="https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/easy_game/main/asset/img/background.jpg")
         bg_path = path.join(ASSET_IMAGE_DIR, "background.png")
+        squid_path =  path.join(ASSET_IMAGE_DIR, "squid.png")
         food01_path = path.join(ASSET_IMAGE_DIR, "food_01.png")
+
         # TODO
         food01_url = food01_path
         bg_url = bg_path
-
+        squid_url = squid_path
         scene_init_data = {
             "scene": self.scene.__dict__,
             "assets": [
                 create_asset_init_data("bg", 1000, 1000, bg_path, bg_url),
+                create_asset_init_data("squid", BALL_W, BALL_H, squid_path, squid_url),
                 create_asset_init_data("food01", 20, 20, food01_path, food01_url)
             ],
             "background": [
