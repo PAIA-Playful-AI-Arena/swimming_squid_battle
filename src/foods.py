@@ -3,8 +3,8 @@ import random
 import pygame.sprite
 from pygame import Rect
 
-from .env import FoodTypeEnum, FOOD_COLOR_MAP, FOOD_LV1_SIZE, FOOD_LV2_SIZE, FOOD_LV3_SIZE
-from mlgame.view.view_model import create_rect_view_data, create_image_view_data
+from mlgame.view.view_model import create_image_view_data
+from .env import FoodTypeEnum, FOOD_LV1_SIZE, FOOD_LV2_SIZE, FOOD_LV3_SIZE
 
 FOOD1_VEL = 1
 FOOD2_VEL = 2
@@ -47,7 +47,7 @@ class Food(pygame.sprite.Sprite):
 
 class Food1(Food):
     def __init__(self, group):
-        super().__init__(group,FoodTypeEnum.FOOD_1,"food01",[FOOD_LV1_SIZE, FOOD_LV1_SIZE],
+        super().__init__(group, FoodTypeEnum.FOOD_1, "food01", [FOOD_LV1_SIZE, FOOD_LV1_SIZE],
                          1)
         self._vel = FOOD1_VEL
 
@@ -68,7 +68,6 @@ class Food2(Food):
     def __init__(self, group):
         super().__init__(group, FoodTypeEnum.FOOD_2, "food02", [FOOD_LV2_SIZE, FOOD_LV2_SIZE], 2)
         self._vel = FOOD2_VEL
-
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
 
@@ -105,26 +104,54 @@ class Garbage1(Food):
     def __init__(self, group):
         super().__init__(group, FoodTypeEnum.BAD_1, "garbage01",
                          [FOOD_LV1_SIZE, FOOD_LV1_SIZE], -1)
-        # self._vel = FOOD1_VEL
+        self._vel = FOOD1_VEL
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
+        self.rect_float_x += random.choice([-0.3, -0.5, -0.7, 0, 0.3, 0.5, 0.7])
+        self.rect_float_y += self._vel
+        self.rect.centerx = self.rect_float_x
+        self.rect.centery = self.rect_float_y
+
+        if self.rect.top > playground.bottom:
+            self.rect.y = playground.top
+            self.rect_float_y = self.rect.centery
 
         pass
+
+
 class Garbage2(Food):
     def __init__(self, group):
         super().__init__(group, FoodTypeEnum.BAD_2, "garbage02",
                          [FOOD_LV2_SIZE, FOOD_LV2_SIZE], -1)
-        # self._vel = FOOD1_VEL
+        self._vel = FOOD2_VEL
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
+        self.rect_float_x += random.choice([-0.5, -0.7, -1, -1.3, 0, 1, 1.3, 0.3, 0.5, 0.7])
+        self.rect_float_y += self._vel
+        self.rect.centerx = self.rect_float_x
+        self.rect.centery = self.rect_float_y
+
+        if self.rect.top > playground.bottom:
+            self.rect.y = playground.top
+            self.rect_float_y = self.rect.centery
 
         pass
+
+
 class Garbage3(Food):
     def __init__(self, group):
         super().__init__(group, FoodTypeEnum.BAD_3, "garbage03",
                          [FOOD_LV3_SIZE, FOOD_LV3_SIZE], -1)
-        # self._vel = FOOD1_VEL
+        self._vel = FOOD1_VEL
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
+        self.rect_float_x += random.choice([-0.7, -1, -1.3, -1.7, 0, 1.7, 1, 1.3, 0.3, 0.7])
+        self.rect_float_y += self._vel
+        self.rect.centerx = self.rect_float_x
+        self.rect.centery = self.rect_float_y
+
+        if self.rect.top > playground.bottom:
+            self.rect.y = playground.top
+            self.rect_float_y = self.rect.centery
 
         pass
