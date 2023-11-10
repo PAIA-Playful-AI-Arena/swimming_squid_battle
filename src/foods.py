@@ -12,16 +12,18 @@ FOOD3_VEL = 4
 
 
 class Food(pygame.sprite.Sprite):
-    def __init__(self, group):
+    def __init__(self, group, type: FoodTypeEnum, image_id: str, image_size=None, score: int = 1):
         pygame.sprite.Sprite.__init__(self, group)
-        self.image = pygame.Surface([8, 8])
-        self.type = None
-        self.score = 0
+        if image_size is None:
+            image_size = [FOOD_LV1_SIZE, FOOD_LV1_SIZE]
+        self.image = pygame.Surface(image_size)
+        self.type = type
+        self.score = score
         self.rect = self.image.get_rect()
         self.angle = 0
         self.rect_float_x = 0
         self.rect_float_y = 0
-        self.image_id = ""
+        self.image_id = image_id
 
     def update(self, *args, **kwargs) -> None:
         pass
@@ -45,13 +47,8 @@ class Food(pygame.sprite.Sprite):
 
 class Food1(Food):
     def __init__(self, group):
-        super().__init__(group)
-        self.image = pygame.Surface([FOOD_LV1_SIZE, FOOD_LV1_SIZE])
-        self.type = FoodTypeEnum.FOOD_1
-        self.color = FOOD_COLOR_MAP[self.type]
-        self.score = 1
-        self.rect = self.image.get_rect()
-        self.image_id="food01"
+        super().__init__(group,FoodTypeEnum.FOOD_1,"food01",[FOOD_LV1_SIZE, FOOD_LV1_SIZE],
+                         1)
         self._vel = FOOD1_VEL
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
@@ -67,18 +64,11 @@ class Food1(Food):
             self._vel = - FOOD1_VEL
 
 
-
-
 class Food2(Food):
     def __init__(self, group):
-        super().__init__(group)
-
-        self.image = pygame.Surface([FOOD_LV2_SIZE, FOOD_LV2_SIZE])
-        self.type = FoodTypeEnum.FOOD_1
-        self.score = 2
-        self.rect = self.image.get_rect()
-        self.image_id="food02"
+        super().__init__(group, FoodTypeEnum.FOOD_2, "food02", [FOOD_LV2_SIZE, FOOD_LV2_SIZE], 2)
         self._vel = FOOD2_VEL
+
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
 
@@ -93,19 +83,10 @@ class Food2(Food):
             self._vel = - FOOD2_VEL
 
 
-
-
 class Food3(Food):
     def __init__(self, group):
-        super().__init__(group)
-
-        self.image = pygame.Surface([FOOD_LV3_SIZE, FOOD_LV3_SIZE])
-        self.type = FoodTypeEnum.FOOD_3
-        self.score = 4
-        self.rect = self.image.get_rect()
-        self.image_id="food03"
+        super().__init__(group, FoodTypeEnum.FOOD_3, "food03", [FOOD_LV3_SIZE, FOOD_LV3_SIZE], 4)
         self._vel = FOOD3_VEL
-
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
 
