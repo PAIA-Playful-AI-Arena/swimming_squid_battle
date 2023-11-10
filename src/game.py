@@ -136,7 +136,11 @@ class EasyGame(PaiaGame):
         to_players_data = {}
         foods_data = []
         for food in self.foods:
-            foods_data.append({"x": food.rect.centerx, "y": food.rect.centery, "type": food.type, "score": food.score})
+            foods_data.append(
+                {"x": food.rect.centerx, "y": food.rect.centery,
+                 "w":food.rect.width,"h":food.rect.height,
+                 "type": str(food.type), "score": food.score}
+            )
 
         data_to_1p = {
             "frame": self.frame_count,
