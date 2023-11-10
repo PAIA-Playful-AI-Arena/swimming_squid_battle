@@ -3,44 +3,41 @@ from os import path
 
 from mlgame.utils.enum import StringEnum
 # game
-WIDTH = 800
+WIDTH = 900
 HEIGHT = 600
-BG_COLOR = "#111111"
+BG_COLOR = "#2B2B49"
 PG_COLOR = "#B3E5FC"
 
-# ball
-BALL_COLOR = "#FFEB3B"
-BALL_VEL = 10
-BALL_H = 30
-BALL_W = 30
-BALL_GROWTH_SCORE_STEP = 15
-BALL_GROWTH_SIZE_STEP=10
-BALL_GROWTH_VEL_STEP=3
-BALL_SIZE_MAX = 100
-BALL_SIZE_MIN = 10
-BALL_VEL_MAX = 25
-BALL_VEL_MIN = 10
+# ball -> squid
+# BALL_COLOR = "#FFEB3B"
+SQUID_W = 40
+SQUID_H = 60
+LEVEL_THRESHOLDS = [10, 30, 60, 100, 150,200]
+LEVEL_PROPERTIES = {
+    1: {'size_ratio': 1.0, 'vel': 10},
+    2: {'size_ratio': 1.2, 'vel': 12},
+    3: {'size_ratio': 1.4, 'vel': 15},
+    4: {'size_ratio': 1.6, 'vel': 18},
+    5: {'size_ratio': 1.8, 'vel': 21},
+    6: {'size_ratio': 2.0, 'vel': 25},
+}
 
+
+
+ASSET_IMAGE_DIR = path.join(path.dirname(__file__), "../asset/img")
 # food
 class FoodTypeEnum(StringEnum):
-    GOOD_1 = auto()
-    GOOD_2 = auto()
-    GOOD_3 = auto()
-    BAD_1 = auto()
-    BAD_2 = auto()
-    BAD_3 = auto()
+    FOOD_1 = auto()
+    FOOD_2 = auto()
+    FOOD_3 = auto()
+    GARBAGE_1 = auto()
+    GARBAGE_2 = auto()
+    GARBAGE_3 = auto()
 
-FOOD_COLOR_MAP = {
-    FoodTypeEnum.GOOD_1: "#009688",
-    FoodTypeEnum.GOOD_2: "#009688",
-    FoodTypeEnum.GOOD_3: "#009688",
-    FoodTypeEnum.BAD_1: "#FF1744",
-    FoodTypeEnum.BAD_2: "#FF1744",
-    FoodTypeEnum.BAD_3: "#FF1744"
-}
-FOOD_LV1_SIZE = 8
-FOOD_LV2_SIZE = 12
-FOOD_LV3_SIZE = 16
+
+FOOD_LV1_SIZE = 30
+FOOD_LV2_SIZE = 40
+FOOD_LV3_SIZE = 50
 
 # path of assets
 ASSET_PATH = path.join(path.dirname(__file__), "..", "asset")
@@ -48,4 +45,43 @@ LEVEL_PATH = path.join(path.dirname(__file__), "..", "levels")
 SOUND_PATH = path.join(path.dirname(__file__), "..", "asset", "sounds")
 MUSIC_PATH = path.join(path.dirname(__file__), "..", "asset", "music")
 
+BG_PATH = path.join(ASSET_IMAGE_DIR, "background.png")
+SQUID_PATH = path.join(ASSET_IMAGE_DIR, "squid.png")
 
+IMG_ID_FOOD01_L = "food_01_L"
+IMG_ID_FOOD02_L = "food_02_L"
+IMG_ID_FOOD03_L = "food_03_L"
+IMG_ID_FOOD01_R = "food_01_R"
+IMG_ID_FOOD02_R = "food_02_R"
+IMG_ID_FOOD03_R = "food_03_R"
+
+FOOD01_L_PATH = path.join(ASSET_IMAGE_DIR, "food_01_L.png")
+FOOD02_L_PATH = path.join(ASSET_IMAGE_DIR, "food_02_L.png")
+FOOD03_L_PATH = path.join(ASSET_IMAGE_DIR, "food_03_L.png")
+FOOD01_R_PATH = path.join(ASSET_IMAGE_DIR, "food_01_R.png")
+FOOD02_R_PATH = path.join(ASSET_IMAGE_DIR, "food_02_R.png")
+FOOD03_R_PATH = path.join(ASSET_IMAGE_DIR, "food_03_R.png")
+
+GARBAGE01_PATH = path.join(ASSET_IMAGE_DIR, "garbage_01.png")
+GARBAGE02_PATH = path.join(ASSET_IMAGE_DIR, "garbage_02.png")
+GARBAGE03_PATH = path.join(ASSET_IMAGE_DIR, "garbage_03.png")
+
+
+ASSET_IMG_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/easy_game/main/asset/img/"
+BG_URL =  ASSET_IMG_URL + "background.png"
+SQUID_URL =  ASSET_IMG_URL + "squid.png"
+# Food URLs
+FOOD01_L_URL = ASSET_IMG_URL + "food_01_L.png"
+FOOD02_L_URL = ASSET_IMG_URL + "food_02_L.png"  # Assuming the naming pattern is similar
+FOOD03_L_URL = ASSET_IMG_URL + "food_03_L.png"
+FOOD01_R_URL = ASSET_IMG_URL + "food_01_R.png"
+FOOD02_R_URL = ASSET_IMG_URL + "food_02_R.png"
+FOOD03_R_URL = ASSET_IMG_URL + "food_03_R.png"
+
+# Garbage URLs
+GARBAGE01_URL = ASSET_IMG_URL + "garbage_01.png"
+GARBAGE02_URL = ASSET_IMG_URL + "garbage_02.png"
+GARBAGE03_URL = ASSET_IMG_URL + "garbage_03.png"
+# BAR_URL = "https://raw.githubusercontent.com/PAIA/dont_touch/master/asset/image/bar.png"
+
+# https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/easy_game/main/asset/img/background.jpg
