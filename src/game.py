@@ -6,7 +6,6 @@ import pygame
 
 from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
-from mlgame.utils.prof import timeit_in_perf
 from mlgame.view.decorator import check_game_progress, check_game_result
 from mlgame.view.view_model import *
 from .env import *

@@ -66,17 +66,22 @@ GARBAGE01_PATH = path.join(ASSET_IMAGE_DIR, "garbage_01.png")
 GARBAGE02_PATH = path.join(ASSET_IMAGE_DIR, "garbage_02.png")
 GARBAGE03_PATH = path.join(ASSET_IMAGE_DIR, "garbage_03.png")
 
-# TODO check url
-BG_URL = BG_PATH
-SQUID_URL = SQUID_PATH
-FOOD01_L_URL = FOOD01_L_PATH
-FOOD02_L_URL = FOOD02_L_PATH
-FOOD03_L_URL = FOOD03_L_PATH
-FOOD01_R_URL = FOOD01_R_PATH
-FOOD02_R_URL = FOOD02_R_PATH
-FOOD03_R_URL = FOOD03_R_PATH
-GARBAGE01_URL = GARBAGE01_PATH
-GARBAGE02_URL = GARBAGE02_PATH
-GARBAGE03_URL = GARBAGE03_PATH
+
+ASSET_IMG_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/easy_game/main/asset/img/"
+BG_URL =  ASSET_IMG_URL + "background.png"
+SQUID_URL =  ASSET_IMG_URL + "squid.png"
+# Food URLs
+FOOD01_L_URL = ASSET_IMG_URL + "food_01_L.png"
+FOOD02_L_URL = ASSET_IMG_URL + "food_02_L.png"  # Assuming the naming pattern is similar
+FOOD03_L_URL = ASSET_IMG_URL + "food_03_L.png"
+FOOD01_R_URL = ASSET_IMG_URL + "food_01_R.png"
+FOOD02_R_URL = ASSET_IMG_URL + "food_02_R.png"
+FOOD03_R_URL = ASSET_IMG_URL + "food_03_R.png"
+
+# Garbage URLs
+GARBAGE01_URL = ASSET_IMG_URL + "garbage_01.png"
+GARBAGE02_URL = ASSET_IMG_URL + "garbage_02.png"
+GARBAGE03_URL = ASSET_IMG_URL + "garbage_03.png"
 # BAR_URL = "https://raw.githubusercontent.com/PAIA/dont_touch/master/asset/image/bar.png"
 
+# https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/easy_game/main/asset/img/background.jpg
