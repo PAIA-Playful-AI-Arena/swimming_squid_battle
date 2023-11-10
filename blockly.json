@@ -9,8 +9,8 @@
     "SCENE_INFO": [
         ["scene_info['frame']", "# frame", "# 幀數"],
         ["scene_info['status']", "game status", "遊戲狀態"],
-        ["scene_info['player_x']", "x coordinate of player", "玩家角色的 x 座標"],
-        ["scene_info['player_y']", "y coordinate of player", "玩家角色的 y 座標"],
+        ["scene_info['player_x']", "x coordinate of player", "玩家角色的中心 x 座標"],
+        ["scene_info['player_y']", "y coordinate of player", "玩家角色的中心 y 座標"],
         ["scene_info['player_size']", "y coordinate of player", "玩家角色的大小"],
         ["scene_info['player_vel']", "velocity of player", "玩家角色的速度"],
         ["scene_info['score']", "score", "目前的分數"],

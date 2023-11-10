@@ -51,7 +51,6 @@ class EasyGame(PaiaGame):
 
         self._init_game()
 
-    @timeit_in_perf
     def _init_game_by_file(self, level_file_path: str):
         try:
             with open(level_file_path) as f:
@@ -62,7 +61,7 @@ class EasyGame(PaiaGame):
             print("此關卡檔案不存在，遊戲將會會自動使用第一關檔案 001.json。")
             print("This level file is not existed , game will load 001.json automatically.")
             with open(os.path.join(LEVEL_PATH, "001.json")) as f:
-                game_params = json.load(f)
+                game_params = LevelParams(**json.load(f))
                 self._level = 1
                 self._level_file = ""
         finally:
@@ -212,9 +211,12 @@ class EasyGame(PaiaGame):
             "assets": [
                 create_asset_init_data("bg", 1000, 1000, BG_PATH, BG_URL),
                 create_asset_init_data("squid", SQUID_W, SQUID_H, SQUID_PATH, SQUID_URL),
-                create_asset_init_data("food01", FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_PATH, FOOD01_URL),
-                create_asset_init_data("food02", FOOD_LV2_SIZE,FOOD_LV2_SIZE, FOOD02_PATH, FOOD02_URL),
-                create_asset_init_data("food03", FOOD_LV3_SIZE,FOOD_LV3_SIZE, FOOD03_PATH, FOOD03_URL),
+                create_asset_init_data(IMG_ID_FOOD01_L, FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_L_PATH, FOOD01_L_URL),
+                create_asset_init_data(IMG_ID_FOOD02_L, FOOD_LV2_SIZE, FOOD_LV2_SIZE, FOOD02_L_PATH, FOOD02_L_URL),
+                create_asset_init_data(IMG_ID_FOOD03_L, FOOD_LV3_SIZE, FOOD_LV3_SIZE, FOOD03_L_PATH, FOOD03_L_URL),
+                create_asset_init_data(IMG_ID_FOOD01_R, FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_R_PATH, FOOD01_R_URL),
+                create_asset_init_data(IMG_ID_FOOD02_R, FOOD_LV2_SIZE, FOOD_LV2_SIZE, FOOD02_R_PATH, FOOD02_R_URL),
+                create_asset_init_data(IMG_ID_FOOD03_R, FOOD_LV3_SIZE, FOOD_LV3_SIZE, FOOD03_R_PATH, FOOD03_R_URL),
                 create_asset_init_data("garbage01", FOOD_LV1_SIZE,FOOD_LV1_SIZE, GARBAGE01_PATH, GARBAGE01_URL),
                 create_asset_init_data("garbage02", FOOD_LV2_SIZE,FOOD_LV2_SIZE, GARBAGE02_PATH, GARBAGE02_URL),
                 create_asset_init_data("garbage03", FOOD_LV3_SIZE,FOOD_LV3_SIZE, GARBAGE03_PATH, GARBAGE03_URL),

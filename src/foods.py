@@ -4,7 +4,7 @@ import pygame.sprite
 from pygame import Rect
 
 from mlgame.view.view_model import create_image_view_data
-from .env import FoodTypeEnum, FOOD_LV1_SIZE, FOOD_LV2_SIZE, FOOD_LV3_SIZE
+from .env import *
 
 FOOD1_VEL = 1
 FOOD2_VEL = 2
@@ -47,9 +47,13 @@ class Food(pygame.sprite.Sprite):
 
 class Food1(Food):
     def __init__(self, group):
-        super().__init__(group, FoodTypeEnum.FOOD_1, "food01", [FOOD_LV1_SIZE, FOOD_LV1_SIZE],
+        super().__init__(group, FoodTypeEnum.FOOD_1, "food01-L", [FOOD_LV1_SIZE, FOOD_LV1_SIZE],
                          1)
-        self._vel = FOOD1_VEL
+        self._vel = FOOD1_VEL * random.choice([-1,1])
+        if self._vel >0:
+            self.image_id=IMG_ID_FOOD01_R
+        elif self._vel <0:
+            self.image_id=IMG_ID_FOOD01_L
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
 
@@ -60,13 +64,16 @@ class Food1(Food):
 
         if self.rect.left < playground.left and self._vel < 0.0:
             self._vel = FOOD1_VEL
+            self.image_id = IMG_ID_FOOD01_R
         elif self.rect.right > playground.right and self._vel > 0.0:
             self._vel = - FOOD1_VEL
+            self.image_id = IMG_ID_FOOD01_L
+
 
 
 class Food2(Food):
     def __init__(self, group):
-        super().__init__(group, FoodTypeEnum.FOOD_2, "food02", [FOOD_LV2_SIZE, FOOD_LV2_SIZE], 2)
+        super().__init__(group, FoodTypeEnum.FOOD_2, "food02-L", [FOOD_LV2_SIZE, FOOD_LV2_SIZE], 2)
         self._vel = FOOD2_VEL
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
@@ -84,7 +91,7 @@ class Food2(Food):
 
 class Food3(Food):
     def __init__(self, group):
-        super().__init__(group, FoodTypeEnum.FOOD_3, "food03", [FOOD_LV3_SIZE, FOOD_LV3_SIZE], 4)
+        super().__init__(group, FoodTypeEnum.FOOD_3, "food03-L", [FOOD_LV3_SIZE, FOOD_LV3_SIZE], 4)
         self._vel = FOOD3_VEL
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
