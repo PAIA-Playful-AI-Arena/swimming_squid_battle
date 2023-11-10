@@ -5,8 +5,7 @@ from typing import List
 import pydantic
 import pygame.sprite
 
-from .env import SQUID_VEL, SQUID_H, SQUID_W, SQUID_GROWTH_SCORE_STEP, SQUID_GROWTH_SIZE_STEP, \
-    SQUID_SIZE_W_MAX, SQUID_GROWTH_VEL_STEP, SQUID_VEL_MAX, SQUID_SIZE_W_MIN, SQUID_VEL_MIN
+from .env import *
 from .foods import Food
 from .sound_controller import SoundController
 from mlgame.view.view_model import create_rect_view_data, create_image_view_data
@@ -29,15 +28,6 @@ class LevelParams(pydantic.BaseModel):
 
 
 # level_thresholds = [10, 15, 20, 25, 30]
-LEVEL_THRESHOLDS = [10, 30, 60, 100, 150]
-LEVEL_PROPERTIES = {
-    1: {'size_ratio': 1.0, 'vel': 10},
-    2: {'size_ratio': 1.2, 'vel': 12},
-    3: {'size_ratio': 1.4, 'vel': 15},
-    4: {'size_ratio': 1.6, 'vel': 18},
-    5: {'size_ratio': 1.8, 'vel': 21},
-    6: {'size_ratio': 2.0, 'vel': 25},
-}
 
 
 class Squid(pygame.sprite.Sprite):
@@ -51,7 +41,7 @@ class Squid(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (350, 300)
         self._score = 0
-        self._vel = SQUID_VEL
+        self._vel = LEVEL_PROPERTIES[1]['vel']
         self._lv = 1
         self.angle = 0
 
@@ -91,16 +81,16 @@ class Squid(pygame.sprite.Sprite):
     def eat_food_and_change_level_and_play_sound(self, food: Food, sound_controller: SoundController):
         self._score += food.score
         new_lv = get_current_level(self._score)
-        self.rect.width = SQUID_W * LEVEL_PROPERTIES[new_lv]['size_ratio']
-        self.rect.height = SQUID_H * LEVEL_PROPERTIES[new_lv]['size_ratio']
 
-        self._vel = LEVEL_PROPERTIES[new_lv]['vel']
         if new_lv > self._lv:
             sound_controller.play_lv_up()
         elif new_lv < self._lv:
             sound_controller.play_lv_down()
-        self._lv = new_lv
-        pass
+        if new_lv != self._lv:
+            self.rect.width = SQUID_W * LEVEL_PROPERTIES[new_lv]['size_ratio']
+            self.rect.height = SQUID_H * LEVEL_PROPERTIES[new_lv]['size_ratio']
+            self._vel = LEVEL_PROPERTIES[new_lv]['vel']
+            self._lv = new_lv
 
     @property
     def score(self):

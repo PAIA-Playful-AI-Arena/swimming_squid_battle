@@ -10,16 +10,19 @@ PG_COLOR = "#B3E5FC"
 
 # ball -> squid
 # BALL_COLOR = "#FFEB3B"
-SQUID_VEL = 10
 SQUID_W = 40
 SQUID_H = 60
-SQUID_GROWTH_SCORE_STEP = 10
-SQUID_GROWTH_SIZE_STEP=10
-SQUID_GROWTH_VEL_STEP=3
-SQUID_SIZE_W_MAX = 125
-SQUID_SIZE_W_MIN = 20
-SQUID_VEL_MAX = 25
-SQUID_VEL_MIN = 10
+LEVEL_THRESHOLDS = [10, 30, 60, 100, 150]
+LEVEL_PROPERTIES = {
+    1: {'size_ratio': 1.0, 'vel': 10},
+    2: {'size_ratio': 1.2, 'vel': 12},
+    3: {'size_ratio': 1.4, 'vel': 15},
+    4: {'size_ratio': 1.6, 'vel': 18},
+    5: {'size_ratio': 1.8, 'vel': 21},
+    6: {'size_ratio': 2.0, 'vel': 25},
+}
+
+
 
 ASSET_IMAGE_DIR = path.join(path.dirname(__file__), "../asset/img")
 # food
