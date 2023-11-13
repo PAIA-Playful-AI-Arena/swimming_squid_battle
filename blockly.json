@@ -16,7 +16,7 @@
         ["scene_info['squid_lv']", "level of squid", "玩家角色的等級"],
         ["scene_info['squid_vel']", "velocity of squid", "玩家角色的速度"],
         ["scene_info['score']", "score", "目前的分數"],
-        ["scene_info['foods']", "list of foods positions", "點點的位置清單"],
+        ["scene_info['foods']", "list of foods positions", "所有食物的位置清單"],
         ["scene_info['score_to_pass']", "the score for next level", "通關分數"],
         ["scene_info", "dictionary of all information", "包含所有資訊的字典"]
     ],
