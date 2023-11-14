@@ -1,6 +1,6 @@
-# **Easy Game**
+# **Swimming Squid** 魷來魷去
 
-![easy_game](https://img.shields.io/github/v/tag/PAIA-Playful-AI-Arena/easy_game)
+![swimming-squid](https://img.shields.io/github/v/tag/PAIA-Playful-AI-Arena/swimming-squid)
 [![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![MLGame](https://img.shields.io/badge/MLGame->10.3.2-<COLOR>.svg)](https://github.com/PAIA-Playful-AI-Arena/MLGame)
 [![pygame](https://img.shields.io/badge/pygame-2.0.1-<COLOR>.svg)](https://github.com/pygame/pygame/releases/tag/2.0.1)
@@ -8,7 +8,7 @@
 
 這是一個吃東西小遊戲，也是 PAIA 的遊戲教學範例
 
-![demo](https://github.com/PAIA-Playful-AI-Arena/easy_game/blob/main/asset/easy_game.gif?raw=true)
+![demo](https://github.com/PAIA-Playful-AI-Arena/swimming-squid/blob/main/asset/swimming-squid.gif?raw=true)
 
 ---
 # 基礎介紹
@@ -21,7 +21,7 @@
 
 ```python
 # main.py 
-game = EasyGame(
+game = SwimmingSquid(
             level: int = 1,
             level_file: str = None,
             sound: str = "off")
