@@ -29,7 +29,7 @@ def revise_ball(ball: Squid, playground: pygame.Rect):
     pass
 
 
-class EasyGame(PaiaGame):
+class SwimmingSquid(PaiaGame):
     """
     This is a Interface of a game
     """

@@ -4,12 +4,12 @@ import sys
 sys.path.append(r"../..")
 from mlgame.view.view import PygameView
 from mlgame.game.generic import quit_or_esc
-from src.game import EasyGame
+from src.game import SwimmingSquid
 
 FPS = 30
 if __name__ == '__main__':
     pygame.init()
-    game = EasyGame(level=1)
+    game = SwimmingSquid(level=1)
     scene_init_info_dict = game.get_scene_init_data()
     game_view = PygameView(scene_init_info_dict)
     frame_count = 0
