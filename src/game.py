@@ -8,7 +8,6 @@ from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
 from mlgame.view.decorator import check_game_progress, check_game_result
 from mlgame.view.view_model import *
-from .env import *
 from .foods import *
 from .game_object import Squid, LevelParams
 from .sound_controller import SoundController
@@ -73,7 +72,7 @@ class SwimmingSquid(PaiaGame):
 
             self._score_to_pass = game_params.score_to_pass
             self._frame_limit = game_params.time_to_play
-            self.playground.center = ((WIDTH-200) / 2, HEIGHT / 2)
+            self.playground.center = ((WIDTH - WIDTH_OF_INFO) / 2, HEIGHT / 2)
 
             # init game
             self.squid = Squid()
@@ -137,7 +136,7 @@ class SwimmingSquid(PaiaGame):
         for food in self.foods:
             foods_data.append(
                 {"x": food.rect.centerx, "y": food.rect.centery,
-                 "w":food.rect.width,"h":food.rect.height,
+                 "w": food.rect.width, "h": food.rect.height,
                  "type": str(food.type), "score": food.score}
             )
 
@@ -193,11 +192,12 @@ class SwimmingSquid(PaiaGame):
 
     @property
     def is_passed(self):
-        return self.squid.score > self._score_to_pass
+        return self.squid.score >= self._score_to_pass
 
     @property
     def is_running(self):
-        return self.frame_count < self._frame_limit
+        # return self.frame_count < self._frame_limit
+        return (self.frame_count < self._frame_limit) and (not self.is_passed)
 
     def get_scene_init_data(self):
         """
@@ -219,9 +219,9 @@ class SwimmingSquid(PaiaGame):
                 create_asset_init_data(IMG_ID_FOOD01_R, FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_R_PATH, FOOD01_R_URL),
                 create_asset_init_data(IMG_ID_FOOD02_R, FOOD_LV2_SIZE, FOOD_LV2_SIZE, FOOD02_R_PATH, FOOD02_R_URL),
                 create_asset_init_data(IMG_ID_FOOD03_R, FOOD_LV3_SIZE, FOOD_LV3_SIZE, FOOD03_R_PATH, FOOD03_R_URL),
-                create_asset_init_data("garbage01", FOOD_LV1_SIZE,FOOD_LV1_SIZE, GARBAGE01_PATH, GARBAGE01_URL),
-                create_asset_init_data("garbage02", FOOD_LV2_SIZE,FOOD_LV2_SIZE, GARBAGE02_PATH, GARBAGE02_URL),
-                create_asset_init_data("garbage03", FOOD_LV3_SIZE,FOOD_LV3_SIZE, GARBAGE03_PATH, GARBAGE03_URL),
+                create_asset_init_data("garbage01", FOOD_LV1_SIZE, FOOD_LV1_SIZE, GARBAGE01_PATH, GARBAGE01_URL),
+                create_asset_init_data("garbage02", FOOD_LV2_SIZE, FOOD_LV2_SIZE, GARBAGE02_PATH, GARBAGE02_URL),
+                create_asset_init_data("garbage03", FOOD_LV3_SIZE, FOOD_LV3_SIZE, GARBAGE03_PATH, GARBAGE03_URL),
             ],
             "background": [
                 # create_image_view_data(
@@ -254,18 +254,19 @@ class SwimmingSquid(PaiaGame):
         foregrounds = [
 
         ]
+        star_string = '+' * self.squid.lv
         toggle_objs = [
-            create_text_view_data(f"Lv   : {self.squid.lv:4d}", 720, 50, "#EEEEEE", "24px Arial BOLD"),
-            create_text_view_data(f"Vel  : {self.squid.vel:4d}", 720, 80, "#EEEEEE", "24px Arial BOLD"),
-            create_text_view_data(f"Score: {self.squid.score:04d}", 720, 110, "#EEEEEE", "24px Arial BOLD"),
-            create_text_view_data(f"Lv_up: {LEVEL_THRESHOLDS[self.squid.lv-1]:4d}", 720, 140, "#EEEEEE", "24px Arial BOLD"),
-            create_text_view_data(f"Time : {self._frame_count_down:04d}", 720, 200, "#EEEEEE", "24px Arial BOLD"),
-            create_text_view_data(f"ToPass: {self._score_to_pass:04d}", 720, 230, "#EEEEEE", "24px Arial BOLD"),
-
+            create_text_view_data(f"Squid Lv: {star_string}", 705, 50, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"To Lv up: {LEVEL_THRESHOLDS[self.squid.lv - 1]-self.squid.score :04d} pt", 705, 80, "#EEEEEE",                                  "20px Consolas BOLD"),
+            create_text_view_data(f"Vel     : {self.squid.vel:4d}", 705, 110, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"Timer   : {self._frame_count_down:04d}", 705, 150, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"My Score: {self.squid.score:04d} pt", 705, 180, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"Goal    : {self._score_to_pass:04d} pt", 705, 210, "#EEEEEE", "20px Consolas BOLD"),
         ]
-        scene_progress = create_scene_progress_data(frame=self.frame_count, background=backgrounds,
-                                                    object_list=game_obj_list,
-                                                    foreground=foregrounds, toggle=toggle_objs)
+        scene_progress = create_scene_progress_data(
+            frame=self.frame_count, background=backgrounds,
+            object_list=game_obj_list,
+            foreground=foregrounds, toggle=toggle_objs)
         return scene_progress
 
     @check_game_result
