@@ -49,9 +49,9 @@ class Food1(Food):
     def __init__(self, group):
         super().__init__(group, FoodTypeEnum.FOOD_1, IMG_ID_FOOD01_L, [FOOD_LV1_SIZE, FOOD_LV1_SIZE],
                          1)
-        self._vel = FOOD1_VEL * random.choice([-1,1])
+        self._vel = FOOD1_VEL * random.choice([-1, 1])
 
-        self.image_id= IMG_ID_FOOD01_R if self._vel > 0 else IMG_ID_FOOD01_L
+        self.image_id = IMG_ID_FOOD01_R if self._vel > 0 else IMG_ID_FOOD01_L
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
 
@@ -87,6 +87,7 @@ class Food2(Food):
             self._vel = -FOOD2_VEL
             self.image_id = IMG_ID_FOOD02_L
 
+
 class Food3(Food):
     def __init__(self, group):
         super().__init__(group, FoodTypeEnum.FOOD_3, IMG_ID_FOOD03_L, [FOOD_LV3_SIZE, FOOD_LV3_SIZE], 4)
@@ -105,58 +106,50 @@ class Food3(Food):
         elif self.rect.right > playground.right and self._vel > 0.0:
             self._vel = -FOOD3_VEL
             self.image_id = IMG_ID_FOOD03_L
-class Garbage1(Food):
-    def __init__(self, group):
-        super().__init__(group, FoodTypeEnum.GARBAGE_1, "garbage01",
-                         [FOOD_LV1_SIZE, FOOD_LV1_SIZE], -1)
+
+
+class Garbage(Food):
+    def __init__(self, group, type: FoodTypeEnum, image_id: str, image_size: list, score):
+        super().__init__(group, type, image_id, image_size, score)
         self._vel = FOOD1_VEL
+        self._bias_x_list = [-0.5, -0.7, -1, -1.3, 0, 1, 1.3, 0.3, 0.5, 0.7]
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
-        self.rect_float_x += random.choice([-0.3, -0.5, -0.7, 0, 0.3, 0.5, 0.7])
+        self.rect_float_x += random.choice(self._bias_x_list)
         self.rect_float_y += self._vel
         self.rect.centerx = self.rect_float_x
         self.rect.centery = self.rect_float_y
-
+        self._move_to_new_position(playground)
+    def _move_to_new_position(self, playground):
         if self.rect.top > playground.bottom:
-            self.rect.y = playground.top
+            self.rect.bottom = playground.top
             self.rect_float_y = self.rect.centery
+            self.rect_float_x = random.randint(playground.left, playground.right)
+            self.rect.centerx = self.rect_float_x
 
         pass
 
 
-class Garbage2(Food):
+class Garbage2(Garbage):
     def __init__(self, group):
         super().__init__(group, FoodTypeEnum.GARBAGE_2, "garbage02",
                          [FOOD_LV2_SIZE, FOOD_LV2_SIZE], -4)
         self._vel = FOOD2_VEL
-
-    def update(self, playground: Rect, squid: pygame.sprite.Sprite):
-        self.rect_float_x += random.choice([-0.5, -0.7, -1, -1.3, 0, 1, 1.3, 0.3, 0.5, 0.7])
-        self.rect_float_y += self._vel
-        self.rect.centerx = self.rect_float_x
-        self.rect.centery = self.rect_float_y
-
-        if self.rect.top > playground.bottom:
-            self.rect.y = playground.top
-            self.rect_float_y = self.rect.centery
-
-        pass
+        self._bias_x_list = [-0.5, -0.7, -1, -1.3, 0, 1, 1.3, 0.3, 0.5, 0.7]
 
 
-class Garbage3(Food):
+
+class Garbage1(Garbage):
+    def __init__(self, group):
+        super().__init__(group, FoodTypeEnum.GARBAGE_1, "garbage01",
+                         [FOOD_LV1_SIZE, FOOD_LV1_SIZE], -1)
+        self._vel = FOOD1_VEL
+        self._bias_x_list = [-0.3, -0.5, -0.7, 0, 0.3, 0.5, 0.7]
+
+
+class Garbage3(Garbage):
     def __init__(self, group):
         super().__init__(group, FoodTypeEnum.GARBAGE_3, "garbage03",
                          [FOOD_LV3_SIZE, FOOD_LV3_SIZE], -10)
-        self._vel = FOOD1_VEL
-
-    def update(self, playground: Rect, squid: pygame.sprite.Sprite):
-        self.rect_float_x += random.choice([-0.7, -1, -1.3, -1.7, 0, 1.7, 1, 1.3, 0.3, 0.7])
-        self.rect_float_y += self._vel
-        self.rect.centerx = self.rect_float_x
-        self.rect.centery = self.rect_float_y
-
-        if self.rect.top > playground.bottom:
-            self.rect.y = playground.top
-            self.rect_float_y = self.rect.centery
-
-        pass
+        self._vel = FOOD3_VEL
+        self._bias_x_list = [-0.7, -1, -1.3, -1.7, 0, 1.7, 1, 1.3, 0.3, 0.7]

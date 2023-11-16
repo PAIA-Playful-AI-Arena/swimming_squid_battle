@@ -1,7 +1,4 @@
 import math
-
-from typing import List
-
 import pydantic
 import pygame.sprite
 
