@@ -3,7 +3,9 @@ from os import path
 
 from mlgame.utils.enum import StringEnum
 # game
-WIDTH = 900
+WIDTH = 950
+WIDTH_OF_INFO = 250
+
 HEIGHT = 600
 BG_COLOR = "#2B2B49"
 PG_COLOR = "#B3E5FC"
