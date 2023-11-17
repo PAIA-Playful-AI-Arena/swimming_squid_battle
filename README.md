@@ -208,3 +208,17 @@ class MLPlay:
     - `passed`：是否通關
 
 ---
+
+# 參考資源
+- 音效
+    1. https://soundeffect-lab.info/sound/anime/
+- 背景音樂
+    1. https://www.motionelements.com/zh-hant/stock-music-28190007-bossa-nova-short-loop
+- 圖片
+    1. 魷魚 https://illustcenter.com/2022/07/03/rdesign_1659/
+    2. 湯匙 https://illustcenter.com/2021/11/24/rdesign_6275/
+    3. 薯條 https://illustcenter.com/2021/11/16/rdesign_5098/
+    4. 空罐 https://illustcenter.com/2021/11/19/rdesign_5772/
+    5. 魚1 https://illustcenter.com/2021/12/22/rdesign_8914/
+    6. 魚2 https://illustcenter.com/2021/10/28/rdesign_3149/
+    7. 蝦子 https://illustcenter.com/2021/10/28/rdesign_3157/
