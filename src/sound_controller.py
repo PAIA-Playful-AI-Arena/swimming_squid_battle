@@ -1,3 +1,5 @@
+import traceback
+
 import pygame
 
 from .env import *
@@ -20,7 +22,7 @@ class SoundController():
     def load_sounds(self):
         try:
             pygame.mixer.init()
-            pygame.mixer.music.load(path.join(MUSIC_PATH, "bgm.wav"))
+            pygame.mixer.music.load(path.join(MUSIC_PATH, "bgm.mp3"))
             pygame.mixer.music.set_volume(0.6)
             self._eating_good = pygame.mixer.Sound(path.join(SOUND_PATH, "eat_good_food.mp3"))
             self._eating_bad = pygame.mixer.Sound(path.join(SOUND_PATH, "eat_bad_food.mp3"))
@@ -28,8 +30,9 @@ class SoundController():
             self._fail = pygame.mixer.Sound(path.join(SOUND_PATH, "fail.mp3"))
             self._lv_up = pygame.mixer.Sound(path.join(SOUND_PATH, "lv_up.mp3"))
             self._lv_down = pygame.mixer.Sound(path.join(SOUND_PATH, "lv_down.mp3"))
-        except Exception:
+        except Exception as e :
             self._is_sound_on = False
+            traceback.print_exc()
 
     @sound_enabled
     def play_music(self):
