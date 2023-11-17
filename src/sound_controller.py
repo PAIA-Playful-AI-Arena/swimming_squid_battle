@@ -1,3 +1,5 @@
+import traceback
+
 import pygame
 
 from .env import *
@@ -28,8 +30,9 @@ class SoundController():
             self._fail = pygame.mixer.Sound(path.join(SOUND_PATH, "fail.mp3"))
             self._lv_up = pygame.mixer.Sound(path.join(SOUND_PATH, "lv_up.mp3"))
             self._lv_down = pygame.mixer.Sound(path.join(SOUND_PATH, "lv_down.mp3"))
-        except Exception:
+        except Exception as e :
             self._is_sound_on = False
+            traceback.print_exc()
 
     @sound_enabled
     def play_music(self):
