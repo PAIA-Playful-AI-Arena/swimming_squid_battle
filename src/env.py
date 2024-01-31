@@ -12,16 +12,22 @@ PG_COLOR = "#B3E5FC"
 
 # ball -> squid
 # BALL_COLOR = "#FFEB3B"
-SQUID_W = 40
-SQUID_H = 60
+SQUID_W = 30
+SQUID_H = 45
 LEVEL_THRESHOLDS = [10, 30, 60, 100, 150,200]
 LEVEL_PROPERTIES = {
-    1: {'size_ratio': 1.0, 'vel': 10},
-    2: {'size_ratio': 1.2, 'vel': 12},
-    3: {'size_ratio': 1.4, 'vel': 15},
-    4: {'size_ratio': 1.6, 'vel': 18},
-    5: {'size_ratio': 1.8, 'vel': 21},
-    6: {'size_ratio': 2.0, 'vel': 25},
+    1: {'size_ratio': 1.0, 'vel': 25},
+    2: {'size_ratio': 1.2, 'vel': 21},
+    3: {'size_ratio': 1.4, 'vel': 18},
+    4: {'size_ratio': 1.6, 'vel': 16},
+    5: {'size_ratio': 1.8, 'vel': 12},
+    6: {'size_ratio': 2.0, 'vel': 9},
+}
+
+COLLISION_SCORE = {
+    "WIN":10,
+    "LOSE":-10,
+    "DRAW":-5
 }
 
 

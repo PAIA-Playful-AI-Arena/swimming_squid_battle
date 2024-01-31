@@ -9,7 +9,7 @@ from src.game import SwimmingSquid
 FPS = 30
 if __name__ == '__main__':
     pygame.init()
-    game = SwimmingSquid(level=15)
+    game = SwimmingSquid(level=1)
     scene_init_info_dict = game.get_scene_init_data()
     game_view = PygameView(scene_init_info_dict)
     frame_count = 0

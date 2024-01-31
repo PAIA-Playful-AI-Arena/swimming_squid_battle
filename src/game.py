@@ -46,6 +46,7 @@ class SwimmingSquid(PaiaGame):
         self._level_file = level_file
         self.foods = pygame.sprite.Group()
         self.sound_controller = SoundController(sound)
+        self._collision_mode = False
 
         self._init_game()
 
@@ -69,14 +70,16 @@ class SwimmingSquid(PaiaGame):
                 game_params.playground_size_w,
                 game_params.playground_size_h
             )
+            if game_params.playground_size_h >= 500 and game_params.playground_size_w >= 500:
+                self._collision_mode = True
 
             self._score_to_pass = game_params.score_to_pass
             self._frame_limit = game_params.time_to_play
             self.playground.center = ((WIDTH - WIDTH_OF_INFO) / 2, HEIGHT / 2)
 
             # init game
-            self.squid1 = Squid(1)
-            self.squid2 = Squid(2)
+            self.squid1 = Squid(1, 200, 300)
+            self.squid2 = Squid(2, 500, 300)
             self.foods.empty()
             self._create_foods(Food1, game_params.food_1)
             self._create_foods(Food2, game_params.food_2)
@@ -115,6 +118,8 @@ class SwimmingSquid(PaiaGame):
 
         self._check_foods_collision()
         # self._timer = round(time.time() - self._begin_time, 3)
+        if self._collision_mode:
+            self._check_squids_collision()
 
         self.frame_count += 1
         self._frame_count_down = self._frame_limit - self.frame_count
@@ -147,6 +152,20 @@ class SwimmingSquid(PaiaGame):
                 elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
                     self.sound_controller.play_eating_bad()
 
+    def _check_squids_collision(self):
+        hit = pygame.sprite.collide_rect(self.squid1, self.squid2)
+        if hit:
+            if self.squid1.lv > self.squid2.lv:
+                self.squid1.collision_between_squids(COLLISION_SCORE["WIN"], self.sound_controller)
+                self.squid2.collision_between_squids(COLLISION_SCORE["LOSE"], self.sound_controller)
+            elif self.squid1.lv < self.squid2.lv:
+                self.squid1.collision_between_squids(COLLISION_SCORE["LOSE"], self.sound_controller)
+                self.squid2.collision_between_squids(COLLISION_SCORE["WIN"], self.sound_controller)
+            else:
+                # draw
+                self.squid1.collision_between_squids(COLLISION_SCORE["DRAW"], self.sound_controller)
+                self.squid2.collision_between_squids(COLLISION_SCORE["DRAW"], self.sound_controller)
+
     def get_data_from_game_to_player(self):
         """
         send something to game AI
@@ -163,14 +182,17 @@ class SwimmingSquid(PaiaGame):
 
         data_to_1p = {
             "frame": self.frame_count,
-            "squid_x": self.squid.rect.centerx,
-            "squid_y": self.squid.rect.centery,
-            "squid_w": self.squid.rect.width,
-            "squid_h": self.squid.rect.height,
-            "squid_vel": self.squid.vel,
-            "squid_lv": self.squid.lv,
+            "self_x": self.squid1.rect.centerx,
+            "self_y": self.squid1.rect.centery,
+            "self_w": self.squid1.rect.width,
+            "self_h": self.squid1.rect.height,
+            "self_vel": self.squid1.vel,
+            "self_lv": self.squid1.lv,
+            "opponent_x":self.squid2.rect.centerx,
+            "opponent_y":self.squid2.rect.centery,
+            "opponent_lv": self.squid2.lv,
             "foods": foods_data,
-            "score": self.squid.score,
+            "score": self.squid1.score,
             "score_to_pass": self._score_to_pass,
             "status": self.get_game_status()
 
@@ -178,14 +200,17 @@ class SwimmingSquid(PaiaGame):
 
         data_to_2p = {
             "frame": self.frame_count,
-            "squid_x": self.squid.rect.centerx,
-            "squid_y": self.squid.rect.centery,
-            "squid_w": self.squid.rect.width,
-            "squid_h": self.squid.rect.height,
-            "squid_vel": self.squid.vel,
-            "squid_lv": self.squid.lv,
+            "self_x": self.squid2.rect.centerx,
+            "self_y": self.squid2.rect.centery,
+            "self_w": self.squid2.rect.width,
+            "self_h": self.squid2.rect.height,
+            "self_vel": self.squid2.vel,
+            "self_lv": self.squid2.lv,
+            "opponent_x": self.squid1.rect.centerx,
+            "opponent_y": self.squid1.rect.centery,
+            "opponent_lv": self.squid1.lv,
             "foods": foods_data,
-            "score": self.squid.score,
+            "score": self.squid2.score,
             "score_to_pass": self._score_to_pass,
             "status": self.get_game_status()
 
@@ -204,6 +229,7 @@ class SwimmingSquid(PaiaGame):
         elif self.is_passed:
             status = GameStatus.GAME_PASS
         else:
+            print("GAME_OVER")
             status = GameStatus.GAME_OVER
         return status
 
@@ -229,7 +255,10 @@ class SwimmingSquid(PaiaGame):
 
     @property
     def is_passed(self):
-        return self.squid1.score >= self._score_to_pass
+        if self.squid1.score >= self._score_to_pass or self.squid2.score >= self._score_to_pass:
+            return True
+        else:
+            return False
 
     @property
     def is_running(self):
@@ -292,15 +321,24 @@ class SwimmingSquid(PaiaGame):
         foregrounds = [
 
         ]
-        star_string = '+' * self.squid1.lv
+        star_string_1P = '+' * self.squid1.lv
+        star_string_2P = '+' * self.squid2.lv
         toggle_objs = [
-            create_text_view_data(f"Squid Lv: {star_string}", 705, 50, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data(f"To Lv up: {LEVEL_THRESHOLDS[self.squid1.lv - 1]-self.squid1.score :04d} pt", 705, 80, "#EEEEEE",                                  "20px Consolas BOLD"),
-            create_text_view_data(f"Vel     : {self.squid1.vel:4d}", 705, 110, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data(f"Timer   : {self._frame_count_down:04d}", 705, 150, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data(f"My Score: {self.squid1.score:04d} pt", 705, 180, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data(f"Goal    : {self._score_to_pass:04d} pt", 705, 210, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"Timer   : {self._frame_count_down:04d}", 705, 50, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"Goal    : {self._score_to_pass:04d} pt", 705, 80, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data("1P", 705, 130, "#EEEEEE", "22px Consolas BOLD"),
+            create_text_view_data(f"Lv: {star_string_1P}", 705, 160, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"To Lv up: {LEVEL_THRESHOLDS[self.squid1.lv - 1]-self.squid1.score :04d} pt", 705, 190, "#EEEEEE",                                  "20px Consolas BOLD"),
+            create_text_view_data(f"Vel     : {self.squid1.vel:4d}", 705, 220, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"1P Score: {self.squid1.score:04d} pt", 705, 250, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data("2P", 705, 310, "#EEEEEE", "22px Consolas BOLD"),
+            create_text_view_data(f"Lv: {star_string_2P}", 705, 340, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"To Lv up: {LEVEL_THRESHOLDS[self.squid2.lv - 1] - self.squid2.score :04d} pt", 705,
+                                  370, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"Vel     : {self.squid2.vel:4d}", 705, 400, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"2P Score: {self.squid2.score:04d} pt", 705, 430, "#EEEEEE", "20px Consolas BOLD"),
         ]
+
         scene_progress = create_scene_progress_data(
             frame=self.frame_count, background=backgrounds,
             object_list=game_obj_list,
@@ -320,7 +358,13 @@ class SwimmingSquid(PaiaGame):
                     {
                         "player": get_ai_name(0),
                         "rank": 1,
-                        "score": self.squid.score,
+                        "score": self.squid1.score,
+                        "passed": self.is_passed
+                    },
+                    {
+                        "player": get_ai_name(1),
+                        "rank": 2,
+                        "score": self.squid2.score,
                         "passed": self.is_passed
                     }
                 ]
@@ -367,4 +411,10 @@ class SwimmingSquid(PaiaGame):
                 random.randint(self.playground.top, self.playground.bottom)
             )
 
+        pass
+
+    def rank(self):
+        '''
+
+        '''
         pass

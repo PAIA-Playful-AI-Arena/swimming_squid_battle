@@ -30,14 +30,14 @@ class Squid(pygame.sprite.Sprite):
     ANGLE_TO_RIGHT = math.radians(-10)
     ANGLE_TO_LEFT = math.radians(10)
 
-    def __init__(self, id):
+    def __init__(self, id, x, y):
         pygame.sprite.Sprite.__init__(self)
 
         self.id = id
         self.origin_image = pygame.Surface([SQUID_W, SQUID_H])
         self.image = self.origin_image
         self.rect = self.image.get_rect()
-        self.rect.center = (350, 300)
+        self.rect.center = (x, y)
         self._score = 0
         self._vel = LEVEL_PROPERTIES[1]['vel']
         self._lv = 1
@@ -89,6 +89,22 @@ class Squid(pygame.sprite.Sprite):
             self.rect.height = SQUID_H * LEVEL_PROPERTIES[new_lv]['size_ratio']
             self._vel = LEVEL_PROPERTIES[new_lv]['vel']
             self._lv = new_lv
+
+    def collision_between_squids(self, collision_score, sound_controller: SoundController):
+        self._score += collision_score
+
+        new_lv = get_current_level(self._score)
+
+        if new_lv > self._lv:
+            sound_controller.play_lv_up()
+        elif new_lv < self._lv:
+            sound_controller.play_lv_down()
+        if new_lv != self._lv:
+            self.rect.width = SQUID_W * LEVEL_PROPERTIES[new_lv]['size_ratio']
+            self.rect.height = SQUID_H * LEVEL_PROPERTIES[new_lv]['size_ratio']
+            self._vel = LEVEL_PROPERTIES[new_lv]['vel']
+            self._lv = new_lv
+
 
     @property
     def score(self):
