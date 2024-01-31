@@ -75,7 +75,8 @@ class SwimmingSquid(PaiaGame):
             self.playground.center = ((WIDTH - WIDTH_OF_INFO) / 2, HEIGHT / 2)
 
             # init game
-            self.squid = Squid()
+            self.squid1 = Squid(1)
+            self.squid2 = Squid(2)
             self.foods.empty()
             self._create_foods(Food1, game_params.food_1)
             self._create_foods(Food2, game_params.food_2)
@@ -92,14 +93,23 @@ class SwimmingSquid(PaiaGame):
         # handle command
         ai_1p_cmd = commands[get_ai_name(0)]
         if ai_1p_cmd is not None:
-            action = ai_1p_cmd[0]
+            action_1 = ai_1p_cmd[0]
         else:
-            action = "NONE"
+            action_1 = "NONE"
 
-        self.squid.update(action)
-        revise_ball(self.squid, self.playground)
+        ai_2p_cmd = commands[get_ai_name(1)]
+        if ai_2p_cmd is not None:
+            action_2 = ai_2p_cmd[0]
+        else:
+            action_2 = "NONE"
+
+
+        self.squid1.update(action_1)
+        self.squid2.update(action_2)
+        revise_ball(self.squid1, self.playground)
+        revise_ball(self.squid2, self.playground)
         # update sprite
-        self.foods.update(playground=self.playground, squid=self.squid)
+        self.foods.update(playground=self.playground, squid=self.squid1)
 
         # handle collision
 
@@ -114,12 +124,23 @@ class SwimmingSquid(PaiaGame):
             return "RESET"
 
     def _check_foods_collision(self):
-        hits = pygame.sprite.spritecollide(self.squid, self.foods, True)
+        hits = pygame.sprite.spritecollide(self.squid1, self.foods, True)
         if hits:
             for food in hits:
                 # self.ball.score += food.score
                 # growth play special sound
-                self.squid.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
+                self.squid1.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
+                self._create_foods(food.__class__, 1)
+                if isinstance(food, (Food1, Food2, Food3,)):
+                    self.sound_controller.play_eating_good()
+                elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
+                    self.sound_controller.play_eating_bad()
+        hits = pygame.sprite.spritecollide(self.squid2, self.foods, True)
+        if hits:
+            for food in hits:
+                # self.ball.score += food.score
+                # growth play special sound
+                self.squid2.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
                 self._create_foods(food.__class__, 1)
                 if isinstance(food, (Food1, Food2, Food3,)):
                     self.sound_controller.play_eating_good()
@@ -155,7 +176,23 @@ class SwimmingSquid(PaiaGame):
 
         }
 
+        data_to_2p = {
+            "frame": self.frame_count,
+            "squid_x": self.squid.rect.centerx,
+            "squid_y": self.squid.rect.centery,
+            "squid_w": self.squid.rect.width,
+            "squid_h": self.squid.rect.height,
+            "squid_vel": self.squid.vel,
+            "squid_lv": self.squid.lv,
+            "foods": foods_data,
+            "score": self.squid.score,
+            "score_to_pass": self._score_to_pass,
+            "status": self.get_game_status()
+
+        }
+
         to_players_data[get_ai_name(0)] = data_to_1p
+        to_players_data[get_ai_name(1)] = data_to_2p
         # should be equal to config. GAME_SETUP["ml_clients"][0]["name"]
 
         return to_players_data
@@ -192,7 +229,7 @@ class SwimmingSquid(PaiaGame):
 
     @property
     def is_passed(self):
-        return self.squid.score >= self._score_to_pass
+        return self.squid1.score >= self._score_to_pass
 
     @property
     def is_running(self):
@@ -212,7 +249,8 @@ class SwimmingSquid(PaiaGame):
             "scene": self.scene.__dict__,
             "assets": [
                 create_asset_init_data("bg", 1000, 1000, BG_PATH, BG_URL),
-                create_asset_init_data("squid", SQUID_W, SQUID_H, SQUID_PATH, SQUID_URL),
+                create_asset_init_data("squid1", SQUID_W, SQUID_H, SQUID_PATH, SQUID_URL),
+                create_asset_init_data("squid2", SQUID_W, SQUID_H, SQUID2_PATH, SQUID2_URL),
                 create_asset_init_data(IMG_ID_FOOD01_L, FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_L_PATH, FOOD01_L_URL),
                 create_asset_init_data(IMG_ID_FOOD02_L, FOOD_LV2_SIZE, FOOD_LV2_SIZE, FOOD02_L_PATH, FOOD02_L_URL),
                 create_asset_init_data(IMG_ID_FOOD03_L, FOOD_LV3_SIZE, FOOD_LV3_SIZE, FOOD03_L_PATH, FOOD03_L_URL),
@@ -240,7 +278,7 @@ class SwimmingSquid(PaiaGame):
         foods_data = []
         for food in self.foods:
             foods_data.append(food.game_object_data)
-        game_obj_list = [self.squid.game_object_data]
+        game_obj_list = [self.squid1.game_object_data, self.squid2.game_object_data]
         game_obj_list.extend(foods_data)
         backgrounds = [
             # create_image_view_data("background", 0, 0, WIDTH, HEIGHT),
@@ -254,13 +292,13 @@ class SwimmingSquid(PaiaGame):
         foregrounds = [
 
         ]
-        star_string = '+' * self.squid.lv
+        star_string = '+' * self.squid1.lv
         toggle_objs = [
             create_text_view_data(f"Squid Lv: {star_string}", 705, 50, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data(f"To Lv up: {LEVEL_THRESHOLDS[self.squid.lv - 1]-self.squid.score :04d} pt", 705, 80, "#EEEEEE",                                  "20px Consolas BOLD"),
-            create_text_view_data(f"Vel     : {self.squid.vel:4d}", 705, 110, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"To Lv up: {LEVEL_THRESHOLDS[self.squid1.lv - 1]-self.squid1.score :04d} pt", 705, 80, "#EEEEEE",                                  "20px Consolas BOLD"),
+            create_text_view_data(f"Vel     : {self.squid1.vel:4d}", 705, 110, "#EEEEEE", "20px Consolas BOLD"),
             create_text_view_data(f"Timer   : {self._frame_count_down:04d}", 705, 150, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data(f"My Score: {self.squid.score:04d} pt", 705, 180, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"My Score: {self.squid1.score:04d} pt", 705, 180, "#EEEEEE", "20px Consolas BOLD"),
             create_text_view_data(f"Goal    : {self._score_to_pass:04d} pt", 705, 210, "#EEEEEE", "20px Consolas BOLD"),
         ]
         scene_progress = create_scene_progress_data(
@@ -294,6 +332,7 @@ class SwimmingSquid(PaiaGame):
         Define how your game will run by your keyboard
         """
         cmd_1p = []
+        cmd_2p = []
         key_pressed_list = pygame.key.get_pressed()
         if key_pressed_list[pygame.K_UP]:
             cmd_1p.append("UP")
@@ -305,7 +344,19 @@ class SwimmingSquid(PaiaGame):
             cmd_1p.append("RIGHT")
         else:
             cmd_1p.append("NONE")
-        return {get_ai_name(0): cmd_1p}
+
+        if key_pressed_list[pygame.K_w]:
+            cmd_2p.append("UP")
+        elif key_pressed_list[pygame.K_s]:
+            cmd_2p.append("DOWN")
+        elif key_pressed_list[pygame.K_a]:
+            cmd_2p.append("LEFT")
+        elif key_pressed_list[pygame.K_d]:
+            cmd_2p.append("RIGHT")
+        else:
+            cmd_2p.append("NONE")
+
+        return {get_ai_name(0): cmd_1p, get_ai_name(1):cmd_2p}
 
     def _create_foods(self, FOOD_TYPE, count: int = 5):
         for i in range(count):

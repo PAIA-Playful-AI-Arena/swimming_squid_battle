@@ -49,6 +49,7 @@ MUSIC_PATH = path.join(path.dirname(__file__), "..", "asset", "music")
 
 BG_PATH = path.join(ASSET_IMAGE_DIR, "background.png")
 SQUID_PATH = path.join(ASSET_IMAGE_DIR, "squid.png")
+SQUID2_PATH = path.join(ASSET_IMAGE_DIR, "squid2.png")
 
 IMG_ID_FOOD01_L = "food_01_L"
 IMG_ID_FOOD02_L = "food_02_L"
@@ -72,6 +73,7 @@ GARBAGE03_PATH = path.join(ASSET_IMAGE_DIR, "garbage_03.png")
 ASSET_IMG_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming-squid/main/asset/img/"
 BG_URL =  ASSET_IMG_URL + "background.png"
 SQUID_URL =  ASSET_IMG_URL + "squid.png"
+SQUID2_URL =  ASSET_IMG_URL + "squid2.png"
 # Food URLs
 FOOD01_L_URL = ASSET_IMG_URL + "food_01_L.png"
 FOOD02_L_URL = ASSET_IMG_URL + "food_02_L.png"  # Assuming the naming pattern is similar
