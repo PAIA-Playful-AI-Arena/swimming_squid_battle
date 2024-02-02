@@ -223,6 +223,12 @@ class MLPlay:
     {
       "squid": "1P",
       "score": 0,
+      "rank": 2,
+      "passed": false
+    },
+    {
+      "squid": "2P",
+      "score": 10,
       "rank": 1,
       "passed": false
     }
