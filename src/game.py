@@ -156,15 +156,15 @@ class SwimmingSquid(PaiaGame):
         hit = pygame.sprite.collide_rect(self.squid1, self.squid2)
         if hit:
             if self.squid1.lv > self.squid2.lv:
-                self.squid1.collision_between_squids(COLLISION_SCORE["WIN"], self.sound_controller)
-                self.squid2.collision_between_squids(COLLISION_SCORE["LOSE"], self.sound_controller)
+                self.squid1.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self.sound_controller)
+                self.squid2.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count, self.sound_controller)
             elif self.squid1.lv < self.squid2.lv:
-                self.squid1.collision_between_squids(COLLISION_SCORE["LOSE"], self.sound_controller)
-                self.squid2.collision_between_squids(COLLISION_SCORE["WIN"], self.sound_controller)
+                self.squid1.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count, self.sound_controller)
+                self.squid2.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self.sound_controller)
             else:
                 # draw
-                self.squid1.collision_between_squids(COLLISION_SCORE["DRAW"], self.sound_controller)
-                self.squid2.collision_between_squids(COLLISION_SCORE["DRAW"], self.sound_controller)
+                self.squid1.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count, self.sound_controller)
+                self.squid2.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count, self.sound_controller)
 
     def get_data_from_game_to_player(self):
         """

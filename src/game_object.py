@@ -42,6 +42,7 @@ class Squid(pygame.sprite.Sprite):
         self._vel = LEVEL_PROPERTIES[1]['vel']
         self._lv = 1
         self.angle = 0
+        self._last_collision = 0
 
     def update(self, motion):
         # for motion in motions:
@@ -90,8 +91,11 @@ class Squid(pygame.sprite.Sprite):
             self._vel = LEVEL_PROPERTIES[new_lv]['vel']
             self._lv = new_lv
 
-    def collision_between_squids(self, collision_score, sound_controller: SoundController):
-        self._score += collision_score
+    def collision_between_squids(self, collision_score, frame, sound_controller: SoundController):
+        if frame - self._last_collision > 30:
+            self._score += collision_score
+            self._last_collision = frame
+            sound_controller.play_collision()
 
         new_lv = get_current_level(self._score)
 

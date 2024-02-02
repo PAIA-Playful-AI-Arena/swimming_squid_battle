@@ -30,6 +30,7 @@ class SoundController():
             self._fail = pygame.mixer.Sound(path.join(SOUND_PATH, "fail.mp3"))
             self._lv_up = pygame.mixer.Sound(path.join(SOUND_PATH, "lv_up.mp3"))
             self._lv_down = pygame.mixer.Sound(path.join(SOUND_PATH, "lv_down.mp3"))
+            self._collision = pygame.mixer.Sound(path.join(SOUND_PATH, "collision.mp3"))
         except Exception as e :
             self._is_sound_on = False
             traceback.print_exc()
@@ -59,3 +60,7 @@ class SoundController():
     @sound_enabled
     def play_lv_down(self):
         self._lv_down.play()
+
+    @sound_enabled
+    def play_collision(self):
+        self._collision.play()
