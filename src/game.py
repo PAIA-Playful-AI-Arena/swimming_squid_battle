@@ -47,6 +47,7 @@ class SwimmingSquid(PaiaGame):
         self.foods = pygame.sprite.Group()
         self.sound_controller = SoundController(sound)
         self._collision_mode = False
+        self._overtime_count = 0
 
         self._init_game()
 
@@ -72,6 +73,8 @@ class SwimmingSquid(PaiaGame):
             )
             if game_params.playground_size_h >= 500 and game_params.playground_size_w >= 500:
                 self._collision_mode = True
+            else:
+                self._collision_mode = False
 
             self._score_to_pass = game_params.score_to_pass
             self._frame_limit = game_params.time_to_play
@@ -90,6 +93,7 @@ class SwimmingSquid(PaiaGame):
 
             self.frame_count = 0
             self._frame_count_down = self._frame_limit
+            self._overtime_count = 0
             self.sound_controller.play_music()
 
     def update(self, commands):
@@ -255,15 +259,33 @@ class SwimmingSquid(PaiaGame):
 
     @property
     def is_passed(self):
-        if self.squid1.score >= self._score_to_pass or self.squid2.score >= self._score_to_pass:
+        if self.squid1.score >= self._score_to_pass or self.squid2.score >= self._score_to_pass: # 達成目標分數
+            if self.squid1.score == self.squid2.score and self._overtime_count < 3: # 延長賽
+                self._frame_limit += 600
+                self._score_to_pass += 50
+                self._overtime_count += 1
+                return False
             return True
         else:
             return False
 
     @property
+    def time_out(self):
+        if self.frame_count >= self._frame_limit:
+            if self.squid1.score == self.squid2.score and self._overtime_count < 3:  # 延長賽
+                self._frame_limit += 300
+                self._overtime_count += 1
+                return False
+            else:
+                return True
+        else:
+            return False
+
+    @property
     def is_running(self):
+
         # return self.frame_count < self._frame_limit
-        return (self.frame_count < self._frame_limit) and (not self.is_passed)
+        return (not self.time_out) and (not self.is_passed)
 
     def get_scene_init_data(self):
         """
@@ -352,18 +374,19 @@ class SwimmingSquid(PaiaGame):
         """
         if self.get_game_status() == GameStatus.GAME_PASS:
             self.game_result_state = GameResultState.FINISH
+        self.rank()
         return {"frame_used": self.frame_count,
                 "state": self.game_result_state,
                 "attachment": [
                     {
                         "player": get_ai_name(0),
-                        "rank": 1,
+                        "rank": self.squid1.rank,
                         "score": self.squid1.score,
                         "passed": self.is_passed
                     },
                     {
                         "player": get_ai_name(1),
-                        "rank": 2,
+                        "rank": self.squid2.rank,
                         "score": self.squid2.score,
                         "passed": self.is_passed
                     }
@@ -417,4 +440,12 @@ class SwimmingSquid(PaiaGame):
         '''
 
         '''
-        pass
+        if self.squid1.score > self.squid2.score:
+            self.squid1.rank = 1
+            self.squid2.rank = 2
+        elif self.squid1.score < self.squid2.score:
+            self.squid1.rank = 2
+            self.squid2.rank = 1
+        else:
+            self.squid1.rank = 1
+            self.squid2.rank = 1

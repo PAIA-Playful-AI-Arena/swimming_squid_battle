@@ -41,6 +41,7 @@ class Squid(pygame.sprite.Sprite):
         self._score = 0
         self._vel = LEVEL_PROPERTIES[1]['vel']
         self._lv = 1
+        self.rank = 1
         self.angle = 0
         self._last_collision = 0
 
