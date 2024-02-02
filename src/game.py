@@ -186,6 +186,7 @@ class SwimmingSquid(PaiaGame):
 
         data_to_1p = {
             "frame": self.frame_count,
+            "collision_mode": self._collision_mode,
             "self_x": self.squid1.rect.centerx,
             "self_y": self.squid1.rect.centery,
             "self_w": self.squid1.rect.width,
@@ -204,6 +205,7 @@ class SwimmingSquid(PaiaGame):
 
         data_to_2p = {
             "frame": self.frame_count,
+            "collision_mode": self._collision_mode,
             "self_x": self.squid2.rect.centerx,
             "self_y": self.squid2.rect.centery,
             "self_w": self.squid2.rect.width,

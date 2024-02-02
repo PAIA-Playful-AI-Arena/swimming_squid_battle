@@ -55,7 +55,7 @@ MUSIC_PATH = path.join(path.dirname(__file__), "..", "asset", "music")
 
 BG_PATH = path.join(ASSET_IMAGE_DIR, "background.png")
 SQUID_PATH = path.join(ASSET_IMAGE_DIR, "squid.png")
-SQUID2_PATH = path.join(ASSET_IMAGE_DIR, "squid2_02.png")
+SQUID2_PATH = path.join(ASSET_IMAGE_DIR, "squid2.png")
 
 IMG_ID_FOOD01_L = "food_01_L"
 IMG_ID_FOOD02_L = "food_02_L"
