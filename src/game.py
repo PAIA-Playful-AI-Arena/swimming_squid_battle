@@ -44,6 +44,7 @@ class SwimmingSquid(PaiaGame):
         self.scene = Scene(width=WIDTH, height=HEIGHT, color=BG_COLOR, bias_x=0, bias_y=0)
         self._level = level
         self._level_file = level_file
+        self._used_file = ""
         self.foods = pygame.sprite.Group()
         self.sound_controller = SoundController(sound)
         self._collision_mode = False
@@ -55,6 +56,7 @@ class SwimmingSquid(PaiaGame):
         try:
             with open(level_file_path) as f:
                 game_params = LevelParams(**json.load(f))
+                self._used_file = level_file_path
 
         except:
             # If the file doesn't exist, use default parameters
@@ -64,6 +66,7 @@ class SwimmingSquid(PaiaGame):
                 game_params = LevelParams(**json.load(f))
                 self._level = 1
                 self._level_file = ""
+                self._used_file = "001.json"
         finally:
             # set game params
             self.playground = pygame.Rect(
@@ -111,8 +114,8 @@ class SwimmingSquid(PaiaGame):
             action_2 = "NONE"
 
 
-        self.squid1.update(action_1)
-        self.squid2.update(action_2)
+        self.squid1.update(self.frame_count, action_1)
+        self.squid2.update(self.frame_count, action_2)
         revise_ball(self.squid1, self.playground)
         revise_ball(self.squid2, self.playground)
         # update sprite
@@ -235,7 +238,6 @@ class SwimmingSquid(PaiaGame):
         elif self.is_passed:
             status = GameStatus.GAME_PASS
         else:
-            print("GAME_OVER")
             status = GameStatus.GAME_OVER
         return status
 
@@ -248,13 +250,11 @@ class SwimmingSquid(PaiaGame):
             self.sound_controller.play_fail()
         self._init_game()
 
-        pass
 
     def _init_game(self):
         if path.isfile(self._level_file):
             # set by injected file
             self._init_game_by_file(self._level_file)
-            pass
         else:
             level_file_path = os.path.join(LEVEL_PATH, f"{self._level:03d}.json")
             self._init_game_by_file(level_file_path)
@@ -266,7 +266,9 @@ class SwimmingSquid(PaiaGame):
                 self._frame_limit += 600
                 self._score_to_pass += 50
                 self._overtime_count += 1
+                print("同分延長賽")
                 return False
+            # print("達成目標分數")
             return True
         else:
             return False
@@ -277,11 +279,14 @@ class SwimmingSquid(PaiaGame):
             if self.squid1.score == self.squid2.score and self._overtime_count < 3:  # 延長賽
                 self._frame_limit += 300
                 self._overtime_count += 1
+                print("超時延長賽")
                 return False
             else:
+                print("時間到")
                 return True
         else:
             return False
+
 
     @property
     def is_running(self):
@@ -345,22 +350,26 @@ class SwimmingSquid(PaiaGame):
         foregrounds = [
 
         ]
-        star_string_1P = '+' * self.squid1.lv
-        star_string_2P = '+' * self.squid2.lv
         toggle_objs = [
-            create_text_view_data(f"Timer   : {self._frame_count_down:04d}", 705, 50, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data(f"Goal    : {self._score_to_pass:04d} pt", 705, 80, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data("1P", 705, 130, "#EEEEEE", "22px Consolas BOLD"),
-            create_text_view_data(f"Lv: {star_string_1P}", 705, 160, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data(f"To Lv up: {LEVEL_THRESHOLDS[self.squid1.lv - 1]-self.squid1.score :04d} pt", 705, 190, "#EEEEEE",                                  "20px Consolas BOLD"),
-            create_text_view_data(f"Vel     : {self.squid1.vel:4d}", 705, 220, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data(f"1P Score: {self.squid1.score:04d} pt", 705, 250, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data("2P", 705, 310, "#EEEEEE", "22px Consolas BOLD"),
-            create_text_view_data(f"Lv: {star_string_2P}", 705, 340, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data(f"To Lv up: {LEVEL_THRESHOLDS[self.squid2.lv - 1] - self.squid2.score :04d} pt", 705,
-                                  370, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data(f"Vel     : {self.squid2.vel:4d}", 705, 400, "#EEEEEE", "20px Consolas BOLD"),
-            create_text_view_data(f"2P Score: {self.squid2.score:04d} pt", 705, 430, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"Timer:{self._frame_count_down:04d}", 745, 40, "#EEEEEE", "20px Consolas BOLD"),
+            # create_text_view_data(f"", 785, 80, "#EEEEEE", "18px Consolas BOLD"),
+            create_text_view_data(f"File :{os.path.basename(self._used_file)}", 745, 80, "#EEEEEE", "20px Consolas BOLD"),
+            # create_text_view_data(f"File :{self._level_file}", 605, 80, "#EEEEEE", "10px Consolas BOLD"),
+            create_text_view_data(f"Goal :{self._score_to_pass:04d} pt", 745, 120, "#EEEEEE", "20px Consolas BOLD"),
+            # create_text_view_data(f"", 785, 140, "#EEEEEE", "18px Consolas BOLD"),
+            create_image_view_data("squid1", 705, 180, 76, 114),
+            # create_text_view_data("1P", 705, 130, "#EEEEEE", "22px Consolas BOLD"),
+            create_text_view_data(f"Lv     : {self.squid1.lv}", 785, 180, "#EEEEEE", "16px Consolas BOLD"),
+            create_text_view_data(f"Next Lv: {LEVEL_THRESHOLDS[self.squid1.lv - 1]-self.squid1.score :04d} pt", 785, 210, "#EEEEEE", "16px Consolas BOLD"),
+            create_text_view_data(f"Vel    : {self.squid1.vel:2d}", 785, 240, "#EEEEEE", "16px Consolas BOLD"),
+            create_text_view_data(f"Score  : {self.squid1.score:04d} pt", 785, 270, "#EEEEEE", "16px Consolas BOLD"),
+            # create_text_view_data("2P", 705, 310, "#EEEEEE", "22px Consolas BOLD"),
+            create_image_view_data("squid2", 705, 390, 76, 114),
+            create_text_view_data(f"Lv     : {self.squid2.lv}", 785, 390, "#EEEEEE", "16px Consolas BOLD"),
+            create_text_view_data(f"Next Lv: {LEVEL_THRESHOLDS[self.squid2.lv - 1] - self.squid2.score :04d} pt", 785,
+                                  420, "#EEEEEE", "16px Consolas BOLD"),
+            create_text_view_data(f"Vel    : {self.squid2.vel:2d}", 785, 450, "#EEEEEE", "16px Consolas BOLD"),
+            create_text_view_data(f"Score  : {self.squid2.score:04d} pt", 785, 480, "#EEEEEE", "16px Consolas BOLD"),
         ]
 
         scene_progress = create_scene_progress_data(

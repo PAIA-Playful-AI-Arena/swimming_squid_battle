@@ -1,4 +1,6 @@
 import math
+import random
+
 import pydantic
 import pygame.sprite
 
@@ -44,9 +46,27 @@ class Squid(pygame.sprite.Sprite):
         self.rank = 1
         self.angle = 0
         self._last_collision = 0
+        self._collision_dir = None
+        self._motion = None
 
-    def update(self, motion):
+    def update(self, frame, motion):
         # for motion in motions:
+        self._motion = motion
+        if frame - self._last_collision <=3:
+            # 反彈
+            if self._collision_dir == "UP":
+                self.rect.centery += self._vel
+            elif self._collision_dir == "DOWN":
+                self.rect.centery -= self._vel
+            elif self._collision_dir == "LEFT":
+                self.rect.centerx += self._vel
+                self.angle = self.ANGLE_TO_RIGHT
+            elif self._collision_dir == "RIGHT":
+                self.rect.centerx -= self._vel
+                self.angle = self.ANGLE_TO_LEFT
+            else:
+                self.angle = 0
+            return 0
         if motion == "UP":
             self.rect.centery -= self._vel
         elif motion == "DOWN":
@@ -93,10 +113,15 @@ class Squid(pygame.sprite.Sprite):
             self._lv = new_lv
 
     def collision_between_squids(self, collision_score, frame, sound_controller: SoundController):
-        if frame - self._last_collision > 30:
+        if frame - self._last_collision > 3:
             self._score += collision_score
             self._last_collision = frame
             sound_controller.play_collision()
+            if self._motion != "NONE":
+                self._collision_dir = self._motion
+            else:
+                self._collision_dir = random.choice(["UP", "DOWN", "RIGHT", "LEFT"])
+
 
         new_lv = get_current_level(self._score)
 
