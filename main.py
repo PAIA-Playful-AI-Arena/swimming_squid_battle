@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-sys.path.append(r"../..")
+sys.path.append(r"../../../../.Trash/PAIA Desktop.app/Contents/Resources/app.asar.unpacked")
 from mlgame.view.view import PygameView
 from mlgame.game.generic import quit_or_esc
 from src.game import SwimmingSquid
