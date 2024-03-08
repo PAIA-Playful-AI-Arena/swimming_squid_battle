@@ -392,14 +392,14 @@ class SwimmingSquid(PaiaGame):
                     {
                         "player": get_ai_name(0),
                         "rank": self.squid1.rank,
-                        "score": self.squid1.score,
-                        "passed": self.is_passed
+                        "score": self.squid1.score
+                        # "passed": self.is_passed
                     },
                     {
                         "player": get_ai_name(1),
                         "rank": self.squid2.rank,
-                        "score": self.squid2.score,
-                        "passed": self.is_passed
+                        "score": self.squid2.score
+                        # "passed": self.is_passed
                     }
                 ]
 

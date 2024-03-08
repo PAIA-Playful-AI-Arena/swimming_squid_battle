@@ -126,7 +126,7 @@ class MLPlay:
 ```json
 {
   "frame": 15,
-  "collision_mode": True,
+  "collision_mode": "True",
   "score": 8,
   "score_to_pass": 10,
   "self_x": 100,
@@ -234,14 +234,12 @@ class MLPlay:
     {
       "squid": "1P",
       "score": 0,
-      "rank": 2,
-      "passed": false
+      "rank": 2
     },
     {
       "squid": "2P",
       "score": 10,
-      "rank": 1,
-      "passed": false
+      "rank": 1
     }
   ]
 }
@@ -255,7 +253,6 @@ class MLPlay:
     - `squid`：玩家編號
     - `score`：吃到的食物總數
     - `rank`：排名
-    - `passed`：是否通關
 
 ---
 
