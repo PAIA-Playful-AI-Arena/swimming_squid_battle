@@ -8,7 +8,7 @@
 
 這是一個魷魚吃東西小遊戲，你需要找到正確的食物、避開海中的垃圾，還要提防敵人的攻擊！（當然你也可以主動攻擊他人）
 
-![demo](https://github.com/PAIA-Playful-AI-Arena/swimming-squid/blob/main/asset/swimming-squid.gif?raw=true)
+![demo](https://github.com/PAIA-Playful-AI-Arena/swimming-squid-battle/blob/develop/asset/demo.gif?raw=true)
 
 ---
 # 基礎介紹
