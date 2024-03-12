@@ -47,7 +47,6 @@ class SwimmingSquid(PaiaGame):
         self._used_file = ""
         self.foods = pygame.sprite.Group()
         self.sound_controller = SoundController(sound)
-        self._collision_mode = False
         self._overtime_count = 0
 
         self._init_game()
@@ -74,10 +73,6 @@ class SwimmingSquid(PaiaGame):
                 game_params.playground_size_w,
                 game_params.playground_size_h
             )
-            if game_params.playground_size_h >= 500 and game_params.playground_size_w >= 500:
-                self._collision_mode = True
-            else:
-                self._collision_mode = False
 
             self._score_to_pass = game_params.score_to_pass
             self._frame_limit = game_params.time_to_play
@@ -125,8 +120,7 @@ class SwimmingSquid(PaiaGame):
 
         self._check_foods_collision()
         # self._timer = round(time.time() - self._begin_time, 3)
-        if self._collision_mode:
-            self._check_squids_collision()
+        self._check_squids_collision()
 
         self.frame_count += 1
         self._frame_count_down = self._frame_limit - self.frame_count
@@ -189,7 +183,6 @@ class SwimmingSquid(PaiaGame):
 
         data_to_1p = {
             "frame": self.frame_count,
-            "collision_mode": self._collision_mode,
             "self_x": self.squid1.rect.centerx,
             "self_y": self.squid1.rect.centery,
             "self_w": self.squid1.rect.width,
@@ -208,7 +201,6 @@ class SwimmingSquid(PaiaGame):
 
         data_to_2p = {
             "frame": self.frame_count,
-            "collision_mode": self._collision_mode,
             "self_x": self.squid2.rect.centerx,
             "self_y": self.squid2.rect.centery,
             "self_w": self.squid2.rect.width,
@@ -242,9 +234,7 @@ class SwimmingSquid(PaiaGame):
         return status
 
     def reset(self):
-
         if self.is_passed:
-            self._level += 1
             self.sound_controller.play_cheer()
         else:
             self.sound_controller.play_fail()

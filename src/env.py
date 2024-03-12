@@ -49,7 +49,7 @@ FOOD_LV3_SIZE = 50
 
 # path of assets
 ASSET_PATH = path.join(path.dirname(__file__), "..", "asset")
-LEVEL_PATH = path.join(path.dirname(__file__), "..", "levels")
+LEVEL_PATH = path.join(path.dirname(__file__), "..", "maps")
 SOUND_PATH = path.join(path.dirname(__file__), "..", "asset", "sounds")
 MUSIC_PATH = path.join(path.dirname(__file__), "..", "asset", "music")
 
