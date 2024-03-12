@@ -24,10 +24,12 @@
 game = SwimmingSquid(
             level: int = 1,
             level_file: str = None,
+            game_times: int = 1,
             sound: str = "off")
 ```
 - `level`: 選定內建關卡，預設為 1 選擇第一關。
 - `level_file`: 使用外部檔案作為關卡，請注意，使用此設定將會覆蓋掉關卡編號，並且不會自動進入下一關。
+- `game_times`：選擇要對戰幾次決勝負，可選擇一戰決勝負、三戰兩勝制、五戰三勝制。預設為一戰決勝負。
 - `sound`: 音效。
 
 ## 玩法
@@ -234,12 +236,14 @@ class MLPlay:
     {
       "squid": "1P",
       "score": 0,
-      "rank": 2
+      "rank": 2,
+      "wins": 1 / 3
     },
     {
       "squid": "2P",
       "score": 10,
-      "rank": 1
+      "rank": 1,
+      "wins": 2 / 3
     }
   ]
 }
@@ -253,6 +257,7 @@ class MLPlay:
     - `squid`：玩家編號
     - `score`：吃到的食物總數
     - `rank`：排名
+    - `wins`：目前勝場數
 
 ---
 

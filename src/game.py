@@ -37,6 +37,7 @@ class SwimmingSquid(PaiaGame):
             self,
             level: int = -1,
             level_file: str = "",
+            game_times: int = 1,
             sound: str = "off",
             *args, **kwargs):
         super().__init__(user_num=1)
@@ -48,6 +49,8 @@ class SwimmingSquid(PaiaGame):
         self.foods = pygame.sprite.Group()
         self.sound_controller = SoundController(sound)
         self._overtime_count = 0
+        self._game_times = game_times
+        self._winner = []
 
         self._init_game()
 
@@ -238,6 +241,15 @@ class SwimmingSquid(PaiaGame):
             self.sound_controller.play_cheer()
         else:
             self.sound_controller.play_fail()
+
+        if self._winner.count("1P") > self._game_times/2: # 1P 贏
+            self._winner.clear()
+            print("玩家 1 獲勝！開啟新一輪對戰！")
+        elif self._winner.count("2P") > self._game_times/2: # 2P 贏
+            self._winner.clear()
+            print("玩家 2 獲勝！開啟新一輪對戰！")
+        else:
+            pass
         self._init_game()
 
 
@@ -258,7 +270,6 @@ class SwimmingSquid(PaiaGame):
                 self._overtime_count += 1
                 print("同分延長賽")
                 return False
-            # print("達成目標分數")
             return True
         else:
             return False
@@ -382,13 +393,15 @@ class SwimmingSquid(PaiaGame):
                     {
                         "player": get_ai_name(0),
                         "rank": self.squid1.rank,
-                        "score": self.squid1.score
+                        "score": self.squid1.score,
+                        "wins":f"{self._winner.count('1P')} / {self._game_times}"
                         # "passed": self.is_passed
                     },
                     {
                         "player": get_ai_name(1),
                         "rank": self.squid2.rank,
-                        "score": self.squid2.score
+                        "score": self.squid2.score,
+                        "wins":f"{self._winner.count('2P')} / {self._game_times}"
                         # "passed": self.is_passed
                     }
                 ]
@@ -444,9 +457,12 @@ class SwimmingSquid(PaiaGame):
         if self.squid1.score > self.squid2.score:
             self.squid1.rank = 1
             self.squid2.rank = 2
+            self._winner.append("1P")
         elif self.squid1.score < self.squid2.score:
             self.squid1.rank = 2
             self.squid2.rank = 1
+            self._winner.append("2P")
         else:
             self.squid1.rank = 1
             self.squid2.rank = 1
+            self._winner.append("DRAW")
