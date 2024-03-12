@@ -237,13 +237,13 @@ class MLPlay:
       "squid": "1P",
       "score": 0,
       "rank": 2,
-      "wins": 1 / 3
+      "wins": "1 / 3"
     },
     {
       "squid": "2P",
       "score": 10,
       "rank": 1,
-      "wins": 2 / 3
+      "wins": "2 / 3"
     }
   ]
 }
