@@ -43,6 +43,8 @@ class FoodTypeEnum(StringEnum):
     GARBAGE_3 = auto()
 
 
+
+
 FOOD_LV1_SIZE = 30
 FOOD_LV2_SIZE = 40
 FOOD_LV3_SIZE = 50

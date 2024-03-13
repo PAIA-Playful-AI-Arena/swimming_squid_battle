@@ -27,6 +27,8 @@ def revise_ball(ball: Squid, playground: pygame.Rect):
     ball.rect = ball_rect
     pass
 
+FOOD_LIST = [Food1, Food2, Food3, Garbage1, Garbage2, Garbage3]
+
 
 class SwimmingSquid(PaiaGame):
     """
@@ -51,6 +53,8 @@ class SwimmingSquid(PaiaGame):
         self._overtime_count = 0
         self._game_times = game_times
         self._winner = []
+        self._foods_num = []
+        self._foods_max_num = []
 
         self._init_game()
 
@@ -71,6 +75,8 @@ class SwimmingSquid(PaiaGame):
                 self._used_file = "001.json"
         finally:
             # set game params
+            self._foods_num.extend([game_params.food_1, game_params.food_2, game_params.food_3, game_params.garbage_1, game_params.garbage_2, game_params.garbage_3])
+            self._foods_max_num.extend([game_params.food_1_max, game_params.food_2_max, game_params.food_3_max, game_params.garbage_1_max, game_params.garbage_2_max, game_params.garbage_3_max])
             if game_params.playground_size_w > 700:
                 game_params.playground_size_w = 700
             self.playground = pygame.Rect(
@@ -88,15 +94,18 @@ class SwimmingSquid(PaiaGame):
             self.squid1 = Squid(1, 200, 300)
             self.squid2 = Squid(2, 500, 300)
             self.foods.empty()
-            self._create_foods(Food1, game_params.food_1)
-            self._create_foods(Food2, game_params.food_2)
-            self._create_foods(Food3, game_params.food_3)
-            self._create_foods(Garbage1, game_params.garbage_1)
-            self._create_foods(Garbage2, game_params.garbage_2)
-            self._create_foods(Garbage3, game_params.garbage_3)
+            for i in range(6):
+                self._create_foods(FOOD_LIST[i], self._foods_num[i])
+            # self._create_foods(Food1, game_params.food_1)
+            # self._create_foods(Food2, game_params.food_2)
+            # self._create_foods(Food3, game_params.food_3)
+            # self._create_foods(Garbage1, game_params.garbage_1)
+            # self._create_foods(Garbage2, game_params.garbage_2)
+            # self._create_foods(Garbage3, game_params.garbage_3)
 
             self.frame_count = 0
             self._frame_count_down = self._frame_limit
+            self._new_food_frame = 0
             self._overtime_count = 0
             self.sound_controller.play_music()
 
@@ -119,6 +128,14 @@ class SwimmingSquid(PaiaGame):
         self.squid2.update(self.frame_count, action_2)
         revise_ball(self.squid1, self.playground)
         revise_ball(self.squid2, self.playground)
+        # create new food
+        if self.frame_count - self._new_food_frame > 300:
+            for i in range(6):
+                if self._foods_max_num[i] > self._foods_num[i]:
+                    self._foods_num[i] += 1
+                    self._create_foods(FOOD_LIST[i], 1)
+            self._new_food_frame = self.frame_count
+
         # update sprite
         self.foods.update(playground=self.playground, squid=self.squid1)
 
@@ -267,7 +284,7 @@ class SwimmingSquid(PaiaGame):
     @property
     def is_passed(self):
         if self.squid1.score >= self._score_to_pass or self.squid2.score >= self._score_to_pass: # 達成目標分數
-            if self.squid1.score == self.squid2.score and self._overtime_count < 3: # 延長賽
+            if self.squid1.score == self.squid2.score and self._overtime_count < 1: # 延長賽
                 self._frame_limit += 600
                 self._score_to_pass += 50
                 self._overtime_count += 1

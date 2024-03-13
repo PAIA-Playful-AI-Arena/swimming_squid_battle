@@ -18,11 +18,17 @@ class LevelParams(pydantic.BaseModel):
     time_to_play: int = 300
 
     food_1: int = 3
+    food_1_max: int = 3
     food_2: int = 0
+    food_2_max: int = 0
     food_3: int = 0
+    food_3_max: int = 0
     garbage_1: int = 0
+    garbage_1_max: int = 0
     garbage_2: int = 0
+    garbage_2_max: int = 0
     garbage_3: int = 0
+    garbage_3_max: int = 0
 
 
 # level_thresholds = [10, 15, 20, 25, 30]
