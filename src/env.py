@@ -76,7 +76,7 @@ GARBAGE02_PATH = path.join(ASSET_IMAGE_DIR, "garbage_02.png")
 GARBAGE03_PATH = path.join(ASSET_IMAGE_DIR, "garbage_03.png")
 
 
-ASSET_IMG_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming-squid/main/asset/img/"
+ASSET_IMG_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming-squid-battle/main/asset/img/"
 BG_URL =  ASSET_IMG_URL + "background.png"
 SQUID_URL =  ASSET_IMG_URL + "squid.png"
 SQUID2_URL =  ASSET_IMG_URL + "squid2.png"
@@ -92,6 +92,3 @@ FOOD03_R_URL = ASSET_IMG_URL + "food_03_R.png"
 GARBAGE01_URL = ASSET_IMG_URL + "garbage_01.png"
 GARBAGE02_URL = ASSET_IMG_URL + "garbage_02.png"
 GARBAGE03_URL = ASSET_IMG_URL + "garbage_03.png"
-# BAR_URL = "https://raw.githubusercontent.com/PAIA/dont_touch/master/asset/image/bar.png"
-
-# https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/easy_game/main/asset/img/background.jpg

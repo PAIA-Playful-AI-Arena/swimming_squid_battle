@@ -280,7 +280,7 @@ class SwimmingSquid(PaiaGame):
     @property
     def time_out(self):
         if self.frame_count >= self._frame_limit:
-            if self.squid1.score == self.squid2.score and self._overtime_count < 3:  # 延長賽
+            if self.squid1.score == self.squid2.score and self._overtime_count < 1:  # 延長賽
                 self._frame_limit += 300
                 self._overtime_count += 1
                 print("超時延長賽")
