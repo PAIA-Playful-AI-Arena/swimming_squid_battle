@@ -129,7 +129,7 @@ class SwimmingSquid(PaiaGame):
         revise_ball(self.squid1, self.playground)
         revise_ball(self.squid2, self.playground)
         # create new food
-        if self.frame_count - self._new_food_frame > 300:
+        if self.frame_count - self._new_food_frame > 150:
             for i in range(6):
                 if self._foods_max_num[i] > self._foods_num[i]:
                     self._foods_num[i] += 1

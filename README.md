@@ -64,6 +64,7 @@ game = SwimmingSquid(
       | GARBAGE_1 | 30      | -1     |
       | GARBAGE_3 | 40      | -4     |
       | GARBAGE_3 | 50      | -10     |
+   3. 食物數量會隨遊戲時間增加
 
 2. 玩家相撞：
    1. 當地圖長寬皆大於 500 pixels 時，遊戲將增加碰撞機制。
