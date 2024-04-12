@@ -55,6 +55,7 @@ class SwimmingSquid(PaiaGame):
         self._winner = []
         self._foods_num = []
         self._foods_max_num = []
+        self._add_score = {"1P":0, "2P":0}
 
         self._init_game()
 
@@ -156,7 +157,6 @@ class SwimmingSquid(PaiaGame):
         hits = pygame.sprite.spritecollide(self.squid1, self.foods, True)
         if hits:
             for food in hits:
-                # self.ball.score += food.score
                 # growth play special sound
                 self.squid1.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
                 self._create_foods(food.__class__, 1)
@@ -167,7 +167,6 @@ class SwimmingSquid(PaiaGame):
         hits = pygame.sprite.spritecollide(self.squid2, self.foods, True)
         if hits:
             for food in hits:
-                # self.ball.score += food.score
                 # growth play special sound
                 self.squid2.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
                 self._create_foods(food.__class__, 1)
@@ -383,10 +382,6 @@ class SwimmingSquid(PaiaGame):
         ]
         game_obj_list.extend(foods_data)
         backgrounds = [
-            # create_image_view_data("background", 0, 0, WIDTH, HEIGHT),
-            # create_rect_view_data(
-            #     "playground", self.playground.x, self.playground.y,
-            #     self.playground.w, self.playground.h, PG_COLOR)
             create_image_view_data(
                 'bg', self.playground.x, self.playground.y,
                 self.playground.w, self.playground.h)

@@ -2,7 +2,7 @@
   "time_to_play": 1400,
   "playground_size_w":650,
   "playground_size_h":600,
-  "score_to_pass": 80,
+  "score_to_pass": 100,
   "food_1": 6,
   "food_1_max": 10,
   "food_2": 4,
