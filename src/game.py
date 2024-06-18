@@ -405,17 +405,17 @@ class SwimmingSquid(PaiaGame):
             self.game_result_state = GameResultState.FINISH
         self.rank()
         return {"frame_used": self.frame_count,
-                "state": self.game_result_state,
+                "status": self.game_result_state,
                 "attachment": [
                     {
-                        "player": get_ai_name(0),
+                        "player_num": get_ai_name(0),
                         "rank": self.squid1.rank,
                         "score": self.squid1.score,
                         "wins":f"{self._winner.count('1P')} / {self._game_times}"
                         # "passed": self.is_passed
                     },
                     {
-                        "player": get_ai_name(1),
+                        "player_num": get_ai_name(1),
                         "rank": self.squid2.rank,
                         "score": self.squid2.score,
                         "wins":f"{self._winner.count('2P')} / {self._game_times}"
