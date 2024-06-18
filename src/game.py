@@ -405,7 +405,7 @@ class SwimmingSquid(PaiaGame):
             self.game_result_state = GameResultState.FINISH
         self.rank()
         return {"frame_used": self.frame_count,
-                "state": self.game_result_state,
+                "status": self.game_result_state,
                 "attachment": [
                     {
                         "player_num": get_ai_name(0),
