@@ -42,7 +42,7 @@ pipeline {
                       -f ./Dockerfile . --push
                       """
                   }else{
-                    sh """docker buildx build --builder=mybuilder --platform linux/amd64,linux/arm64 \
+                    sh """docker buildx build --builder=mybuilder --platform linux/amd64 \
                       -t ${env.registry}/${game}:${env.branch} \
                       -f ./Dockerfile . --push
                     """
