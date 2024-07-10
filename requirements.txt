@@ -1,2 +1,8 @@
 mlgame>=10.4.6a2
+box2d-py==2.3.8
+pyinstaller==5.6
+mushroom-rl==1.9.2
+opencv-python==4.9.0.80
+tensorflow==2.13.0
+keras-transformer==0.40.0
 
