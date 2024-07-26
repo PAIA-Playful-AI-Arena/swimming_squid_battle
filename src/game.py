@@ -42,6 +42,7 @@ class SwimmingSquid(PaiaGame):
             game_times: int = 1,
             sound: str = "off",
             *args, **kwargs):
+        # TODO 要加入五戰三勝制參數
         super().__init__(user_num=1)
         self.game_result_state = GameResultState.FAIL
         self.scene = Scene(width=WIDTH, height=HEIGHT, color=BG_COLOR, bias_x=0, bias_y=0)
@@ -124,7 +125,7 @@ class SwimmingSquid(PaiaGame):
         else:
             action_2 = "NONE"
 
-
+        # TODO fix bug
         self.squid1.update(self.frame_count, action_1)
         self.squid2.update(self.frame_count, action_2)
         revise_ball(self.squid1, self.playground)
@@ -151,6 +152,7 @@ class SwimmingSquid(PaiaGame):
         # self.draw()
 
         if not self.is_running:
+            # TODO 五戰三勝的情況下不能回傳 reset
             return "RESET"
 
     def _check_foods_collision(self):

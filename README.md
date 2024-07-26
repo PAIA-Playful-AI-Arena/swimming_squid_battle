@@ -1,12 +1,11 @@
-# **Swimming Squid** 魷來魷去
+# **Swimming Squid Battle** 魷來魷去對戰版
 
-![swimming-squid](https://img.shields.io/github/v/tag/PAIA-Playful-AI-Arena/swimming-squid)
-[![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
-[![MLGame](https://img.shields.io/badge/MLGame->10.3.2-<COLOR>.svg)](https://github.com/PAIA-Playful-AI-Arena/MLGame)
-[![pygame](https://img.shields.io/badge/pygame-2.0.1-<COLOR>.svg)](https://github.com/pygame/pygame/releases/tag/2.0.1)
+![swimming-squid-battle](https://img.shields.io/github/v/tag/PAIA-Playful-AI-Arena/swimming-squid-battle)
 
+[![MLGame](https://img.shields.io/badge/MLGame->10.4.6a2-<COLOR>.svg)](https://github.com/PAIA-Playful-AI-Arena/MLGame)
 
-這是一個魷魚吃東西小遊戲，你需要找到正確的食物、避開海中的垃圾，還要提防敵人的攻擊！（當然你也可以主動攻擊他人）
+這是一個魷魚吃東西小遊戲，茫茫的海洋中有美味的食物，也有人類拋棄的垃圾，還出現了搶食物的同類！！
+    請用你的AI幫助小小魷魚，面對雜亂的海洋，面對同類的競爭快快長大。
 
 ![demo](https://github.com/PAIA-Playful-AI-Arena/swimming_squid_battle/blob/develop/asset/demo.gif?raw=true)
 
@@ -42,14 +41,14 @@ game = SwimmingSquid(
 ### 角色升級機制
 角色初始等級皆為 1，隨著得分增加升 / 降級。等級將會影響角色長寬與移動速度，各等級對應資料如下：
 
-| Lv| 角色寬度 | 角色高度 |移動速度|
-| --- | ------- | ------ | ------|
-| 1 | 30      | 45     |25|
-| 2 | 36      | 54     |21|
-| 3 | 42      | 63     |18|
-| 4 | 48      | 72     |16|
-| 5 | 54      | 81     |12|
-| 6 | 60      | 90     |9|
+| Lv| 升級門檻 | 角色寬度 | 角色高度 |移動速度|
+| --- |------| ------- | ------ | ------|
+| 1 | 10   | 30      | 45     |25|
+| 2 | 30   | 36      | 54     |21|
+| 3 | 60   | 42      | 63     |18|
+| 4 | 100  | 48      | 72     |16|
+| 5 | 150  | 54      | 81     |12|
+| 6 | ---  | 60      | 90     |9|
 
 ### 得分 / 扣分規則
 1. 吃東西：
@@ -67,23 +66,17 @@ game = SwimmingSquid(
    3. 食物數量會隨遊戲時間增加
 
 2. 玩家相撞：
-   1. 當地圖長寬皆大於 500 pixels 時，遊戲將增加碰撞機制。
-   2. 兩隻魷魚相撞時，如果一方等級較高，則等級高者加 10 分，等級低者扣 10 分。
-   3. 如果兩方等級相同，則雙方皆扣 5 分。
+   1. 兩隻魷魚相撞時，如果一方等級較高，則等級高者加 10 分，等級低者扣 10 分。
+   2. 如果兩方等級相同，則雙方皆扣 5 分。
 
-### 通關條件
+### 獲勝條件
 
-1. 時間結束前，吃到的食物超過`score`，即可晉級下一關。
+1. 時間結束前，先達到`目標分數`者獲勝。
 2. 若兩人同時通關，分數較高者勝。
-3. 若兩人同時通關且同分，遊戲將進入延長賽：提高 `score` 50 分，並且延長遊戲時間 600 frame。
+3. 若兩人同時通關且同分，遊戲將進入延長賽：提高 `目標分數` 50 分，並且延長遊戲時間 600 frame。
 4. 遊戲最多延長 3 次。
+5. 分數相同則平手。
 
-### 失敗條件
-
-1. 時間結束前，吃到的食物少於`score`，即算失敗。
-2. 若兩人皆未能達成 `score`，分數較高者勝。
-3. 若兩人皆未能達成 `score` 且同分，遊戲將進入延長賽：`score` 維持不變，並且延長遊戲時間 300 frame。
-4. 遊戲最多延長 3 次。
 
 ---
 
@@ -129,7 +122,6 @@ class MLPlay:
 ```json
 {
   "frame": 15,
-  "collision_mode": "True",
   "score": 8,
   "score_to_pass": 10,
   "self_x": 100,
@@ -197,7 +189,6 @@ class MLPlay:
 ```
 
 - `frame`：遊戲畫面更新的編號。
-- `collision_mode`：本局是否有碰撞模式。
 - `self_x`：玩家角色的Ｘ座標，表示方塊的`中心點`座標值，單位 pixel。
 - `self_y`：玩家角色的Ｙ座標，表示方塊的`中心點`座標值，單位 pixel。
 - `self_w`：玩家角色的寬度，單位 pixel。
