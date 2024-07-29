@@ -13,24 +13,25 @@ from .game_object import Squid, LevelParams
 from .sound_controller import SoundController
 
 
-def revise_ball(ball: Squid, playground: pygame.Rect):
-    ball_rect = copy.deepcopy(ball.rect)
-    if ball_rect.left < playground.left:
-        ball_rect.left = playground.left
-    elif ball_rect.right > playground.right:
-        ball_rect.right = playground.right
+def revise_squid_coordinate(squid: Squid, playground: pygame.Rect):
+    squid_rect = copy.deepcopy(squid.rect)
+    if squid_rect.left < playground.left:
+        squid_rect.left = playground.left
+    elif squid_rect.right > playground.right:
+        squid_rect.right = playground.right
 
-    if ball_rect.top < playground.top:
-        ball_rect.top = playground.top
-    elif ball_rect.bottom > playground.bottom:
-        ball_rect.bottom = playground.bottom
-    ball.rect = ball_rect
+    if squid_rect.top < playground.top:
+        squid_rect.top = playground.top
+    elif squid_rect.bottom > playground.bottom:
+        squid_rect.bottom = playground.bottom
+    squid.rect = squid_rect
     pass
+
 
 FOOD_LIST = [Food1, Food2, Food3, Garbage1, Garbage2, Garbage3]
 
 
-class SwimmingSquid(PaiaGame):
+class SwimmingSquidBattle(PaiaGame):
     """
     This is a Interface of a game
     """
@@ -50,13 +51,14 @@ class SwimmingSquid(PaiaGame):
         self._level_file = level_file
         self._used_file = ""
         self.foods = pygame.sprite.Group()
+        self.squids = pygame.sprite.Group()
         self.sound_controller = SoundController(sound)
         self._overtime_count = 0
         self._game_times = game_times
         self._winner = []
         self._foods_num = []
         self._foods_max_num = []
-        self._add_score = {"1P":0, "2P":0}
+        self._add_score = {"1P": 0, "2P": 0}
 
         self._init_game()
 
@@ -77,8 +79,11 @@ class SwimmingSquid(PaiaGame):
                 self._used_file = "001.json"
         finally:
             # set game params
-            self._foods_num.extend([game_params.food_1, game_params.food_2, game_params.food_3, game_params.garbage_1, game_params.garbage_2, game_params.garbage_3])
-            self._foods_max_num.extend([game_params.food_1_max, game_params.food_2_max, game_params.food_3_max, game_params.garbage_1_max, game_params.garbage_2_max, game_params.garbage_3_max])
+            self._foods_num.extend([game_params.food_1, game_params.food_2, game_params.food_3, game_params.garbage_1,
+                                    game_params.garbage_2, game_params.garbage_3])
+            self._foods_max_num.extend(
+                [game_params.food_1_max, game_params.food_2_max, game_params.food_3_max, game_params.garbage_1_max,
+                 game_params.garbage_2_max, game_params.garbage_3_max])
             if game_params.playground_size_w > 700:
                 game_params.playground_size_w = 700
             self.playground = pygame.Rect(
@@ -95,15 +100,11 @@ class SwimmingSquid(PaiaGame):
             # init game
             self.squid1 = Squid(1, 200, 300)
             self.squid2 = Squid(2, 500, 300)
+            self.squids.add(self.squid1)
+            self.squids.add(self.squid2)
             self.foods.empty()
             for i in range(6):
                 self._create_foods(FOOD_LIST[i], self._foods_num[i])
-            # self._create_foods(Food1, game_params.food_1)
-            # self._create_foods(Food2, game_params.food_2)
-            # self._create_foods(Food3, game_params.food_3)
-            # self._create_foods(Garbage1, game_params.garbage_1)
-            # self._create_foods(Garbage2, game_params.garbage_2)
-            # self._create_foods(Garbage3, game_params.garbage_3)
 
             self.frame_count = 0
             self._frame_count_down = self._frame_limit
@@ -125,11 +126,10 @@ class SwimmingSquid(PaiaGame):
         else:
             action_2 = "NONE"
 
-        # TODO fix bug
         self.squid1.update(self.frame_count, action_1)
         self.squid2.update(self.frame_count, action_2)
-        revise_ball(self.squid1, self.playground)
-        revise_ball(self.squid2, self.playground)
+        revise_squid_coordinate(self.squid1, self.playground)
+        revise_squid_coordinate(self.squid2, self.playground)
         # create new food
         if self.frame_count - self._new_food_frame > 150:
             for i in range(6):
@@ -152,30 +152,40 @@ class SwimmingSquid(PaiaGame):
         # self.draw()
 
         if not self.is_running:
-            # TODO 五戰三勝的情況下不能回傳 reset
-            return "RESET"
+            # 五戰三勝的情況下不能直接回傳，因此紀錄 winner 後，重啟遊戲
+            self.update_winner()
+            if self.is_passed:
+                self.sound_controller.play_cheer()
+            else:
+                self.sound_controller.play_fail()
+
+            if self._winner.count("1P") > self._game_times / 2:  # 1P 贏
+                print("玩家 1 獲勝！")
+                return "RESET"
+            elif self._winner.count("2P") > self._game_times / 2:  # 2P 贏
+
+                print("玩家 2 獲勝！")
+                return "RESET"
+            else:
+                self._init_game()
+
+            # return "RESET"
 
     def _check_foods_collision(self):
-        hits = pygame.sprite.spritecollide(self.squid1, self.foods, True)
-        if hits:
-            for food in hits:
-                # growth play special sound
-                self.squid1.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
-                self._create_foods(food.__class__, 1)
+        hits = pygame.sprite.groupcollide(self.squids, self.foods, dokilla=False, dokillb=False)
+        to_remove_foods = set()
+
+        for squid, foods in hits.items():
+            for food in foods:
+                squid.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
+                to_remove_foods.add(food)
                 if isinstance(food, (Food1, Food2, Food3,)):
                     self.sound_controller.play_eating_good()
                 elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
                     self.sound_controller.play_eating_bad()
-        hits = pygame.sprite.spritecollide(self.squid2, self.foods, True)
-        if hits:
-            for food in hits:
-                # growth play special sound
-                self.squid2.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
-                self._create_foods(food.__class__, 1)
-                if isinstance(food, (Food1, Food2, Food3,)):
-                    self.sound_controller.play_eating_good()
-                elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
-                    self.sound_controller.play_eating_bad()
+        for food in to_remove_foods:
+            food.kill()
+            self._create_foods(food.__class__, 1)
 
     def _check_squids_collision(self):
         hit = pygame.sprite.collide_rect(self.squid1, self.squid2)
@@ -213,8 +223,8 @@ class SwimmingSquid(PaiaGame):
             "self_h": self.squid1.rect.height,
             "self_vel": self.squid1.vel,
             "self_lv": self.squid1.lv,
-            "opponent_x":self.squid2.rect.centerx,
-            "opponent_y":self.squid2.rect.centery,
+            "opponent_x": self.squid2.rect.centerx,
+            "opponent_y": self.squid2.rect.centery,
             "opponent_lv": self.squid2.lv,
             "foods": foods_data,
             "score": self.squid1.score,
@@ -258,21 +268,9 @@ class SwimmingSquid(PaiaGame):
         return status
 
     def reset(self):
-        if self.is_passed:
-            self.sound_controller.play_cheer()
-        else:
-            self.sound_controller.play_fail()
-
-        if self._winner.count("1P") > self._game_times/2: # 1P 贏
-            self._winner.clear()
-            print("玩家 1 獲勝！開啟新一輪對戰！")
-        elif self._winner.count("2P") > self._game_times/2: # 2P 贏
-            self._winner.clear()
-            print("玩家 2 獲勝！開啟新一輪對戰！")
-        else:
-            pass
+        # 重新啟動遊戲
+        self._winner.clear()
         self._init_game()
-
 
     def _init_game(self):
         if path.isfile(self._level_file):
@@ -284,8 +282,8 @@ class SwimmingSquid(PaiaGame):
 
     @property
     def is_passed(self):
-        if self.squid1.score >= self._score_to_pass or self.squid2.score >= self._score_to_pass: # 達成目標分數
-            if self.squid1.score == self.squid2.score and self._overtime_count < 1: # 延長賽
+        if self.squid1.score >= self._score_to_pass or self.squid2.score >= self._score_to_pass:  # 達成目標分數
+            if self.squid1.score == self.squid2.score and self._overtime_count < 1:  # 延長賽
                 self._frame_limit += 600
                 self._score_to_pass += 50
                 self._overtime_count += 1
@@ -308,7 +306,6 @@ class SwimmingSquid(PaiaGame):
                 return True
         else:
             return False
-
 
     @property
     def is_running(self):
@@ -364,14 +361,16 @@ class SwimmingSquid(PaiaGame):
                                   "36px Consolas BOLD"),
             create_text_view_data(f"Timer:{self._frame_count_down:04d}", 745, 80, "#EEEEEE", "20px Consolas BOLD"),
             # create_text_view_data(f"", 785, 80, "#EEEEEE", "18px Consolas BOLD"),
-            create_text_view_data(f"File :{os.path.basename(self._used_file)}", 745, 120, "#EEEEEE", "20px Consolas BOLD"),
+            create_text_view_data(f"File :{os.path.basename(self._used_file)}", 745, 120, "#EEEEEE",
+                                  "20px Consolas BOLD"),
             # create_text_view_data(f"File :{self._level_file}", 605, 80, "#EEEEEE", "10px Consolas BOLD"),
             create_text_view_data(f"Goal :{self._score_to_pass:04d} pt", 745, 160, "#EEEEEE", "20px Consolas BOLD"),
             # create_text_view_data(f"", 785, 140, "#EEEEEE", "18px Consolas BOLD"),
             create_image_view_data("squid1", 705, 220, 76, 114),
             # create_text_view_data("1P", 705, 130, "#EEEEEE", "22px Consolas BOLD"),
             create_text_view_data(f"Lv     : {self.squid1.lv}", 785, 220, "#EEEEEE", "16px Consolas BOLD"),
-            create_text_view_data(f"Next Lv: {LEVEL_THRESHOLDS[self.squid1.lv - 1]-self.squid1.score :04d} pt", 785, 250, "#EEEEEE", "16px Consolas BOLD"),
+            create_text_view_data(f"Next Lv: {LEVEL_THRESHOLDS[self.squid1.lv - 1] - self.squid1.score :04d} pt", 785,
+                                  250, "#EEEEEE", "16px Consolas BOLD"),
             create_text_view_data(f"Vel    : {self.squid1.vel:2d}", 785, 280, "#EEEEEE", "16px Consolas BOLD"),
             create_text_view_data(f"Score  : {self.squid1.score:04d} pt", 785, 310, "#EEEEEE", "16px Consolas BOLD"),
             # create_text_view_data("2P", 705, 310, "#EEEEEE", "22px Consolas BOLD"),
@@ -405,7 +404,6 @@ class SwimmingSquid(PaiaGame):
         """
         if self.get_game_status() == GameStatus.GAME_PASS:
             self.game_result_state = GameResultState.FINISH
-        self.rank()
         return {"frame_used": self.frame_count,
                 "status": self.game_result_state,
                 "attachment": [
@@ -413,14 +411,14 @@ class SwimmingSquid(PaiaGame):
                         "player_num": get_ai_name(0),
                         "rank": self.squid1.rank,
                         "score": self.squid1.score,
-                        "wins":f"{self._winner.count('1P')} / {self._game_times}"
+                        "wins": f"{self._winner.count('1P')} / {self._game_times}"
                         # "passed": self.is_passed
                     },
                     {
                         "player_num": get_ai_name(1),
                         "rank": self.squid2.rank,
                         "score": self.squid2.score,
-                        "wins":f"{self._winner.count('2P')} / {self._game_times}"
+                        "wins": f"{self._winner.count('2P')} / {self._game_times}"
                         # "passed": self.is_passed
                     }
                 ]
@@ -456,7 +454,7 @@ class SwimmingSquid(PaiaGame):
         else:
             cmd_2p.append("NONE")
 
-        return {get_ai_name(0): cmd_1p, get_ai_name(1):cmd_2p}
+        return {get_ai_name(0): cmd_1p, get_ai_name(1): cmd_2p}
 
     def _create_foods(self, FOOD_TYPE, count: int = 5):
         for i in range(count):
@@ -469,7 +467,7 @@ class SwimmingSquid(PaiaGame):
 
         pass
 
-    def rank(self):
+    def update_winner(self):
         '''
 
         '''
