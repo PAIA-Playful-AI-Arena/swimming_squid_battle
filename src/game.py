@@ -132,7 +132,6 @@ class SwimmingSquid(PaiaGame):
         else:
             action_2 = "NONE"
 
-        # TODO fix bug
         self.squid1.update(self.frame_count, action_1)
         self.squid2.update(self.frame_count, action_2)
         revise_squid_coordinate(self.squid1, self.playground)
@@ -159,8 +158,24 @@ class SwimmingSquid(PaiaGame):
         # self.draw()
 
         if not self.is_running:
-            # TODO 五戰三勝的情況下不能回傳 reset
-            return "RESET"
+            # 五戰三勝的情況下不能直接回傳，因此紀錄 winner 後，重啟遊戲
+            self.update_winner()
+            if self.is_passed:
+                self.sound_controller.play_cheer()
+            else:
+                self.sound_controller.play_fail()
+
+            if self._winner.count("1P") > self._game_times / 2:  # 1P 贏
+                print("玩家 1 獲勝！")
+                return "RESET"
+            elif self._winner.count("2P") > self._game_times / 2:  # 2P 贏
+
+                print("玩家 2 獲勝！")
+                return "RESET"
+            else:
+                self._init_game()
+
+            # return "RESET"
 
     def _check_foods_collision(self):
         hits = pygame.sprite.groupcollide(self.squids, self.foods, dokilla=False, dokillb=False)
@@ -281,19 +296,8 @@ class SwimmingSquid(PaiaGame):
         return status
 
     def reset(self):
-        if self.is_passed:
-            self.sound_controller.play_cheer()
-        else:
-            self.sound_controller.play_fail()
-
-        if self._winner.count("1P") > self._game_times / 2:  # 1P 贏
-            self._winner.clear()
-            print("玩家 1 獲勝！開啟新一輪對戰！")
-        elif self._winner.count("2P") > self._game_times / 2:  # 2P 贏
-            self._winner.clear()
-            print("玩家 2 獲勝！開啟新一輪對戰！")
-        else:
-            pass
+        # 重新啟動遊戲
+        self._winner.clear()
         self._init_game()
 
     def _init_game(self):
@@ -428,7 +432,6 @@ class SwimmingSquid(PaiaGame):
         """
         if self.get_game_status() == GameStatus.GAME_PASS:
             self.game_result_state = GameResultState.FINISH
-        self.rank()
         return {"frame_used": self.frame_count,
                 "status": self.game_result_state,
                 "attachment": [
@@ -492,7 +495,7 @@ class SwimmingSquid(PaiaGame):
 
         pass
 
-    def rank(self):
+    def update_winner(self):
         '''
 
         '''
