@@ -31,7 +31,7 @@ def revise_squid_coordinate(squid: Squid, playground: pygame.Rect):
 FOOD_LIST = [Food1, Food2, Food3, Garbage1, Garbage2, Garbage3]
 
 
-class SwimmingSquid(PaiaGame):
+class SwimmingSquidBattle(PaiaGame):
     """
     This is a Interface of a game
     """
@@ -105,12 +105,6 @@ class SwimmingSquid(PaiaGame):
             self.foods.empty()
             for i in range(6):
                 self._create_foods(FOOD_LIST[i], self._foods_num[i])
-            # self._create_foods(Food1, game_params.food_1)
-            # self._create_foods(Food2, game_params.food_2)
-            # self._create_foods(Food3, game_params.food_3)
-            # self._create_foods(Garbage1, game_params.garbage_1)
-            # self._create_foods(Garbage2, game_params.garbage_2)
-            # self._create_foods(Garbage3, game_params.garbage_3)
 
             self.frame_count = 0
             self._frame_count_down = self._frame_limit
@@ -192,28 +186,6 @@ class SwimmingSquid(PaiaGame):
         for food in to_remove_foods:
             food.kill()
             self._create_foods(food.__class__, 1)
-
-        # hits = pygame.sprite.spritecollide(self.squid1, self.foods, True)
-        # # 如果1P 2P 同時吃到，要同時計分
-        # if hits:
-        #     for food in hits:
-        #         # growth play special sound
-        #         self.squid1.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
-        #         self._create_foods(food.__class__, 1)
-        #         if isinstance(food, (Food1, Food2, Food3,)):
-        #             self.sound_controller.play_eating_good()
-        #         elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
-        #             self.sound_controller.play_eating_bad()
-        # hits = pygame.sprite.spritecollide(self.squid2, self.foods, True)
-        # if hits:
-        #     for food in hits:
-        #         # growth play special sound
-        #         self.squid2.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
-        #         self._create_foods(food.__class__, 1)
-        #         if isinstance(food, (Food1, Food2, Food3,)):
-        #             self.sound_controller.play_eating_good()
-        #         elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
-        #             self.sound_controller.play_eating_bad()
 
     def _check_squids_collision(self):
         hit = pygame.sprite.collide_rect(self.squid1, self.squid2)
