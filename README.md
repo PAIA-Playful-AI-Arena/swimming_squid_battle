@@ -7,7 +7,11 @@
 這是一個魷魚吃東西小遊戲，茫茫的海洋中有美味的食物，也有人類拋棄的垃圾，還出現了搶食物的同類！！
     請用你的AI幫助小小魷魚，面對雜亂的海洋，面對同類的競爭快快長大。
 
-![demo](https://github.com/PAIA-Playful-AI-Arena/swimming_squid_battle/blob/develop/asset/demo.gif?raw=true)
+![demo](./asset/banner.gif?raw=true)
+
+# 更新內容(1.3.1)
+1. 修復錯誤，玩家同時吃到遊戲，會同時加分
+2. 修復錯誤，進行多場遊戲時，會進行完畢後再回傳結果
 
 ---
 # 基礎介紹
@@ -16,11 +20,11 @@
 
 - 直接啟動 [main.py](http://main.py) 即可執行
 
-### 遊戲參數設定
+## 遊戲參數設定
 
 ```python
 # main.py 
-game = SwimmingSquid(
+game = SwimmingSquidBattle(
             level: int = 1,
             level_file: str = None,
             game_times: int = 1,
@@ -79,6 +83,10 @@ game = SwimmingSquid(
 
 
 ---
+
+# 座標系統
+1. 使用 pygame 座標系，`左上角`為原點，`X軸`往`右`為正，`Y軸`往`下`為正
+2. 回傳的物件座標，皆為物體`中心點`座標
 
 # 進階說明
 
@@ -243,8 +251,8 @@ class MLPlay:
 
 - `frame_used`：表示使用了多少個frame
 - `state`：表示遊戲結束的狀態
-    - `FAIL`：遊戲失敗
-    - `FINISH`：遊戲完成
+    - `fail`：遊戲失敗
+    - `finish`：遊戲完成
 - `attachment`：紀錄遊戲各個玩家的結果與分數等資訊
     - `squid`：玩家編號
     - `score`：吃到的食物總數
