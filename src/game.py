@@ -213,13 +213,25 @@ class SwimmingSquidBattle(PaiaGame):
         """
         to_players_data = {}
         foods_data = []
-        for food in self.foods:
-            foods_data.append(
-                {"x": food.rect.centerx, "y": food.rect.centery,
-                 "w": food.rect.width, "h": food.rect.height,
-                 "type": str(food.type), "score": food.score}
-            )
 
+
+        foods_data = [
+            {
+                "x": food.rect.centerx,
+                "y": food.rect.centery,
+                "w": food.rect.width,
+                "h": food.rect.height,
+                "type": str(food.type),
+                "score": food.score
+            }
+            for food in self.foods
+            if (
+                    food.rect.bottom > self.playground.top and
+                    food.rect.top < self.playground.bottom and
+                    food.rect.right > self.playground.left and
+                    food.rect.left < self.playground.right
+            )
+        ]
         data_to_1p = {
             "frame": self.frame_count,
             "self_x": self.squid1.rect.centerx,
@@ -467,7 +479,7 @@ class SwimmingSquidBattle(PaiaGame):
             food = FOOD_TYPE(self.foods)
             if isinstance(food, (Food1, Food2, Food3,)):
                 food.set_center_x_and_y(
-                    random.choice([self.playground.left-40, self.playground.right+40]),
+                    random.choice([self.playground.left-20, self.playground.right+20]),
                     random.randint(self.playground.top, self.playground.bottom)
                 )
 
