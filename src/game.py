@@ -1,6 +1,7 @@
 import copy
 import json
 import os.path
+import random
 
 import pygame
 
@@ -80,11 +81,10 @@ class SwimmingSquidBattle(PaiaGame):
                 self._used_file = "001.json"
         finally:
             # set game params
-            self._foods_num.extend([game_params.food_1, game_params.food_2, game_params.food_3, game_params.garbage_1,
-                                    game_params.garbage_2, game_params.garbage_3])
-            self._foods_max_num.extend(
-                [game_params.food_1_max, game_params.food_2_max, game_params.food_3_max, game_params.garbage_1_max,
-                 game_params.garbage_2_max, game_params.garbage_3_max])
+            self._foods_num=[game_params.food_1, game_params.food_2, game_params.food_3, game_params.garbage_1,
+                                    game_params.garbage_2, game_params.garbage_3]
+            self._foods_max_num=[game_params.food_1_max, game_params.food_2_max, game_params.food_3_max, game_params.garbage_1_max,
+                 game_params.garbage_2_max, game_params.garbage_3_max]
 
             self.playground = pygame.Rect(
                 0, 0,
@@ -461,10 +461,18 @@ class SwimmingSquidBattle(PaiaGame):
         for i in range(count):
             # add food to group
             food = FOOD_TYPE(self.foods)
-            food.set_center_x_and_y(
-                random.randint(self.playground.left, self.playground.right),
-                random.randint(self.playground.top, self.playground.bottom)
-            )
+            if isinstance(food, (Food1, Food2, Food3,)):
+                food.set_center_x_and_y(
+                    random.choice([self.playground.left-40, self.playground.right+40]),
+                    random.randint(self.playground.top, self.playground.bottom)
+                )
+
+            elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
+                food.set_center_x_and_y(
+                    random.randint(self.playground.left, self.playground.right),
+                    -20
+                )
+
 
         pass
 
