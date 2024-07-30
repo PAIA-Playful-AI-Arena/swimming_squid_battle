@@ -111,6 +111,10 @@ class SwimmingSquidBattle(PaiaGame):
             self._new_food_frame = 0
             self._overtime_count = 0
             self.sound_controller.play_music()
+            game_params.left = self.playground.left
+            game_params.right = self.playground.right
+            game_params.bottom = self.playground.bottom
+            game_params.top = self.playground.top
             self._game_params = game_params
 
     def update(self, commands):
