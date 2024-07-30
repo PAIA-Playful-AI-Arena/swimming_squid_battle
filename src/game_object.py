@@ -30,6 +30,11 @@ class LevelParams(pydantic.BaseModel):
     garbage_2_max: int = 0
     garbage_3: int = 0
     garbage_3_max: int = 0
+    # 補充給玩家需要的資訊
+    left:int=-1
+    right:int=-1
+    top:int=-1
+    bottom:int=-1
 
     @validator('playground_size_w',  pre=True)
     def validate_playground_size_w(cls, value):
