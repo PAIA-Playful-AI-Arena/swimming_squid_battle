@@ -265,6 +265,7 @@ class MLPlay:
 
 ## 自定義環境地圖
 [地圖設定檔](./levels/template.json)
+可修改檔案中的參數，並匯入遊戲中使用。
 ```json
 {
   "time_to_play": 600, //遊戲時間限制
