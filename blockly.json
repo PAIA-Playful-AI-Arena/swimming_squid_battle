@@ -9,7 +9,6 @@
     "SCENE_INFO": [
         ["scene_info['frame']", "# frame", "# 幀數"],
         ["scene_info['status']", "game status", "遊戲狀態"],
-        ["scene_info['collision_mode]", "game mode", "是否有碰撞機制"],
         ["scene_info['self_x']", "x coordinate of squid", "玩家角色的中心 x 座標"],
         ["scene_info['self_y']", "y coordinate of squid", "玩家角色的中心 y 座標"],
         ["scene_info['self_w']", "width of squid", "玩家角色的寬度"],
