@@ -195,7 +195,12 @@ class MLPlay:
       "x": 54,
       "y": 194
     }
-  ]
+  ] ,
+  "env": {
+     "time_to_play": 600,
+    "playground_size_w":700, 
+    "playground_size_h":550
+  }
 
 }
 ```
@@ -214,6 +219,7 @@ class MLPlay:
   -  `type` 食物類型： `FOOD_1`, `FOOD_2`, `FOOD_3`, `GARBAGE_1`, `GARBAGE_2`, `GARBAGE_3`
 - `score`：目前得到的分數
 - `score_to_pass`：通關分數
+- `env`：環境資訊，裡面會包含遊戲設定檔的所有參數，若有不符範圍的，會拿到校正後的參數。
 - `status`： 目前遊戲的狀態
     - `GAME_ALIVE`：遊戲進行中
     - `GAME_PASS`：遊戲通關
