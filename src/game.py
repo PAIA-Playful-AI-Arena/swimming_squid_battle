@@ -59,6 +59,7 @@ class SwimmingSquidBattle(PaiaGame):
         self._foods_num = []
         self._foods_max_num = []
         self._add_score = {"1P": 0, "2P": 0}
+        self._game_params ={}
 
         self._init_game()
 
@@ -84,8 +85,7 @@ class SwimmingSquidBattle(PaiaGame):
             self._foods_max_num.extend(
                 [game_params.food_1_max, game_params.food_2_max, game_params.food_3_max, game_params.garbage_1_max,
                  game_params.garbage_2_max, game_params.garbage_3_max])
-            if game_params.playground_size_w > 700:
-                game_params.playground_size_w = 700
+
             self.playground = pygame.Rect(
                 0, 0,
                 game_params.playground_size_w,
@@ -111,6 +111,7 @@ class SwimmingSquidBattle(PaiaGame):
             self._new_food_frame = 0
             self._overtime_count = 0
             self.sound_controller.play_music()
+            self._game_params = game_params
 
     def update(self, commands):
         # handle command
@@ -229,8 +230,8 @@ class SwimmingSquidBattle(PaiaGame):
             "foods": foods_data,
             "score": self.squid1.score,
             "score_to_pass": self._score_to_pass,
-            "status": self.get_game_status()
-
+            "status": self.get_game_status(),
+            "env":self._game_params.__dict__
         }
 
         data_to_2p = {
@@ -247,8 +248,8 @@ class SwimmingSquidBattle(PaiaGame):
             "foods": foods_data,
             "score": self.squid2.score,
             "score_to_pass": self._score_to_pass,
-            "status": self.get_game_status()
-
+            "status": self.get_game_status(),
+            "env": self._game_params.__dict__
         }
 
         to_players_data[get_ai_name(0)] = data_to_1p
