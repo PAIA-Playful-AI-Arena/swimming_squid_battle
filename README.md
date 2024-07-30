@@ -9,6 +9,10 @@
 
 ![demo](./asset/banner.gif?raw=true)
 
+# 更新內容(1.4.1)
+1. 提供地圖環境參數給AI
+2. 更新積木，Logo
+
 # 更新內容(1.3.1)
 1. 修復錯誤，玩家同時吃到遊戲，會同時加分
 2. 修復錯誤，進行多場遊戲時，會進行完畢後再回傳結果
@@ -258,6 +262,33 @@ class MLPlay:
     - `score`：吃到的食物總數
     - `rank`：排名
     - `wins`：目前勝場數
+
+## 自定義環境地圖
+[地圖設定檔](./levels/template.json)
+```json
+{
+  "time_to_play": 600, //遊戲時間限制
+  "playground_size_w":700, //環境寬度，需要介於 100~650
+  "playground_size_h":550, //環境寬度，需要介於 100~550
+  "score_to_pass": 10, //通關分數
+  "food_1": 3, //初始食物數量 
+  "food_1_max": 5, //最大食物數量
+  "food_2": 2,
+  "food_2_max": 3,
+  "food_3": 5,
+  "food_3_max": 7,
+  "garbage_1": 1,
+  "garbage_1_max": 4,
+  "garbage_2": 1,
+  "garbage_2_max": 3,
+  "garbage_3": 1,
+  "garbage_3_max": 2
+
+}
+```
+
+
+
 
 ---
 
