@@ -3,6 +3,7 @@ import random
 
 import pydantic
 import pygame.sprite
+from pydantic import validator
 
 from .env import *
 from .foods import Food
@@ -29,6 +30,25 @@ class LevelParams(pydantic.BaseModel):
     garbage_2_max: int = 0
     garbage_3: int = 0
     garbage_3_max: int = 0
+
+    @validator('playground_size_w',  pre=True)
+    def validate_playground_size_w(cls, value):
+        min_size = 100
+        max_size = 650
+        if value < min_size:
+            return min_size
+        if value > max_size:
+            return max_size
+        return value
+    @validator( 'playground_size_h', pre=True)
+    def validate_playground_size_h(cls, value):
+        min_size = 100
+        max_size = 550
+        if value < min_size:
+            return min_size
+        if value > max_size:
+            return max_size
+        return value
 
 
 # level_thresholds = [10, 15, 20, 25, 30]
