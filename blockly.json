@@ -25,6 +25,10 @@
         ["scene_info['env']", "the env of map", "地圖環境資訊"],
         ["scene_info['env']['playground_size_w']", "the width of playground", "環境寬度"],
         ["scene_info['env']['playground_size_h']", "the height of playground", "環境高度"],
+        ["scene_info['env']['top']", "the top of playground", "上邊界"],
+        ["scene_info['env']['bottom']", "the bottom of playground", "下邊界"],
+        ["scene_info['env']['left']", "the left of playground", "左邊界"],
+        ["scene_info['env']['right']", "the right of playground", "右邊界"],
         ["scene_info['env']['time_to_play']", "the time of this game", "限制時長"],
         ["scene_info", "dictionary of all information", "包含所有資訊的字典"]
     ],
