@@ -479,8 +479,8 @@ class SwimmingSquidBattle(PaiaGame):
             food = FOOD_TYPE(self.foods)
             if isinstance(food, (Food1, Food2, Food3,)):
                 food.set_center_x_and_y(
-                    random.choice([self.playground.left-20, self.playground.right+20]),
-                    random.randint(self.playground.top, self.playground.bottom)
+                    random.randint(self.playground.left+20, self.playground.right-20),
+                    random.randint(self.playground.top+20, self.playground.bottom-20)
                 )
 
             elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
