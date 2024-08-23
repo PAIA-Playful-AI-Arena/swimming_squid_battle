@@ -33,7 +33,7 @@
     ],
     "CONSTANT": [
 
-        [30, "food lv1 size", "等級一食物的寬高度"],
+        [30, "food lv1 size", "等級一食物的高度"],
         [40, "food lv2 size", "等級二食物的高度"],
         [50, "food lv3 size", "等級三食物的高度"],
         [350, "Playground center X ", "地圖中心點 X 座標"],
