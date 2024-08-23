@@ -1,8 +1,8 @@
 import copy
 import json
 import os.path
-import random
 
+import pandas as pd
 import pygame
 
 from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
@@ -44,7 +44,6 @@ class SwimmingSquidBattle(PaiaGame):
             game_times: int = 1,
             sound: str = "off",
             *args, **kwargs):
-        # TODO 要加入五戰三勝制參數
         super().__init__(user_num=1)
         self.game_result_state = GameResultState.FAIL
         self.scene = Scene(width=WIDTH, height=HEIGHT, color=BG_COLOR, bias_x=0, bias_y=0)
@@ -60,8 +59,14 @@ class SwimmingSquidBattle(PaiaGame):
         self._foods_num = []
         self._foods_max_num = []
         self._add_score = {"1P": 0, "2P": 0}
-        self._game_params ={}
-
+        self._game_params = {}
+        self._current_round_num = 1
+        self._record1 = {
+            "player_num": get_ai_name(0),
+        }
+        self._record2 = {
+            "player_num": get_ai_name(1),
+        }
         self._init_game()
 
     def _init_game_by_file(self, level_file_path: str):
@@ -81,10 +86,11 @@ class SwimmingSquidBattle(PaiaGame):
                 self._used_file = "001.json"
         finally:
             # set game params
-            self._foods_num=[game_params.food_1, game_params.food_2, game_params.food_3, game_params.garbage_1,
-                                    game_params.garbage_2, game_params.garbage_3]
-            self._foods_max_num=[game_params.food_1_max, game_params.food_2_max, game_params.food_3_max, game_params.garbage_1_max,
-                 game_params.garbage_2_max, game_params.garbage_3_max]
+            self._foods_num = [game_params.food_1, game_params.food_2, game_params.food_3, game_params.garbage_1,
+                               game_params.garbage_2, game_params.garbage_3]
+            self._foods_max_num = [game_params.food_1_max, game_params.food_2_max, game_params.food_3_max,
+                                   game_params.garbage_1_max,
+                                   game_params.garbage_2_max, game_params.garbage_3_max]
 
             self.playground = pygame.Rect(
                 0, 0,
@@ -159,6 +165,7 @@ class SwimmingSquidBattle(PaiaGame):
         if not self.is_running:
             # 五戰三勝的情況下不能直接回傳，因此紀錄 winner 後，重啟遊戲
             self.update_winner()
+
             if self.is_passed:
                 self.sound_controller.play_cheer()
             else:
@@ -172,6 +179,8 @@ class SwimmingSquidBattle(PaiaGame):
                 print("玩家 2 獲勝！")
                 return "RESET"
             else:
+                self._current_round_num += 1
+
                 self._init_game()
 
             # return "RESET"
@@ -214,7 +223,6 @@ class SwimmingSquidBattle(PaiaGame):
         to_players_data = {}
         foods_data = []
 
-
         foods_data = [
             {
                 "x": food.rect.centerx,
@@ -247,7 +255,7 @@ class SwimmingSquidBattle(PaiaGame):
             "score": self.squid1.score,
             "score_to_pass": self._score_to_pass,
             "status": self.get_game_status(),
-            "env":self._game_params.__dict__
+            "env": self._game_params.__dict__
         }
 
         data_to_2p = {
@@ -286,6 +294,7 @@ class SwimmingSquidBattle(PaiaGame):
 
     def reset(self):
         # 重新啟動遊戲
+        self._current_round_num = 1
         self._winner.clear()
         self._init_game()
 
@@ -374,8 +383,12 @@ class SwimmingSquidBattle(PaiaGame):
             foods_data.append(food.game_object_data)
         game_obj_list = [self.squid1.game_object_data, self.squid2.game_object_data]
         toggle_objs = [
-            create_text_view_data(f"{self._winner.count('1P')}:{self._winner.count('2P')}", 795, 20, "#EEEEEE",
-                                  "36px Consolas BOLD"),
+            create_text_view_data(f"Round {self._current_round_num} / {self._game_times}", 770, 10, "#EEEEEE",
+                                  "22px Arial BOLD"),
+
+            create_text_view_data(f"{self._winner.count('1P')}:{self._winner.count('2P')}", 795, 40, "#EEEEEE",
+                                  "32px Consolas BOLD"),
+
             create_text_view_data(f"Timer:{self._frame_count_down:04d}", 745, 80, "#EEEEEE", "20px Consolas BOLD"),
             # create_text_view_data(f"", 785, 80, "#EEEEEE", "18px Consolas BOLD"),
             create_text_view_data(f"File :{os.path.basename(self._used_file)}", 745, 120, "#EEEEEE",
@@ -390,6 +403,7 @@ class SwimmingSquidBattle(PaiaGame):
                                   250, "#EEEEEE", "16px Consolas BOLD"),
             create_text_view_data(f"Vel    : {self.squid1.vel:2d}", 785, 280, "#EEEEEE", "16px Consolas BOLD"),
             create_text_view_data(f"Score  : {self.squid1.score:04d} pt", 785, 310, "#EEEEEE", "16px Consolas BOLD"),
+
             # create_text_view_data("2P", 705, 310, "#EEEEEE", "22px Consolas BOLD"),
             create_image_view_data("squid2", 705, 410, 76, 114),
             create_text_view_data(f"Lv     : {self.squid2.lv}", 785, 410, "#EEEEEE", "16px Consolas BOLD"),
@@ -421,26 +435,19 @@ class SwimmingSquidBattle(PaiaGame):
         """
         if self.get_game_status() == GameStatus.GAME_PASS:
             self.game_result_state = GameResultState.FINISH
-        return {"frame_used": self.frame_count,
-                "status": self.game_result_state,
-                "attachment": [
-                    {
-                        "player_num": get_ai_name(0),
-                        "rank": self.squid1.rank,
-                        "score": self.squid1.score,
-                        "wins": f"{self._winner.count('1P')} / {self._game_times}"
-                        # "passed": self.is_passed
-                    },
-                    {
-                        "player_num": get_ai_name(1),
-                        "rank": self.squid2.rank,
-                        "score": self.squid2.score,
-                        "wins": f"{self._winner.count('2P')} / {self._game_times}"
-                        # "passed": self.is_passed
-                    }
-                ]
+        #  update record data
+        self._record1['rank'] = self.squid1.rank
+        self._record1['wins'] = f"{self._winner.count('1P')} / {self._game_times}"
+        self._record2['rank'] = self.squid2.rank
+        self._record2['wins'] = f"{self._winner.count('2P')} / {self._game_times}"
 
-                }
+        return {
+            "frame_used": self.frame_count,
+            "status": self.game_result_state,
+            "attachment": [
+                self._record1, self._record2
+            ]
+        }
 
     def get_keyboard_command(self):
         """
@@ -479,8 +486,8 @@ class SwimmingSquidBattle(PaiaGame):
             food = FOOD_TYPE(self.foods)
             if isinstance(food, (Food1, Food2, Food3,)):
                 food.set_center_x_and_y(
-                    random.randint(self.playground.left+20, self.playground.right-20),
-                    random.randint(self.playground.top+20, self.playground.bottom-20)
+                    random.randint(self.playground.left + 20, self.playground.right - 20),
+                    random.randint(self.playground.top + 20, self.playground.bottom - 20)
                 )
 
             elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
@@ -489,13 +496,10 @@ class SwimmingSquidBattle(PaiaGame):
                     -20
                 )
 
-
         pass
 
     def update_winner(self):
-        '''
 
-        '''
         if self.squid1.score > self.squid2.score:
             self.squid1.rank = 1
             self.squid2.rank = 2
@@ -508,3 +512,8 @@ class SwimmingSquidBattle(PaiaGame):
             self.squid1.rank = 1
             self.squid2.rank = 1
             self._winner.append("DRAW")
+
+        self._record1[f"round{self._current_round_num}"] = self.squid1.score
+        self._record2[f"round{self._current_round_num}"] = self.squid2.score
+        temp_records = [self._record1, self._record2]
+        print(pd.DataFrame(temp_records).to_string())
