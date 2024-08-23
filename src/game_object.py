@@ -63,10 +63,10 @@ class Squid(pygame.sprite.Sprite):
     ANGLE_TO_RIGHT = math.radians(-10)
     ANGLE_TO_LEFT = math.radians(10)
 
-    def __init__(self, id, x, y):
+    def __init__(self, ai_id, x, y):
         pygame.sprite.Sprite.__init__(self)
 
-        self.id = id
+        self.id = ai_id
         self.origin_image = pygame.Surface([SQUID_W, SQUID_H])
         self.image = self.origin_image
         self.rect = self.image.get_rect()
