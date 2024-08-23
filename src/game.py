@@ -2,6 +2,7 @@ import copy
 import json
 import os.path
 
+import pandas as pd
 import pygame
 
 from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
@@ -43,7 +44,6 @@ class SwimmingSquidBattle(PaiaGame):
             game_times: int = 1,
             sound: str = "off",
             *args, **kwargs):
-        # TODO 要加入五戰三勝制參數
         super().__init__(user_num=1)
         self.game_result_state = GameResultState.FAIL
         self.scene = Scene(width=WIDTH, height=HEIGHT, color=BG_COLOR, bias_x=0, bias_y=0)
@@ -61,6 +61,12 @@ class SwimmingSquidBattle(PaiaGame):
         self._add_score = {"1P": 0, "2P": 0}
         self._game_params = {}
         self._current_round_num = 1
+        self._record1 = {
+            "player_num": get_ai_name(0),
+        }
+        self._record2 = {
+            "player_num": get_ai_name(1),
+        }
         self._init_game()
 
     def _init_game_by_file(self, level_file_path: str):
@@ -173,7 +179,6 @@ class SwimmingSquidBattle(PaiaGame):
                 print("玩家 2 獲勝！")
                 return "RESET"
             else:
-                # TODO print result and start next match
                 self._current_round_num += 1
 
                 self._init_game()
@@ -430,28 +435,19 @@ class SwimmingSquidBattle(PaiaGame):
         """
         if self.get_game_status() == GameStatus.GAME_PASS:
             self.game_result_state = GameResultState.FINISH
-        # TODO add every match data
+        #  update record data
+        self._record1['rank'] = self.squid1.rank
+        self._record1['wins'] = f"{self._winner.count('1P')} / {self._game_times}"
+        self._record2['rank'] = self.squid2.rank
+        self._record2['wins'] = f"{self._winner.count('2P')} / {self._game_times}"
 
-        return {"frame_used": self.frame_count,
-                "status": self.game_result_state,
-                "attachment": [
-                    {
-                        "player_num": get_ai_name(0),
-                        "rank": self.squid1.rank,
-                        "score": self.squid1.score,
-                        "wins": f"{self._winner.count('1P')} / {self._game_times}"
-                        # "passed": self.is_passed
-                    },
-                    {
-                        "player_num": get_ai_name(1),
-                        "rank": self.squid2.rank,
-                        "score": self.squid2.score,
-                        "wins": f"{self._winner.count('2P')} / {self._game_times}"
-                        # "passed": self.is_passed
-                    }
-                ]
-
-                }
+        return {
+            "frame_used": self.frame_count,
+            "status": self.game_result_state,
+            "attachment": [
+                self._record1, self._record2
+            ]
+        }
 
     def get_keyboard_command(self):
         """
@@ -503,9 +499,7 @@ class SwimmingSquidBattle(PaiaGame):
         pass
 
     def update_winner(self):
-        '''
 
-        '''
         if self.squid1.score > self.squid2.score:
             self.squid1.rank = 1
             self.squid2.rank = 2
@@ -518,3 +512,8 @@ class SwimmingSquidBattle(PaiaGame):
             self.squid1.rank = 1
             self.squid2.rank = 1
             self._winner.append("DRAW")
+
+        self._record1[f"round{self._current_round_num}"] = self.squid1.score
+        self._record2[f"round{self._current_round_num}"] = self.squid2.score
+        temp_records = [self._record1, self._record2]
+        print(pd.DataFrame(temp_records).to_string())
