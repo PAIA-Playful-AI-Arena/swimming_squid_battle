@@ -1,18 +1,17 @@
-import math
 import random
 
+import math
 import pydantic
 import pygame.sprite
 from pydantic import validator
 
+from mlgame.view.view_model import create_image_view_data
 from .env import *
 from .foods import Food
 from .sound_controller import SoundController
-from mlgame.view.view_model import create_rect_view_data, create_image_view_data
 
 
 class LevelParams(pydantic.BaseModel):
-
     playground_size_w: int = 300
     playground_size_h: int = 300
     score_to_pass: int = 10
@@ -31,12 +30,12 @@ class LevelParams(pydantic.BaseModel):
     garbage_3: int = 0
     garbage_3_max: int = 0
     # 補充給玩家需要的資訊
-    left:int=-1
-    right:int=-1
-    top:int=-1
-    bottom:int=-1
+    left: int = -1
+    right: int = -1
+    top: int = -1
+    bottom: int = -1
 
-    @validator('playground_size_w',  pre=True)
+    @validator('playground_size_w', pre=True)
     def validate_playground_size_w(cls, value):
         min_size = 100
         max_size = 650
@@ -45,7 +44,8 @@ class LevelParams(pydantic.BaseModel):
         if value > max_size:
             return max_size
         return value
-    @validator( 'playground_size_h', pre=True)
+
+    @validator('playground_size_h', pre=True)
     def validate_playground_size_h(cls, value):
         min_size = 100
         max_size = 550
@@ -63,10 +63,10 @@ class Squid(pygame.sprite.Sprite):
     ANGLE_TO_RIGHT = math.radians(-10)
     ANGLE_TO_LEFT = math.radians(10)
 
-    def __init__(self, id, x, y):
+    def __init__(self, ai_id, x, y):
         pygame.sprite.Sprite.__init__(self)
 
-        self.id = id
+        self.id = ai_id
         self.origin_image = pygame.Surface([SQUID_W, SQUID_H])
         self.image = self.origin_image
         self.rect = self.image.get_rect()
@@ -83,7 +83,7 @@ class Squid(pygame.sprite.Sprite):
     def update(self, frame, motion):
         # for motion in motions:
         self._motion = motion
-        if frame - self._last_collision <=3:
+        if frame - self._last_collision <= 3:
             # 反彈
             if self._collision_dir == "UP":
                 self.rect.centery += self._vel
@@ -153,7 +153,6 @@ class Squid(pygame.sprite.Sprite):
             else:
                 self._collision_dir = random.choice(["UP", "DOWN", "RIGHT", "LEFT"])
 
-
         new_lv = get_current_level(self._score)
 
         if new_lv > self._lv:
@@ -166,7 +165,6 @@ class Squid(pygame.sprite.Sprite):
             self._vel = LEVEL_PROPERTIES[new_lv]['vel']
             self._lv = new_lv
 
-
     @property
     def score(self):
         return self._score
@@ -174,6 +172,7 @@ class Squid(pygame.sprite.Sprite):
     @property
     def vel(self):
         return self._vel
+
     @property
     def lv(self):
         return self._lv
@@ -189,5 +188,5 @@ def get_current_level(score: int) -> int:
 
     for level, threshold in enumerate(LEVEL_THRESHOLDS, start=1):
         if score < threshold:
-            return min(level,6)
-    return len(LEVEL_THRESHOLDS) # Return the next level if score is beyond all thresholds
+            return min(level, 6)
+    return len(LEVEL_THRESHOLDS)  # Return the next level if score is beyond all thresholds
