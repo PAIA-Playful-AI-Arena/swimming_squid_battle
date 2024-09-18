@@ -10,7 +10,7 @@ from mlgame.utils.enum import get_ai_name
 from mlgame.view.decorator import check_game_progress, check_game_result
 from mlgame.view.view_model import *
 from .foods import *
-from .game_object import Squid, LevelParams
+from .game_object import Squid, LevelParams, ScoreText
 from .sound_controller import SoundController
 
 
@@ -52,6 +52,7 @@ class SwimmingSquidBattle(PaiaGame):
         self._used_file = ""
         self.foods = pygame.sprite.Group()
         self.squids = pygame.sprite.Group()
+        self._help_texts = pygame.sprite.Group()
         self.sound_controller = SoundController(sound)
         self._overtime_count = 0
         self._game_times = game_times
@@ -151,7 +152,7 @@ class SwimmingSquidBattle(PaiaGame):
 
         # update sprite
         self.foods.update(playground=self.playground, squid=self.squid1)
-
+        self._help_texts.update()
         # handle collision
 
         self._check_foods_collision()
@@ -194,8 +195,22 @@ class SwimmingSquidBattle(PaiaGame):
                 squid.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
                 to_remove_foods.add(food)
                 if isinstance(food, (Food1, Food2, Food3,)):
+                    ScoreText(
+                        text=f"+{food.score}",
+                        color=SCORE_COLOR_PLUS,
+                        x=food.rect.centerx,
+                        y=food.rect.centery,
+                        groups=self._help_texts
+                    )
                     self.sound_controller.play_eating_good()
                 elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
+                    ScoreText(
+                        text=f"{food.score}",
+                        color=SCORE_COLOR_MINUS,
+                        x=food.rect.centerx,
+                        y=food.rect.centery,
+                        groups=self._help_texts
+                    )
                     self.sound_controller.play_eating_bad()
         for food in to_remove_foods:
             food.kill()
@@ -378,10 +393,14 @@ class SwimmingSquidBattle(PaiaGame):
         """
         Get the position of game objects for drawing on the web
         """
-        foods_data = []
-        for food in self.foods:
-            foods_data.append(food.game_object_data)
+        foods_data = [food.game_object_data for food in self.foods]
+
         game_obj_list = [self.squid1.game_object_data, self.squid2.game_object_data]
+        help_texts = [
+            obj.game_object_data for obj in self._help_texts
+        ]
+        game_obj_list.extend(foods_data)
+        game_obj_list.extend(help_texts)
         toggle_objs = [
             create_text_view_data(f"Round {self._current_round_num} / {self._game_times}", 770, 10, "#EEEEEE",
                                   "22px Arial BOLD"),
