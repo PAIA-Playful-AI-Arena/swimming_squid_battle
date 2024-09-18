@@ -2,6 +2,7 @@ from enum import auto
 from os import path
 
 from mlgame.utils.enum import StringEnum
+
 # game
 WIDTH = 950
 WIDTH_OF_INFO = 250
@@ -9,14 +10,14 @@ WIDTH_OF_INFO = 250
 HEIGHT = 600
 BG_COLOR = "#2B2B49"
 PG_COLOR = "#B3E5FC"
-SCORE_COLOR_PLUS="#76ff03"
-SCORE_COLOR_MINUS="#ec407a"
+SCORE_COLOR_PLUS = "#76ff03"
+SCORE_COLOR_MINUS = "#ec407a"
 
 # ball -> squid
 # BALL_COLOR = "#FFEB3B"
 SQUID_W = 30
 SQUID_H = 45
-LEVEL_THRESHOLDS = [10, 30, 60, 100, 150,200]
+LEVEL_THRESHOLDS = [10, 30, 60, 100, 150, 200]
 LEVEL_PROPERTIES = {
     1: {'size_ratio': 1.0, 'vel': 25},
     2: {'size_ratio': 1.2, 'vel': 21},
@@ -27,14 +28,14 @@ LEVEL_PROPERTIES = {
 }
 
 COLLISION_SCORE = {
-    "WIN":10,
-    "LOSE":-10,
-    "DRAW":-5
+    "WIN": 10,
+    "LOSE": -10,
+    "DRAW": -5
 }
 
-
-
 ASSET_IMAGE_DIR = path.join(path.dirname(__file__), "../asset/img")
+
+
 # food
 class FoodTypeEnum(StringEnum):
     FOOD_1 = auto()
@@ -43,8 +44,6 @@ class FoodTypeEnum(StringEnum):
     GARBAGE_1 = auto()
     GARBAGE_2 = auto()
     GARBAGE_3 = auto()
-
-
 
 
 FOOD_LV1_SIZE = 30
@@ -59,7 +58,10 @@ MUSIC_PATH = path.join(path.dirname(__file__), "..", "asset", "music")
 
 BG_PATH = path.join(ASSET_IMAGE_DIR, "background.png")
 SQUID_PATH = path.join(ASSET_IMAGE_DIR, "squid.png")
+SQUID_HURT_PATH = path.join(ASSET_IMAGE_DIR, "squid-hurt.png")
 SQUID2_PATH = path.join(ASSET_IMAGE_DIR, "squid2.png")
+SQUID2_HURT_PATH = path.join(ASSET_IMAGE_DIR, "squid2-hurt.png")
+STAR_PATH = path.join(ASSET_IMAGE_DIR, "star.png")
 
 IMG_ID_FOOD01_L = "food_01_L"
 IMG_ID_FOOD02_L = "food_02_L"
@@ -79,11 +81,13 @@ GARBAGE01_PATH = path.join(ASSET_IMAGE_DIR, "garbage_01.png")
 GARBAGE02_PATH = path.join(ASSET_IMAGE_DIR, "garbage_02.png")
 GARBAGE03_PATH = path.join(ASSET_IMAGE_DIR, "garbage_03.png")
 
-
 ASSET_IMG_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/main/asset/img/"
-BG_URL =  ASSET_IMG_URL + "background.png"
-SQUID_URL =  ASSET_IMG_URL + "squid.png"
-SQUID2_URL =  ASSET_IMG_URL + "squid2.png"
+BG_URL = ASSET_IMG_URL + "background.png"
+SQUID_URL = ASSET_IMG_URL + "squid.png"
+SQUID_HURT_URL = ASSET_IMG_URL + "squid-hurt.png"
+SQUID2_URL = ASSET_IMG_URL + "squid2.png"
+SQUID2_HURT_URL = ASSET_IMG_URL + "squid2-hurt.png"
+STAR_URL = ASSET_IMG_URL + "star.png"
 # Food URLs
 FOOD01_L_URL = ASSET_IMG_URL + "food_01_L.png"
 FOOD02_L_URL = ASSET_IMG_URL + "food_02_L.png"  # Assuming the naming pattern is similar
