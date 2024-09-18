@@ -213,3 +213,31 @@ class ScoreText(pygame.sprite.Sprite):
             self._text, self.rect.centerx, self.rect.centery, self._color,
             "24px Arial BOLD")
 
+
+class CryingStar(pygame.sprite.Sprite):
+    def __init__(self, x, y, groups):
+        pygame.sprite.Sprite.__init__(self, groups)
+        self.rect = pygame.Rect(x, y, SQUID_H, SQUID_H)
+        self.rect.center = (x, y)
+
+        self._live_frame = 15
+
+    def update(self):
+
+        self._live_frame-=1
+        self.rect.centery -=5
+
+        if self._live_frame<=0:
+            self.kill()
+    @property
+    def game_object_data(self):
+        return create_image_view_data(
+            f"star",
+            self.rect.x,
+            self.rect.y,
+            self.rect.width,
+            self.rect.height,
+            angle=0.1
+
+        )
+

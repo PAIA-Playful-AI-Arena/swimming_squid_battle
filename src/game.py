@@ -10,7 +10,7 @@ from mlgame.utils.enum import get_ai_name
 from mlgame.view.decorator import check_game_progress, check_game_result
 from mlgame.view.view_model import *
 from .foods import *
-from .game_object import Squid, LevelParams, ScoreText
+from .game_object import Squid, LevelParams, ScoreText, CryingStar
 from .sound_controller import SoundController
 
 
@@ -219,6 +219,12 @@ class SwimmingSquidBattle(PaiaGame):
     def _check_squids_collision(self):
         hit = pygame.sprite.collide_rect(self.squid1, self.squid2)
         if hit:
+            # TODO add effect
+            center = (
+                (self.squid1.rect.centerx + self.squid2.rect.centerx) / 2,
+                (self.squid1.rect.centery + self.squid2.rect.centery) / 2
+            )
+            CryingStar(center[0], center[1], self._help_texts)
             if self.squid1.lv > self.squid2.lv:
                 self.squid1.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self.sound_controller)
                 self.squid2.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count, self.sound_controller)
@@ -368,7 +374,10 @@ class SwimmingSquidBattle(PaiaGame):
             "assets": [
                 create_asset_init_data("bg", 1000, 1000, BG_PATH, BG_URL),
                 create_asset_init_data("squid1", SQUID_W, SQUID_H, SQUID_PATH, SQUID_URL),
+                create_asset_init_data("squid1-hurt", SQUID_W, SQUID_H, SQUID_HURT_PATH, SQUID_HURT_URL),
                 create_asset_init_data("squid2", SQUID_W, SQUID_H, SQUID2_PATH, SQUID2_URL),
+                create_asset_init_data("squid2-hurt", SQUID_W, SQUID_H, SQUID2_HURT_PATH, SQUID2_HURT_URL),
+                create_asset_init_data("star", SQUID_H, SQUID_H, STAR_PATH, STAR_URL),
                 create_asset_init_data(IMG_ID_FOOD01_L, FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_L_PATH, FOOD01_L_URL),
                 create_asset_init_data(IMG_ID_FOOD02_L, FOOD_LV2_SIZE, FOOD_LV2_SIZE, FOOD02_L_PATH, FOOD02_L_URL),
                 create_asset_init_data(IMG_ID_FOOD03_L, FOOD_LV3_SIZE, FOOD_LV3_SIZE, FOOD03_L_PATH, FOOD03_L_URL),
