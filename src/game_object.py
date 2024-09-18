@@ -5,7 +5,7 @@ import pydantic
 import pygame.sprite
 from pydantic import validator
 
-from mlgame.view.view_model import create_image_view_data
+from mlgame.view.view_model import create_image_view_data, create_text_view_data
 from .env import *
 from .foods import Food
 from .sound_controller import SoundController
@@ -190,3 +190,26 @@ def get_current_level(score: int) -> int:
         if score < threshold:
             return min(level, 6)
     return len(LEVEL_THRESHOLDS)  # Return the next level if score is beyond all thresholds
+
+
+class ScoreText(pygame.sprite.Sprite):
+    def __init__(self, text, color, x, y, groups):
+        pygame.sprite.Sprite.__init__(self, groups)
+        self.rect = pygame.Rect(x, y, SQUID_W, SQUID_H)
+        self.rect.center = (x, y)
+        self._text = text
+        self._color = color
+        self._live_frame = 15
+
+    def update(self):
+
+        self._live_frame-=1
+        self.rect.centery -=3
+        if self._live_frame<=0:
+            self.kill()
+    @property
+    def game_object_data(self):
+        return create_text_view_data(
+            self._text, self.rect.centerx, self.rect.centery, self._color,
+            "24px Arial BOLD")
+
