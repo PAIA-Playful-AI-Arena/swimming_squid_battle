@@ -109,6 +109,7 @@ class SwimmingSquidBattle(PaiaGame):
             # init game
             self.squid1 = Squid(1, 200, 300)
             self.squid2 = Squid(2, 500, 300)
+            self.squids.empty()
             self.squids.add(self.squid1)
             self.squids.add(self.squid2)
             self.foods.empty()
