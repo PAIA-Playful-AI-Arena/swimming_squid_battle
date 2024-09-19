@@ -8,7 +8,6 @@ from pydantic import validator
 from mlgame.view.view_model import create_image_view_data, create_text_view_data
 from .env import *
 from .foods import Food
-from .sound_controller import SoundController
 
 
 class LevelParams(pydantic.BaseModel):
@@ -133,25 +132,26 @@ class Squid(pygame.sprite.Sprite):
 
         )
 
-    def eat_food_and_change_level_and_play_sound(self, food: Food):
+    def eat_food_and_change_level_and_play_sound(self, food: Food, sounds: list):
         self._score += food.score
         new_lv = get_current_level(self._score)
 
-        # if new_lv > self._lv:
-        #     sound_controller.play_lv_up()
-        # elif new_lv < self._lv:
-        #     sound_controller.play_lv_down()
+        if new_lv > self._lv:
+            sounds.append(LV_UP_OBJ)
+        elif new_lv < self._lv:
+            sounds.append(LV_DOWN_OBJ)
         if new_lv != self._lv:
             self.rect.width = SQUID_W * LEVEL_PROPERTIES[new_lv]['size_ratio']
             self.rect.height = SQUID_H * LEVEL_PROPERTIES[new_lv]['size_ratio']
             self._vel = LEVEL_PROPERTIES[new_lv]['vel']
             self._lv = new_lv
 
-    def collision_between_squids(self, collision_score, frame):
+    def collision_between_squids(self, collision_score, frame, sounds: list):
         if frame - self._last_collision > 3:
             self._score += collision_score
             self._last_collision = frame
-            # sound_controller.play_collision()
+            sounds.append(COLLISION_OBJ)
+
             if self._motion != "NONE":
                 self._collision_dir = self._motion
             else:
@@ -162,10 +162,11 @@ class Squid(pygame.sprite.Sprite):
 
         new_lv = get_current_level(self._score)
 
-        # if new_lv > self._lv:
-        #     sound_controller.play_lv_up()
-        # elif new_lv < self._lv:
-        #     sound_controller.play_lv_down()
+        if new_lv > self._lv:
+            sounds.append(LV_UP_OBJ)
+
+        elif new_lv < self._lv:
+            sounds.append(LV_DOWN_OBJ)
         if new_lv != self._lv:
             self.rect.width = SQUID_W * LEVEL_PROPERTIES[new_lv]['size_ratio']
             self.rect.height = SQUID_H * LEVEL_PROPERTIES[new_lv]['size_ratio']
