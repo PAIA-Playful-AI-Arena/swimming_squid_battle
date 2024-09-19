@@ -7,11 +7,11 @@ import pygame
 
 from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
-from mlgame.view.decorator import check_game_progress, check_game_result
+from mlgame.view.audio_model import create_music_init_data, create_sound_init_data
+from mlgame.view.decorator import check_game_progress, check_game_result, check_scene_init_data
 from mlgame.view.view_model import *
 from .foods import *
 from .game_object import Squid, LevelParams, ScoreText, CryingStar
-from .sound_controller import SoundController
 
 
 def revise_squid_coordinate(squid: Squid, playground: pygame.Rect):
@@ -53,7 +53,7 @@ class SwimmingSquidBattle(PaiaGame):
         self.foods = pygame.sprite.Group()
         self.squids = pygame.sprite.Group()
         self._help_texts = pygame.sprite.Group()
-        self.sound_controller = SoundController(sound)
+        # self.sound_controller = SoundController(sound)
         self._overtime_count = 0
         self._game_times = game_times
         self._winner = []
@@ -117,7 +117,7 @@ class SwimmingSquidBattle(PaiaGame):
             self._frame_count_down = self._frame_limit
             self._new_food_frame = 0
             self._overtime_count = 0
-            self.sound_controller.play_music()
+            # self.sound_controller.play_music()
             game_params.left = self.playground.left
             game_params.right = self.playground.right
             game_params.bottom = self.playground.bottom
@@ -167,10 +167,10 @@ class SwimmingSquidBattle(PaiaGame):
             # 五戰三勝的情況下不能直接回傳，因此紀錄 winner 後，重啟遊戲
             self.update_winner()
 
-            if self.is_passed:
-                self.sound_controller.play_cheer()
-            else:
-                self.sound_controller.play_fail()
+            # if self.is_passed:
+            #     self.sound_controller.play_cheer()
+            # else:
+            #     self.sound_controller.play_fail()
 
             if self._winner.count("1P") > self._game_times / 2:  # 1P 贏
                 print("玩家 1 獲勝！")
@@ -192,7 +192,7 @@ class SwimmingSquidBattle(PaiaGame):
 
         for squid, foods in hits.items():
             for food in foods:
-                squid.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
+                squid.eat_food_and_change_level_and_play_sound(food)
                 to_remove_foods.add(food)
                 if isinstance(food, (Food1, Food2, Food3,)):
                     ScoreText(
@@ -202,7 +202,7 @@ class SwimmingSquidBattle(PaiaGame):
                         y=food.rect.centery,
                         groups=self._help_texts
                     )
-                    self.sound_controller.play_eating_good()
+                    # self.sound_controller.play_eating_good()
                 elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
                     ScoreText(
                         text=f"{food.score}",
@@ -211,7 +211,7 @@ class SwimmingSquidBattle(PaiaGame):
                         y=food.rect.centery,
                         groups=self._help_texts
                     )
-                    self.sound_controller.play_eating_bad()
+                    # self.sound_controller.play_eating_bad()
         for food in to_remove_foods:
             food.kill()
             self._create_foods(food.__class__, 1)
@@ -226,15 +226,15 @@ class SwimmingSquidBattle(PaiaGame):
             )
             CryingStar(center[0], center[1], self._help_texts)
             if self.squid1.lv > self.squid2.lv:
-                self.squid1.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self.sound_controller)
-                self.squid2.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count, self.sound_controller)
+                self.squid1.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count)
+                self.squid2.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count)
             elif self.squid1.lv < self.squid2.lv:
-                self.squid1.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count, self.sound_controller)
-                self.squid2.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self.sound_controller)
+                self.squid1.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count)
+                self.squid2.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count)
             else:
                 # draw
-                self.squid1.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count, self.sound_controller)
-                self.squid2.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count, self.sound_controller)
+                self.squid1.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count)
+                self.squid2.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count)
 
     def get_data_from_game_to_player(self):
         """
@@ -360,6 +360,7 @@ class SwimmingSquidBattle(PaiaGame):
         # return self.frame_count < self._frame_limit
         return (not self.time_out) and (not self.is_passed)
 
+    @check_scene_init_data
     def get_scene_init_data(self):
         """
         Get the initial scene and object information for drawing on the web
@@ -392,9 +393,23 @@ class SwimmingSquidBattle(PaiaGame):
                 # create_image_view_data(
                 #     'bg', self.playground.x, self.playground.y,
                 #     self.playground.w, self.playground.h)
+            ],
+            "musics": [
+                create_music_init_data("bgm", file_path=BGM_PATH, github_raw_url=BG_URL)
+
+            ],
+            # Create the sounds list using create_sound_init_data
+            "sounds": [
+                create_sound_init_data("eat_good_food", file_path=EATING_GOOD_PATH, github_raw_url=EATING_GOOD_URL),
+                create_sound_init_data("eat_bad_food", file_path=EATING_BAD_PATH, github_raw_url=EATING_BAD_URL),
+                create_sound_init_data("pass", file_path=PASS_PATH, github_raw_url=PASS_URL),
+                create_sound_init_data("fail", file_path=FAIL_PATH, github_raw_url=FAIL_URL),
+                create_sound_init_data("lv_up", file_path=LV_UP_PATH, github_raw_url=LV_UP_URL),
+                create_sound_init_data("lv_down", file_path=LV_DOWN_PATH, github_raw_url=LV_DOWN_URL),
+                create_sound_init_data("collision", file_path=COLLISION_PATH, github_raw_url=COLLISION_URL)
             ]
-            # "audios": {}
         }
+        # TODO audio
         return scene_init_data
 
     @check_game_progress

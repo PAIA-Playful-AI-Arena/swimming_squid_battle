@@ -22,15 +22,16 @@ class SoundController():
     def load_sounds(self):
         try:
             pygame.mixer.init()
-            pygame.mixer.music.load(path.join(MUSIC_PATH, "bgm.mp3"))
+            pygame.mixer.music.load(BGM_PATH)
             pygame.mixer.music.set_volume(0.6)
-            self._eating_good = pygame.mixer.Sound(path.join(SOUND_PATH, "eat_good_food.mp3"))
-            self._eating_bad = pygame.mixer.Sound(path.join(SOUND_PATH, "eat_bad_food.mp3"))
-            self._pass = pygame.mixer.Sound(path.join(SOUND_PATH, "pass.mp3"))
-            self._fail = pygame.mixer.Sound(path.join(SOUND_PATH, "fail.mp3"))
-            self._lv_up = pygame.mixer.Sound(path.join(SOUND_PATH, "lv_up.mp3"))
-            self._lv_down = pygame.mixer.Sound(path.join(SOUND_PATH, "lv_down.mp3"))
-            self._collision = pygame.mixer.Sound(path.join(SOUND_PATH, "collision.mp3"))
+            self._eating_good = pygame.mixer.Sound(EATING_GOOD_PATH)
+            self._eating_bad = pygame.mixer.Sound(EATING_BAD_PATH)
+            self._pass = pygame.mixer.Sound(PASS_PATH)
+            self._fail = pygame.mixer.Sound(FAIL_PATH)
+            self._lv_up = pygame.mixer.Sound(LV_UP_PATH)
+            self._lv_down = pygame.mixer.Sound(LV_DOWN_PATH)
+            self._collision = pygame.mixer.Sound(COLLISION_PATH)
+
         except Exception as e :
             self._is_sound_on = False
             traceback.print_exc()
