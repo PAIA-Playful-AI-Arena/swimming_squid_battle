@@ -55,6 +55,14 @@ ASSET_PATH = path.join(path.dirname(__file__), "..", "asset")
 LEVEL_PATH = path.join(path.dirname(__file__), "..", "levels")
 SOUND_PATH = path.join(path.dirname(__file__), "..", "asset", "sounds")
 MUSIC_PATH = path.join(path.dirname(__file__), "..", "asset", "music")
+BGM_PATH = path.join(MUSIC_PATH, "bgm.mp3")
+EATING_GOOD_PATH = path.join(SOUND_PATH, "eat_good_food.mp3")
+EATING_BAD_PATH = path.join(SOUND_PATH, "eat_bad_food.mp3")
+PASS_PATH = path.join(SOUND_PATH, "pass.mp3")
+FAIL_PATH = path.join(SOUND_PATH, "fail.mp3")
+LV_UP_PATH = path.join(SOUND_PATH, "lv_up.mp3")
+LV_DOWN_PATH = path.join(SOUND_PATH, "lv_down.mp3")
+COLLISION_PATH = path.join(SOUND_PATH, "collision.mp3")
 
 BG_PATH = path.join(ASSET_IMAGE_DIR, "background.png")
 SQUID_PATH = path.join(ASSET_IMAGE_DIR, "squid.png")
@@ -82,6 +90,8 @@ GARBAGE02_PATH = path.join(ASSET_IMAGE_DIR, "garbage_02.png")
 GARBAGE03_PATH = path.join(ASSET_IMAGE_DIR, "garbage_03.png")
 
 ASSET_IMG_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/main/asset/img/"
+MUSIC_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/main/asset/music/"
+SOUND_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/main/asset/sounds/"
 BG_URL = ASSET_IMG_URL + "background.png"
 SQUID_URL = ASSET_IMG_URL + "squid.png"
 SQUID_HURT_URL = ASSET_IMG_URL + "squid-hurt.png"
@@ -100,3 +110,14 @@ FOOD03_R_URL = ASSET_IMG_URL + "food_03_R.png"
 GARBAGE01_URL = ASSET_IMG_URL + "garbage_01.png"
 GARBAGE02_URL = ASSET_IMG_URL + "garbage_02.png"
 GARBAGE03_URL = ASSET_IMG_URL + "garbage_03.png"
+# Music URL
+BGM_URL = MUSIC_URL + "bgm.mp3"
+
+# Sound URLs
+EATING_GOOD_URL = SOUND_URL + "eat_good_food.mp3"
+EATING_BAD_URL = SOUND_URL + "eat_bad_food.mp3"
+PASS_URL = SOUND_URL + "pass.mp3"
+FAIL_URL = SOUND_URL + "fail.mp3"
+LV_UP_URL = SOUND_URL + "lv_up.mp3"
+LV_DOWN_URL = SOUND_URL + "lv_down.mp3"
+COLLISION_URL = SOUND_URL + "collision.mp3"
