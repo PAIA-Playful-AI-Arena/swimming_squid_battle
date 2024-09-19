@@ -7,11 +7,11 @@ import pygame
 
 from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
-from mlgame.view.decorator import check_game_progress, check_game_result
+from mlgame.view.audio_model import create_music_init_data, create_sound_init_data
+from mlgame.view.decorator import check_game_progress, check_game_result, check_scene_init_data
 from mlgame.view.view_model import *
 from .foods import *
-from .game_object import Squid, LevelParams
-from .sound_controller import SoundController
+from .game_object import Squid, LevelParams, ScoreText, CryingStar
 
 
 def revise_squid_coordinate(squid: Squid, playground: pygame.Rect):
@@ -45,6 +45,7 @@ class SwimmingSquidBattle(PaiaGame):
             sound: str = "off",
             *args, **kwargs):
         super().__init__(user_num=1)
+
         self.game_result_state = GameResultState.FAIL
         self.scene = Scene(width=WIDTH, height=HEIGHT, color=BG_COLOR, bias_x=0, bias_y=0)
         self._level = level
@@ -52,7 +53,9 @@ class SwimmingSquidBattle(PaiaGame):
         self._used_file = ""
         self.foods = pygame.sprite.Group()
         self.squids = pygame.sprite.Group()
-        self.sound_controller = SoundController(sound)
+        self._help_texts = pygame.sprite.Group()
+        self._sounds = []
+        # self.sound_controller = SoundController(sound)
         self._overtime_count = 0
         self._game_times = game_times
         self._winner = []
@@ -106,6 +109,7 @@ class SwimmingSquidBattle(PaiaGame):
             # init game
             self.squid1 = Squid(1, 200, 300)
             self.squid2 = Squid(2, 500, 300)
+            self.squids.empty()
             self.squids.add(self.squid1)
             self.squids.add(self.squid2)
             self.foods.empty()
@@ -116,7 +120,7 @@ class SwimmingSquidBattle(PaiaGame):
             self._frame_count_down = self._frame_limit
             self._new_food_frame = 0
             self._overtime_count = 0
-            self.sound_controller.play_music()
+            # self.sound_controller.play_music()
             game_params.left = self.playground.left
             game_params.right = self.playground.right
             game_params.bottom = self.playground.bottom
@@ -151,7 +155,7 @@ class SwimmingSquidBattle(PaiaGame):
 
         # update sprite
         self.foods.update(playground=self.playground, squid=self.squid1)
-
+        self._help_texts.update()
         # handle collision
 
         self._check_foods_collision()
@@ -167,9 +171,9 @@ class SwimmingSquidBattle(PaiaGame):
             self.update_winner()
 
             if self.is_passed:
-                self.sound_controller.play_cheer()
+                self._sounds.append(PASS_OBJ)
             else:
-                self.sound_controller.play_fail()
+                self._sounds.append(FAIL_OBJ)
 
             if self._winner.count("1P") > self._game_times / 2:  # 1P 贏
                 print("玩家 1 獲勝！")
@@ -191,12 +195,26 @@ class SwimmingSquidBattle(PaiaGame):
 
         for squid, foods in hits.items():
             for food in foods:
-                squid.eat_food_and_change_level_and_play_sound(food, self.sound_controller)
+                squid.eat_food_and_change_level_and_play_sound(food, self._sounds)
                 to_remove_foods.add(food)
                 if isinstance(food, (Food1, Food2, Food3,)):
-                    self.sound_controller.play_eating_good()
+                    ScoreText(
+                        text=f"+{food.score}",
+                        color=SCORE_COLOR_PLUS,
+                        x=food.rect.centerx,
+                        y=food.rect.centery,
+                        groups=self._help_texts
+                    )
+                    self._sounds.append(EATING_GOOD_OBJ)
                 elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
-                    self.sound_controller.play_eating_bad()
+                    ScoreText(
+                        text=f"{food.score}",
+                        color=SCORE_COLOR_MINUS,
+                        x=food.rect.centerx,
+                        y=food.rect.centery,
+                        groups=self._help_texts
+                    )
+                    self._sounds.append(EATING_BAD_OBJ)
         for food in to_remove_foods:
             food.kill()
             self._create_foods(food.__class__, 1)
@@ -204,16 +222,22 @@ class SwimmingSquidBattle(PaiaGame):
     def _check_squids_collision(self):
         hit = pygame.sprite.collide_rect(self.squid1, self.squid2)
         if hit:
+            # add effect
+            center = (
+                (self.squid1.rect.centerx + self.squid2.rect.centerx) / 2,
+                (self.squid1.rect.centery + self.squid2.rect.centery) / 2
+            )
+            CryingStar(center[0], center[1], self._help_texts)
             if self.squid1.lv > self.squid2.lv:
-                self.squid1.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self.sound_controller)
-                self.squid2.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count, self.sound_controller)
+                self.squid1.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self._sounds)
+                self.squid2.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count, self._sounds)
             elif self.squid1.lv < self.squid2.lv:
-                self.squid1.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count, self.sound_controller)
-                self.squid2.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self.sound_controller)
+                self.squid1.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count, self._sounds)
+                self.squid2.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self._sounds)
             else:
                 # draw
-                self.squid1.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count, self.sound_controller)
-                self.squid2.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count, self.sound_controller)
+                self.squid1.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count, self._sounds)
+                self.squid2.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count, self._sounds)
 
     def get_data_from_game_to_player(self):
         """
@@ -339,6 +363,7 @@ class SwimmingSquidBattle(PaiaGame):
         # return self.frame_count < self._frame_limit
         return (not self.time_out) and (not self.is_passed)
 
+    @check_scene_init_data
     def get_scene_init_data(self):
         """
         Get the initial scene and object information for drawing on the web
@@ -353,7 +378,10 @@ class SwimmingSquidBattle(PaiaGame):
             "assets": [
                 create_asset_init_data("bg", 1000, 1000, BG_PATH, BG_URL),
                 create_asset_init_data("squid1", SQUID_W, SQUID_H, SQUID_PATH, SQUID_URL),
+                create_asset_init_data("squid1-hurt", SQUID_W, SQUID_H, SQUID_HURT_PATH, SQUID_HURT_URL),
                 create_asset_init_data("squid2", SQUID_W, SQUID_H, SQUID2_PATH, SQUID2_URL),
+                create_asset_init_data("squid2-hurt", SQUID_W, SQUID_H, SQUID2_HURT_PATH, SQUID2_HURT_URL),
+                create_asset_init_data("star", SQUID_H, SQUID_H, STAR_PATH, STAR_URL),
                 create_asset_init_data(IMG_ID_FOOD01_L, FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_L_PATH, FOOD01_L_URL),
                 create_asset_init_data(IMG_ID_FOOD02_L, FOOD_LV2_SIZE, FOOD_LV2_SIZE, FOOD02_L_PATH, FOOD02_L_URL),
                 create_asset_init_data(IMG_ID_FOOD03_L, FOOD_LV3_SIZE, FOOD_LV3_SIZE, FOOD03_L_PATH, FOOD03_L_URL),
@@ -368,8 +396,21 @@ class SwimmingSquidBattle(PaiaGame):
                 # create_image_view_data(
                 #     'bg', self.playground.x, self.playground.y,
                 #     self.playground.w, self.playground.h)
+            ],
+            "musics": [
+                create_music_init_data("bgm", file_path=BGM_PATH, github_raw_url=BG_URL)
+
+            ],
+            # Create the sounds list using create_sound_init_data
+            "sounds": [
+                create_sound_init_data("eat_good_food", file_path=EATING_GOOD_PATH, github_raw_url=EATING_GOOD_URL),
+                create_sound_init_data("eat_bad_food", file_path=EATING_BAD_PATH, github_raw_url=EATING_BAD_URL),
+                create_sound_init_data("pass", file_path=PASS_PATH, github_raw_url=PASS_URL),
+                create_sound_init_data("fail", file_path=FAIL_PATH, github_raw_url=FAIL_URL),
+                create_sound_init_data("lv_up", file_path=LV_UP_PATH, github_raw_url=LV_UP_URL),
+                create_sound_init_data("lv_down", file_path=LV_DOWN_PATH, github_raw_url=LV_DOWN_URL),
+                create_sound_init_data("collision", file_path=COLLISION_PATH, github_raw_url=COLLISION_URL)
             ]
-            # "audios": {}
         }
         return scene_init_data
 
@@ -378,10 +419,14 @@ class SwimmingSquidBattle(PaiaGame):
         """
         Get the position of game objects for drawing on the web
         """
-        foods_data = []
-        for food in self.foods:
-            foods_data.append(food.game_object_data)
+        foods_data = [food.game_object_data for food in self.foods]
+
         game_obj_list = [self.squid1.game_object_data, self.squid2.game_object_data]
+        help_texts = [
+            obj.game_object_data for obj in self._help_texts
+        ]
+        game_obj_list.extend(foods_data)
+        game_obj_list.extend(help_texts)
         toggle_objs = [
             create_text_view_data(f"Round {self._current_round_num} / {self._game_times}", 770, 10, "#EEEEEE",
                                   "22px Arial BOLD"),
@@ -425,7 +470,11 @@ class SwimmingSquidBattle(PaiaGame):
         scene_progress = create_scene_progress_data(
             frame=self.frame_count, background=backgrounds,
             object_list=game_obj_list,
-            foreground=foregrounds, toggle=toggle_objs)
+            foreground=foregrounds, toggle=toggle_objs,
+            # music=[],
+            sounds=self._sounds
+        )
+        self._sounds = []
         return scene_progress
 
     @check_game_result
