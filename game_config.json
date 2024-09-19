@@ -1,7 +1,7 @@
 {
   "game_name": "swimming_squid_battle",
 
-  "version": "1.4.5",
+  "version": "1.5.0a1",
   "url": "https://github.com/PAIA-Playful-AI-Arena/swimming_squid_battle",
   "description": "這是一個魷魚吃東西小遊戲，你需要找到正確的食物、避開海中的垃圾，還要提防敵人的攻擊！（當然你也可以主動攻擊他人）",
   "logo": [
@@ -38,17 +38,7 @@
       "default": 1,
       "help": "選擇要對戰幾次決勝負，可選擇一戰決勝負、三戰兩勝制、五戰三勝制。預設為一戰決勝負。"
 
-    },
-    {
-      "name": "sound",
-      "verbose": "遊戲音效",
-      "type": "str",
-      "choices": [
-        "on",
-        "off"
-      ],
-      "help": "'on' can turn on the sound.",
-      "default": "on"
     }
+
   ]
 }
