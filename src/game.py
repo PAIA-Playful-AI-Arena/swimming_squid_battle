@@ -7,27 +7,11 @@ import pygame
 
 from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
-from mlgame.view.audio_model import create_music_init_data, create_sound_init_data
+from mlgame.view.audio_model import create_music_init_data, create_sound_init_data, MusicProgressSchema
 from mlgame.view.decorator import check_game_progress, check_game_result, check_scene_init_data
 from mlgame.view.view_model import *
 from .foods import *
 from .game_object import Squid, LevelParams, ScoreText, CryingStar
-
-
-def revise_squid_coordinate(squid: Squid, playground: pygame.Rect):
-    squid_rect = copy.deepcopy(squid.rect)
-    if squid_rect.left < playground.left:
-        squid_rect.left = playground.left
-    elif squid_rect.right > playground.right:
-        squid_rect.right = playground.right
-
-    if squid_rect.top < playground.top:
-        squid_rect.top = playground.top
-    elif squid_rect.bottom > playground.bottom:
-        squid_rect.bottom = playground.bottom
-    squid.rect = squid_rect
-    pass
-
 
 FOOD_LIST = [Food1, Food2, Food3, Garbage1, Garbage2, Garbage3]
 
@@ -46,6 +30,7 @@ class SwimmingSquidBattle(PaiaGame):
             *args, **kwargs):
         super().__init__(user_num=1)
 
+        self._music = []
         self.game_result_state = GameResultState.FAIL
         self.scene = Scene(width=WIDTH, height=HEIGHT, color=BG_COLOR, bias_x=0, bias_y=0)
         self._level = level
@@ -126,6 +111,9 @@ class SwimmingSquidBattle(PaiaGame):
             game_params.bottom = self.playground.bottom
             game_params.top = self.playground.top
             self._game_params = game_params
+
+            # change bgm
+            self._music = [MusicProgressSchema(music_id=f"bgm0{self._current_round_num % 2 + 1}").__dict__]
 
     def update(self, commands):
         # handle command
@@ -398,7 +386,8 @@ class SwimmingSquidBattle(PaiaGame):
                 #     self.playground.w, self.playground.h)
             ],
             "musics": [
-                create_music_init_data("bgm", file_path=BGM_PATH, github_raw_url=BG_URL)
+                create_music_init_data("bgm01", file_path=BGM01_PATH, github_raw_url=BGM01_URL),
+                create_music_init_data("bgm02", file_path=BGM02_PATH, github_raw_url=BGM02_URL)
 
             ],
             # Create the sounds list using create_sound_init_data
@@ -471,10 +460,11 @@ class SwimmingSquidBattle(PaiaGame):
             frame=self.frame_count, background=backgrounds,
             object_list=game_obj_list,
             foreground=foregrounds, toggle=toggle_objs,
-            # music=[],
+            musics=self._music,
             sounds=self._sounds
         )
         self._sounds = []
+        self._music = []
         return scene_progress
 
     @check_game_result
@@ -566,3 +556,18 @@ class SwimmingSquidBattle(PaiaGame):
         self._record2[f"round{self._current_round_num}"] = self.squid2.score
         temp_records = [self._record1, self._record2]
         print(pd.DataFrame(temp_records).to_string())
+
+
+def revise_squid_coordinate(squid: Squid, playground: pygame.Rect):
+    squid_rect = copy.deepcopy(squid.rect)
+    if squid_rect.left < playground.left:
+        squid_rect.left = playground.left
+    elif squid_rect.right > playground.right:
+        squid_rect.right = playground.right
+
+    if squid_rect.top < playground.top:
+        squid_rect.top = playground.top
+    elif squid_rect.bottom > playground.bottom:
+        squid_rect.bottom = playground.bottom
+    squid.rect = squid_rect
+    pass
