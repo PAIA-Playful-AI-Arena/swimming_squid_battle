@@ -22,7 +22,7 @@ class SoundController():
     def load_sounds(self):
         try:
             pygame.mixer.init()
-            pygame.mixer.music.load(BGM_PATH)
+            pygame.mixer.music.load(BGM01_PATH)
             pygame.mixer.music.set_volume(0.6)
             self._eating_good = pygame.mixer.Sound(EATING_GOOD_PATH)
             self._eating_bad = pygame.mixer.Sound(EATING_BAD_PATH)

@@ -56,7 +56,8 @@ ASSET_PATH = path.join(path.dirname(__file__), "..", "asset")
 LEVEL_PATH = path.join(path.dirname(__file__), "..", "levels")
 SOUND_PATH = path.join(path.dirname(__file__), "..", "asset", "sounds")
 MUSIC_PATH = path.join(path.dirname(__file__), "..", "asset", "music")
-BGM_PATH = path.join(MUSIC_PATH, "bgm.mp3")
+BGM01_PATH = path.join(MUSIC_PATH, "bgm01.mp3")
+BGM02_PATH = path.join(MUSIC_PATH, "bgm02.ogg")
 EATING_GOOD_PATH = path.join(SOUND_PATH, "eat_good_food.mp3")
 EATING_BAD_PATH = path.join(SOUND_PATH, "eat_bad_food.mp3")
 PASS_PATH = path.join(SOUND_PATH, "pass.mp3")
@@ -112,7 +113,8 @@ GARBAGE01_URL = ASSET_IMG_URL + "garbage_01.png"
 GARBAGE02_URL = ASSET_IMG_URL + "garbage_02.png"
 GARBAGE03_URL = ASSET_IMG_URL + "garbage_03.png"
 # Music URL
-BGM_URL = MUSIC_URL + "bgm.mp3"
+BGM01_URL = MUSIC_URL + "bgm01.mp3"
+BGM02_URL = MUSIC_URL + "bgm02.ogg"
 
 # Sound URLs
 EATING_GOOD_URL = SOUND_URL + "eat_good_food.mp3"
