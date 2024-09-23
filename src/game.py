@@ -464,7 +464,8 @@ class SwimmingSquidBattle(PaiaGame):
             sounds=self._sounds
         )
         self._sounds = []
-        self._music = []
+
+        # self._music = []
         return scene_progress
 
     @check_game_result
