@@ -531,9 +531,12 @@ class SwimmingSquidBattle(PaiaGame):
                 )
 
             elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
+
                 food.set_center_x_and_y(
                     random.randint(self.playground.left, self.playground.right),
-                    -20
+
+                    random.randint(self.playground.top - 30, self.playground.top)
+
                 )
 
         pass
