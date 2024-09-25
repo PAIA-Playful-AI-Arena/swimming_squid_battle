@@ -113,7 +113,7 @@ class SwimmingSquidBattle(PaiaGame):
             self._game_params = game_params
 
             # change bgm
-            self._music = [MusicProgressSchema(music_id=f"bgm0{self._current_round_num % 2 + 1}").__dict__]
+            self._music = [MusicProgressSchema(music_id=f"bgm0{(self._current_round_num-1) % 3 +1}").__dict__]
 
     def update(self, commands):
         # handle command
@@ -387,7 +387,8 @@ class SwimmingSquidBattle(PaiaGame):
             ],
             "musics": [
                 create_music_init_data("bgm01", file_path=BGM01_PATH, github_raw_url=BGM01_URL),
-                create_music_init_data("bgm02", file_path=BGM02_PATH, github_raw_url=BGM02_URL)
+                create_music_init_data("bgm02", file_path=BGM02_PATH, github_raw_url=BGM02_URL),
+                create_music_init_data("bgm03", file_path=BGM03_PATH, github_raw_url=BGM03_URL),
 
             ],
             # Create the sounds list using create_sound_init_data
