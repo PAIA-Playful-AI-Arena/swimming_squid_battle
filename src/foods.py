@@ -96,7 +96,7 @@ class Food3(Food):
 
     def update(self, playground: Rect, squid: pygame.sprite.Sprite):
         self.rect_float_x += self._vel
-        self.rect_float_y += random.choice([-0.7, -1, -1.3, -1.7, 0, 1.7, 1, 1.3, 0.3, 0.7])
+        self.rect_float_y += random.choice([-0.7, -1.7, -2.7, 0, 2.7,  1.7, 0.7])
         self.rect.centerx = self.rect_float_x
         self.rect.centery = self.rect_float_y
 
@@ -152,4 +152,4 @@ class Garbage3(Garbage):
         super().__init__(group, FoodTypeEnum.GARBAGE_3, "garbage03",
                          [FOOD_LV3_SIZE, FOOD_LV3_SIZE], -10)
         self._vel = FOOD3_VEL
-        self._bias_x_list = [-0.7, -1, -1.3, -1.7, 0, 1.7, 1, 1.3, 0.3, 0.7]
+        self._bias_x_list = [-2.7, -1, -1.3, -1.7, 0, 1.7, 1, 1.3, 0.3, 2.7]
