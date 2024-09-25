@@ -3,7 +3,7 @@ import random
 
 import pydantic
 import pygame.sprite
-from pydantic import validator
+from pydantic import validator, BaseModel
 
 from mlgame.view.view_model import create_image_view_data, create_text_view_data
 from .env import *
@@ -248,3 +248,10 @@ class CryingStar(pygame.sprite.Sprite):
             angle=0.1
 
         )
+
+
+class WindowConfig(BaseModel):
+    left: int
+    right: int
+    top: int
+    bottom: int
