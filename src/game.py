@@ -96,7 +96,7 @@ class SwimmingSquidBattle(PaiaGame):
                 top=self.playground.top, bottom=self.playground.bottom)
             self._garbage_window = WindowConfig(
                 left=self.playground.left, right=self.playground.right,
-                top=self.playground.top - 60, bottom=self.playground.top-10)
+                top=self.playground.top - 60, bottom=self.playground.top - 10)
 
             self._food_pos_list = []
             self._garbage_pos_list = []
@@ -228,14 +228,56 @@ class SwimmingSquidBattle(PaiaGame):
             CryingStar(center[0], center[1], self._help_texts)
             if self.squid1.lv > self.squid2.lv:
                 self.squid1.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self._sounds)
+                ScoreText(
+                    text=f"+{COLLISION_SCORE['WIN']}",
+                    color=SCORE_COLOR_PLUS,
+                    x=self.squid1.rect.centerx,
+                    y=self.squid1.rect.centery,
+                    groups=self._help_texts
+                )
                 self.squid2.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count, self._sounds)
+                ScoreText(
+                    text=f"{COLLISION_SCORE['LOSE']}",
+                    color=SCORE_COLOR_MINUS,
+                    x=self.squid2.rect.centerx,
+                    y=self.squid2.rect.centery,
+                    groups=self._help_texts
+                )
             elif self.squid1.lv < self.squid2.lv:
                 self.squid1.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count, self._sounds)
+                ScoreText(
+                    text=f"{COLLISION_SCORE['LOSE']}",
+                    color=SCORE_COLOR_MINUS,
+                    x=self.squid1.rect.centerx,
+                    y=self.squid1.rect.centery,
+                    groups=self._help_texts
+                )
                 self.squid2.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self._sounds)
+                ScoreText(
+                    text=f"+{COLLISION_SCORE['WIN']}",
+                    color=SCORE_COLOR_PLUS,
+                    x=self.squid2.rect.centerx,
+                    y=self.squid2.rect.centery,
+                    groups=self._help_texts
+                )
             else:
                 # draw
                 self.squid1.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count, self._sounds)
+                ScoreText(
+                    text=f"{COLLISION_SCORE['DRAW']}",
+                    color=SCORE_COLOR_MINUS,
+                    x=self.squid1.rect.centerx,
+                    y=self.squid1.rect.centery,
+                    groups=self._help_texts
+                )
                 self.squid2.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count, self._sounds)
+                ScoreText(
+                    text=f"{COLLISION_SCORE['DRAW']}",
+                    color=SCORE_COLOR_MINUS,
+                    x=self.squid2.rect.centerx,
+                    y=self.squid2.rect.centery,
+                    groups=self._help_texts
+                )
 
     def get_data_from_game_to_player(self):
         """
