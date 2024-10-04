@@ -177,6 +177,8 @@ class SwimmingSquidBattle(PaiaGame):
                 status = GameStatus.GAME_1P_WIN
             elif self.squid2.score > self.squid1.score:
                 status = GameStatus.GAME_2P_WIN
+            else :
+                status = GameStatus.GAME_DRAW
             self._status = status
 
             if self._winner.count("1P") > self._game_times / 2:  # 1P 贏
