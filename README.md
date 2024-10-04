@@ -204,7 +204,7 @@ class MLPlay:
     }
   ] ,
   "env": {
-     "time_to_play": 600,
+    "time_to_play": 600,
     "playground_size_w":700, 
     "playground_size_h":550
   }
@@ -248,7 +248,7 @@ class MLPlay:
 ```json
 {
   "frame_used": 100,
-  "state": "FAIL",
+  "status": "fail",
   "attachment": [
     {
       "squid": "1P",
@@ -267,9 +267,9 @@ class MLPlay:
 ```
 
 - `frame_used`：表示使用了多少個frame
-- `state`：表示遊戲結束的狀態
-    - `fail`：遊戲失敗
-    - `finish`：遊戲完成
+- `status`：表示遊戲結束的狀態
+  - `fail`:遊戲過程出現問題
+  - `finish`:遊戲結束，回傳完成
 - `attachment`：紀錄遊戲各個玩家的結果與分數等資訊
     - `squid`：玩家編號
     - `score`：吃到的食物總數
