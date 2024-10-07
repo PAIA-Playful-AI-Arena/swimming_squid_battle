@@ -308,9 +308,13 @@ class MLPlay:
 
 # 參考資源
 - 音效
-    1. https://soundeffect-lab.info/sound/anime/
+  1. https://soundeffect-lab.info/sound/anime/
+
 - 背景音樂
-    1. https://www.motionelements.com/zh-hant/stock-music-28190007-bossa-nova-short-loop
+  1. https://www.motionelements.com/zh-hant/stock-music-28190007-bossa-nova-short-loop
+  2. https://maou.audio/bgm_8bit18/
+  3. https://maou.audio/bgm_8bit10/
+- 
 - 圖片
     1. 魷魚 https://illustcenter.com/2022/07/03/rdesign_1659/
     2. 湯匙 https://illustcenter.com/2021/11/24/rdesign_6275/

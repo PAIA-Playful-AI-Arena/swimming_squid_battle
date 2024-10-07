@@ -29,9 +29,10 @@ class SwimmingSquidBattle(PaiaGame):
             sound: str = "off",
             *args, **kwargs):
         super().__init__(user_num=1)
-
         self._new_food_frame = 0
         self._music = []
+        self._status = GameStatus.GAME_ALIVE
+
         self.game_result_state = GameResultState.FAIL
         self.scene = Scene(width=WIDTH, height=HEIGHT, color=BG_COLOR, bias_x=0, bias_y=0)
         self._level = level
@@ -96,7 +97,7 @@ class SwimmingSquidBattle(PaiaGame):
                 top=self.playground.top, bottom=self.playground.bottom)
             self._garbage_window = WindowConfig(
                 left=self.playground.left, right=self.playground.right,
-                top=self.playground.top - 60, bottom=self.playground.top-10)
+                top=self.playground.top - 60, bottom=self.playground.top - 10)
 
             self._food_pos_list = []
             self._garbage_pos_list = []
@@ -115,7 +116,8 @@ class SwimmingSquidBattle(PaiaGame):
             self._frame_count_down = self._frame_limit
             self._new_food_frame = 0
             self._overtime_count = 0
-            # self.sound_controller.play_music()
+
+            self._status = GameStatus.GAME_ALIVE
             game_params.left = self.playground.left
             game_params.right = self.playground.right
             game_params.bottom = self.playground.bottom
@@ -173,6 +175,15 @@ class SwimmingSquidBattle(PaiaGame):
             else:
                 self._sounds.append(FAIL_OBJ)
 
+            status = GameStatus.GAME_ALIVE
+            if self.squid1.score > self.squid2.score:
+                status = GameStatus.GAME_1P_WIN
+            elif self.squid2.score > self.squid1.score:
+                status = GameStatus.GAME_2P_WIN
+            else :
+                status = GameStatus.GAME_DRAW
+            self._status = status
+
             if self._winner.count("1P") > self._game_times / 2:  # 1P 贏
                 print("玩家 1 獲勝！")
                 return "RESET"
@@ -184,7 +195,9 @@ class SwimmingSquidBattle(PaiaGame):
                 self._current_round_num += 1
 
                 self._init_game()
-
+            self._status = status
+        else:
+            self._status = GameStatus.GAME_ALIVE
             # return "RESET"
 
     def _check_foods_collision(self):
@@ -228,14 +241,56 @@ class SwimmingSquidBattle(PaiaGame):
             CryingStar(center[0], center[1], self._help_texts)
             if self.squid1.lv > self.squid2.lv:
                 self.squid1.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self._sounds)
+                ScoreText(
+                    text=f"+{COLLISION_SCORE['WIN']}",
+                    color=SCORE_COLOR_PLUS,
+                    x=self.squid1.rect.centerx,
+                    y=self.squid1.rect.centery,
+                    groups=self._help_texts
+                )
                 self.squid2.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count, self._sounds)
+                ScoreText(
+                    text=f"{COLLISION_SCORE['LOSE']}",
+                    color=SCORE_COLOR_MINUS,
+                    x=self.squid2.rect.centerx,
+                    y=self.squid2.rect.centery,
+                    groups=self._help_texts
+                )
             elif self.squid1.lv < self.squid2.lv:
                 self.squid1.collision_between_squids(COLLISION_SCORE["LOSE"], self.frame_count, self._sounds)
+                ScoreText(
+                    text=f"{COLLISION_SCORE['LOSE']}",
+                    color=SCORE_COLOR_MINUS,
+                    x=self.squid1.rect.centerx,
+                    y=self.squid1.rect.centery,
+                    groups=self._help_texts
+                )
                 self.squid2.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self._sounds)
+                ScoreText(
+                    text=f"+{COLLISION_SCORE['WIN']}",
+                    color=SCORE_COLOR_PLUS,
+                    x=self.squid2.rect.centerx,
+                    y=self.squid2.rect.centery,
+                    groups=self._help_texts
+                )
             else:
                 # draw
                 self.squid1.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count, self._sounds)
+                ScoreText(
+                    text=f"{COLLISION_SCORE['DRAW']}",
+                    color=SCORE_COLOR_MINUS,
+                    x=self.squid1.rect.centerx,
+                    y=self.squid1.rect.centery,
+                    groups=self._help_texts
+                )
                 self.squid2.collision_between_squids(COLLISION_SCORE["DRAW"], self.frame_count, self._sounds)
+                ScoreText(
+                    text=f"{COLLISION_SCORE['DRAW']}",
+                    color=SCORE_COLOR_MINUS,
+                    x=self.squid2.rect.centerx,
+                    y=self.squid2.rect.centery,
+                    groups=self._help_texts
+                )
 
     def get_data_from_game_to_player(self):
         """
@@ -306,13 +361,7 @@ class SwimmingSquidBattle(PaiaGame):
 
     def get_game_status(self):
 
-        if self.is_running:
-            status = GameStatus.GAME_ALIVE
-        elif self.is_passed:
-            status = GameStatus.GAME_PASS
-        else:
-            status = GameStatus.GAME_OVER
-        return status
+        return self._status
 
     def reset(self):
         # 重新啟動遊戲
@@ -484,8 +533,7 @@ class SwimmingSquidBattle(PaiaGame):
         """
         send game result
         """
-        if self.get_game_status() == GameStatus.GAME_PASS:
-            self.game_result_state = GameResultState.FINISH
+        self.game_result_state = GameResultState.FINISH
         #  update record data
         self._record1['rank'] = self.squid1.rank
         self._record1['wins'] = f"{self._winner.count('1P')} / {self._game_times}"
