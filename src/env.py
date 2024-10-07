@@ -1,3 +1,5 @@
+import json
+import os
 from enum import auto
 from os import path
 
@@ -51,14 +53,47 @@ FOOD_LV1_SIZE = 30
 FOOD_LV2_SIZE = 40
 FOOD_LV3_SIZE = 50
 
+
+def get_game_version(json_file_path):
+    """
+    Load a JSON file and return the value of the 'game_version' field.
+
+    :param json_file_path: Path to the JSON file.
+    :return: The game version if found, otherwise None.
+    """
+    if not os.path.exists(json_file_path):
+        print(f"Error: The file '{json_file_path}' does not exist.")
+        return None
+
+    try:
+        with open(json_file_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+    except json.JSONDecodeError as jde:
+        print(f"Error decoding JSON: {jde}")
+        return "develop"
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return "develop"
+
+    # Check if 'game_version' exists in the JSON data
+    if 'version' in data:
+        return data['version']
+    else:
+        print("Error: 'game_version' field is missing in the JSON data.")
+        return 'develop'
+
+
 # path of assets
 ASSET_PATH = path.join(path.dirname(__file__), "..", "asset")
 LEVEL_PATH = path.join(path.dirname(__file__), "..", "levels")
 SOUND_PATH = path.join(path.dirname(__file__), "..", "asset", "sounds")
 MUSIC_PATH = path.join(path.dirname(__file__), "..", "asset", "music")
-BGM01_PATH = path.join(MUSIC_PATH, "bgm01.ogg")
-BGM02_PATH = path.join(MUSIC_PATH, "bgm02.ogg")
-BGM03_PATH = path.join(MUSIC_PATH, "bgm03.mp3")
+BGM01_FILE_NAME = "bgm01.mp3"
+BGM01_PATH = path.join(MUSIC_PATH, BGM01_FILE_NAME)
+BGM02_FILE_NAME = "bgm02.mp3"
+BGM02_PATH = path.join(MUSIC_PATH, BGM02_FILE_NAME)
+BGM02_FILE_NAME = "bgm03.mp3"
+BGM03_PATH = path.join(MUSIC_PATH, BGM02_FILE_NAME)
 EATING_GOOD_PATH = path.join(SOUND_PATH, "eat_good_food.mp3")
 EATING_BAD_PATH = path.join(SOUND_PATH, "eat_bad_food.mp3")
 PASS_PATH = path.join(SOUND_PATH, "pass.mp3")
@@ -91,7 +126,7 @@ FOOD03_R_PATH = path.join(ASSET_IMAGE_DIR, "food_03_R.png")
 GARBAGE01_PATH = path.join(ASSET_IMAGE_DIR, "garbage_01.png")
 GARBAGE02_PATH = path.join(ASSET_IMAGE_DIR, "garbage_02.png")
 GARBAGE03_PATH = path.join(ASSET_IMAGE_DIR, "garbage_03.png")
-
+GAME_VER = get_game_version(path.join(path.dirname(__file__), "..", "game_config.json"))
 ASSET_IMG_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/main/asset/img/"
 MUSIC_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/main/asset/music/"
 SOUND_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/main/asset/sounds/"
@@ -114,9 +149,9 @@ GARBAGE01_URL = ASSET_IMG_URL + "garbage_01.png"
 GARBAGE02_URL = ASSET_IMG_URL + "garbage_02.png"
 GARBAGE03_URL = ASSET_IMG_URL + "garbage_03.png"
 # Music URL
-BGM01_URL = MUSIC_URL + "bgm01.ogg"
-BGM02_URL = MUSIC_URL + "bgm02.ogg"
-BGM03_URL = MUSIC_URL + "bgm03.mp3"
+BGM01_URL = MUSIC_URL + BGM01_FILE_NAME
+BGM02_URL = MUSIC_URL + BGM02_FILE_NAME
+BGM03_URL = MUSIC_URL + BGM02_FILE_NAME
 
 # Sound URLs
 EATING_GOOD_URL = SOUND_URL + "eat_good_food.mp3"
@@ -127,7 +162,7 @@ LV_UP_URL = SOUND_URL + "lv_up.mp3"
 LV_DOWN_URL = SOUND_URL + "lv_down.mp3"
 COLLISION_URL = SOUND_URL + "collision.mp3"
 
-EATING_GOOD_OBJ= SoundProgressSchema(sound_id='eat_good_food').__dict__
+EATING_GOOD_OBJ = SoundProgressSchema(sound_id='eat_good_food').__dict__
 EATING_BAD_OBJ = SoundProgressSchema(sound_id='eat_bad_food').__dict__
 PASS_OBJ = SoundProgressSchema(sound_id='pass').__dict__
 FAIL_OBJ = SoundProgressSchema(sound_id='fail').__dict__
