@@ -7,29 +7,15 @@
 這是一個魷魚吃東西小遊戲，茫茫的海洋中有美味的食物，也有人類拋棄的垃圾，還出現了搶食物的同類！！
     請用你的AI幫助小小魷魚，面對雜亂的海洋，面對同類的競爭快快長大。
 
-![demo](./asset/banner.gif?raw=true)
+![demo](https://github.com/PAIA-Playful-AI-Arena/swimming_squid_battle/blob/main/asset/banner.gif)
 
-# 更新內容(1.5.1)
-1. 調整食物生成的位置，使其更加平均
-2. 新增背景音樂
-
-# 更新內容(1.4.4)
-1. 調整回隨機生成食物，而不是左右生成食物。
-
-# 更新內容(1.4.1)
-1. 提供地圖環境參數給AI
-2. 更新積木，Logo
-
-# 更新內容(1.3.1)
-1. 修復錯誤，玩家同時吃到遊戲，會同時加分
-2. 修復錯誤，進行多場遊戲時，會進行完畢後再回傳結果
 
 ---
 # 基礎介紹
 
 ## 啟動方式
 
-- 直接啟動 [main.py](http://main.py) 即可執行
+- 直接啟動 [main.py](https://github.com/PAIA-Playful-AI-Arena/swimming_squid_battle/blob/main/main.py) 即可執行
 
 ## 遊戲參數設定
 
@@ -277,7 +263,7 @@ class MLPlay:
     - `wins`：目前勝場數
 
 ## 自定義環境地圖
-[地圖設定檔](./levels/template.json)
+[地圖設定檔](https://github.com/PAIA-Playful-AI-Arena/swimming_squid_battle/blob/main/levels/template.json)
 可修改檔案中的參數，並匯入遊戲中使用。
 ```json
 {
