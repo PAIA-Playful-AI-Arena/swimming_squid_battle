@@ -7,6 +7,7 @@ from pydantic import validator, BaseModel
 
 from mlgame.view.view_model import create_image_view_data, create_text_view_data
 from .env import *
+from .env import PARALYSIS_TIME
 from .foods import Food
 
 
@@ -84,7 +85,7 @@ class Squid(pygame.sprite.Sprite):
     def update(self, frame, motion):
         # for motion in motions:
         self._motion = motion
-        if frame - self._last_collision <= 3:
+        if frame - self._last_collision <= PARALYSIS_TIME:
             # 反彈
             if self._collision_dir == "UP":
                 self.rect.centery += self._vel
@@ -111,8 +112,9 @@ class Squid(pygame.sprite.Sprite):
             self.angle = self.ANGLE_TO_RIGHT
         else:
             self.angle = 0
-        if frame - self._last_collision > 30 and self._img_id == f"squid{self._ai_num}-hurt":
+        if frame - self._last_collision > INVISIBLE_TIME and self._img_id == f"squid{self._ai_num}-hurt":
             self._img_id = f"squid{self._ai_num}"
+            self._last_collision = frame
 
         # self.image = pygame.transform.rotate(self.origin_image, self.angle)
         # print(self.angle)
@@ -147,18 +149,17 @@ class Squid(pygame.sprite.Sprite):
             self._lv = new_lv
 
     def collision_between_squids(self, collision_score, frame, sounds: list):
-        if frame - self._last_collision > 3:
-            self._score += collision_score
-            self._last_collision = frame
-            sounds.append(COLLISION_OBJ)
+        self._score += collision_score
+        self._last_collision = frame
+        sounds.append(COLLISION_OBJ)
+        # TODO update collision dir
+        if self._motion != "NONE":
+            self._collision_dir = self._motion
+        else:
+            self._collision_dir = random.choice(["UP", "DOWN", "RIGHT", "LEFT"])
 
-            if self._motion != "NONE":
-                self._collision_dir = self._motion
-            else:
-                self._collision_dir = random.choice(["UP", "DOWN", "RIGHT", "LEFT"])
-
-            if collision_score < 0:
-                self._img_id = f"squid{self._ai_num}-hurt"
+        if collision_score < 0:
+            self._img_id = f"squid{self._ai_num}-hurt"
 
         new_lv = get_current_level(self._score)
 
