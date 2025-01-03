@@ -3,7 +3,7 @@ import random
 
 import pydantic
 import pygame.sprite
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, validator
 from enum import Enum
 from mlgame.view.view_model import create_image_view_data, create_text_view_data
 from .env import *
@@ -34,7 +34,7 @@ class LevelParams(pydantic.BaseModel):
     top: int = -1
     bottom: int = -1
 
-    @field_validator('playground_size_w', mode='before')
+    @validator('playground_size_w', pre=True)
     def validate_playground_size_w(cls, value):
         min_size = 100
         max_size = 650
@@ -44,7 +44,7 @@ class LevelParams(pydantic.BaseModel):
             return max_size
         return value
 
-    @field_validator('playground_size_h', mode='before')
+    @validator('playground_size_h', pre=True)
     def validate_playground_size_h(cls, value):
         min_size = 100
         max_size = 550
