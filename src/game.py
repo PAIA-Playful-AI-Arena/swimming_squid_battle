@@ -56,7 +56,7 @@ class SwimmingSquidBattle(PaiaGame):
         self._record2 = {
             "player_num": get_ai_name(1),
         }
-        self._last_collision = 0
+        self._last_collision = -30
         self._init_game()
 
     def _init_game_by_file(self, level_file_path: str):
@@ -113,7 +113,7 @@ class SwimmingSquidBattle(PaiaGame):
                 self._create_foods(FOOD_LIST[i], self._foods_num[i])
 
             self.frame_count = 0
-            self._last_collision = 0
+            self._last_collision = -30
             self._frame_count_down = self._frame_limit
             self._new_food_frame = 0
             self._overtime_count = 0
@@ -130,6 +130,7 @@ class SwimmingSquidBattle(PaiaGame):
 
     def update(self, commands):
         # handle command
+        # TODO add game state to decide to render opening or game
         ai_1p_cmd = commands[get_ai_name(0)]
         if ai_1p_cmd is not None:
             action_1 = ai_1p_cmd[0]
@@ -233,7 +234,7 @@ class SwimmingSquidBattle(PaiaGame):
 
     def _check_squids_collision(self):
         hit = pygame.sprite.collide_rect(self.squid1, self.squid2)
-        if hit and (self.frame_count - self._last_collision) > INVISIBLE_TIME:
+        if hit and (self.frame_count - self._last_collision) > (INVINCIBLE_TIME+PARALYSIS_TIME):
             self._last_collision = self.frame_count
 
             # add effect

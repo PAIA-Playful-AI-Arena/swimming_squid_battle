@@ -3,11 +3,10 @@ import random
 
 import pydantic
 import pygame.sprite
-from pydantic import validator, BaseModel
-
+from pydantic import BaseModel, field_validator
+from enum import Enum
 from mlgame.view.view_model import create_image_view_data, create_text_view_data
 from .env import *
-from .env import PARALYSIS_TIME
 from .foods import Food
 
 
@@ -35,7 +34,7 @@ class LevelParams(pydantic.BaseModel):
     top: int = -1
     bottom: int = -1
 
-    @validator('playground_size_w', pre=True)
+    @field_validator('playground_size_w', mode='before')
     def validate_playground_size_w(cls, value):
         min_size = 100
         max_size = 650
@@ -45,7 +44,7 @@ class LevelParams(pydantic.BaseModel):
             return max_size
         return value
 
-    @validator('playground_size_h', pre=True)
+    @field_validator('playground_size_h', mode='before')
     def validate_playground_size_h(cls, value):
         min_size = 100
         max_size = 550
@@ -59,6 +58,12 @@ class LevelParams(pydantic.BaseModel):
 # level_thresholds = [10, 15, 20, 25, 30]
 
 
+class SquidState(Enum):
+    NORMAL = 0
+    PARALYSIS = 1
+    INVINCIBLE = 2
+
+
 class Squid(pygame.sprite.Sprite):
     ANGLE_TO_RIGHT = math.radians(-10)
     ANGLE_TO_LEFT = math.radians(10)
@@ -68,7 +73,7 @@ class Squid(pygame.sprite.Sprite):
 
         self._ai_num = ai_id
         self._img_id = f"squid{self._ai_num}"
-
+        self._state = SquidState.NORMAL
         self.origin_image = pygame.Surface([SQUID_W, SQUID_H])
         self.image = self.origin_image
         self.rect = self.image.get_rect()
@@ -85,7 +90,21 @@ class Squid(pygame.sprite.Sprite):
     def update(self, frame, motion):
         # for motion in motions:
         self._motion = motion
-        if frame - self._last_collision <= PARALYSIS_TIME:
+        if self._state == SquidState.PARALYSIS:
+            self._update_paralysis(frame)
+        elif self._state == SquidState.INVINCIBLE:
+            self._update_invincible(frame,motion)
+        else:
+            self._update_normal(motion)
+
+        # self.image = pygame.transform.rotate(self.origin_image, self.angle)
+        # print(self.angle)
+        # center = self.rect.center
+        # self.rect = self.image.get_rect()
+        # self.rect.center = center
+    def _update_paralysis(self, frame):
+        if frame - self._last_collision < PARALYSIS_TIME:
+            self._img_id = f"squid{self._ai_num}-hurt"
             # 反彈
             if self._collision_dir == "UP":
                 self.rect.centery += self._vel
@@ -97,9 +116,23 @@ class Squid(pygame.sprite.Sprite):
             elif self._collision_dir == "RIGHT":
                 self.rect.centerx -= self._vel
                 self.angle = self.ANGLE_TO_LEFT
-            else:
-                self.angle = 0
-            return 0
+        else:
+            self._state = SquidState.INVINCIBLE
+            self._last_collision = frame
+            
+    def _update_invincible(self, frame,motion):
+        self.move(motion)
+        if frame - self._last_collision < INVINCIBLE_TIME:
+            self._img_id = f"squid{self._ai_num}-hurt"
+        else:
+            self._state = SquidState.NORMAL
+            self._last_collision = frame
+
+        pass
+    def move(self, motion):
+        """
+        Move the squid based on the motion command.
+        """
         if motion == "UP":
             self.rect.centery -= self._vel
         elif motion == "DOWN":
@@ -112,15 +145,10 @@ class Squid(pygame.sprite.Sprite):
             self.angle = self.ANGLE_TO_RIGHT
         else:
             self.angle = 0
-        if frame - self._last_collision > INVISIBLE_TIME and self._img_id == f"squid{self._ai_num}-hurt":
-            self._img_id = f"squid{self._ai_num}"
-            self._last_collision = frame
 
-        # self.image = pygame.transform.rotate(self.origin_image, self.angle)
-        # print(self.angle)
-        # center = self.rect.center
-        # self.rect = self.image.get_rect()
-        # self.rect.center = center
+    def _update_normal(self, motion):
+        self._img_id = f"squid{self._ai_num}"
+        self.move(motion)  # Use the new move method
 
     @property
     def game_object_data(self):
@@ -149,6 +177,8 @@ class Squid(pygame.sprite.Sprite):
             self._lv = new_lv
 
     def collision_between_squids(self, collision_score, frame, sounds: list):
+        if self._state == SquidState.INVINCIBLE:
+            return
         self._score += collision_score
         self._last_collision = frame
         sounds.append(COLLISION_OBJ)
@@ -159,7 +189,8 @@ class Squid(pygame.sprite.Sprite):
             self._collision_dir = random.choice(["UP", "DOWN", "RIGHT", "LEFT"])
 
         if collision_score < 0:
-            self._img_id = f"squid{self._ai_num}-hurt"
+            self._state = SquidState.PARALYSIS
+            # self._img_id = f"squid{self._ai_num}-hurt"
 
         new_lv = get_current_level(self._score)
 
@@ -241,7 +272,7 @@ class CryingStar(pygame.sprite.Sprite):
     @property
     def game_object_data(self):
         return create_image_view_data(
-            f"star",
+            "star",
             self.rect.x,
             self.rect.y,
             self.rect.width,

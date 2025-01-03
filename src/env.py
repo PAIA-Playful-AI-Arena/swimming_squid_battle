@@ -169,5 +169,5 @@ FAIL_OBJ = SoundProgressSchema(sound_id='fail').__dict__
 LV_UP_OBJ = SoundProgressSchema(sound_id='lv_up').__dict__
 LV_DOWN_OBJ = SoundProgressSchema(sound_id='lv_down').__dict__
 COLLISION_OBJ = SoundProgressSchema(sound_id='collision').__dict__
-INVISIBLE_TIME = 20
-PARALYSIS_TIME = 6
+INVINCIBLE_TIME = 30
+PARALYSIS_TIME = 8
