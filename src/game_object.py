@@ -62,12 +62,26 @@ class SquidState(Enum):
     NORMAL = 0
     PARALYSIS = 1
     INVINCIBLE = 2
+class Motion(str,Enum):
+    UP = "UP"
+    DOWN = "DOWN"
+    LEFT = "LEFT"
+    RIGHT = "RIGHT"
+    NONE = "NONE"
+
+
 
 
 class Squid(pygame.sprite.Sprite):
     ANGLE_TO_RIGHT = math.radians(-10)
     ANGLE_TO_LEFT = math.radians(10)
-
+    MOTION_METHOD = {
+        Motion.UP: "move_up",
+        Motion.DOWN: "move_down",
+        Motion.LEFT: "move_left",
+        Motion.RIGHT: "move_right",
+        Motion.NONE: "move_none"
+    }
     def __init__(self, ai_id, x, y):
         pygame.sprite.Sprite.__init__(self)
 
@@ -87,15 +101,15 @@ class Squid(pygame.sprite.Sprite):
         self._collision_dir = None
         self._motion = None
 
-    def update(self, frame, motion):
+    def update(self, frame, motion:Motion):
         # for motion in motions:
-        self._motion = motion
+        self._motion = Motion(motion)
         if self._state == SquidState.PARALYSIS:
             self._update_paralysis(frame)
         elif self._state == SquidState.INVINCIBLE:
-            self._update_invincible(frame,motion)
+            self._update_invincible(frame,self._motion)
         else:
-            self._update_normal(motion)
+            self._update_normal(self._motion)
 
         # self.image = pygame.transform.rotate(self.origin_image, self.angle)
         # print(self.angle)
@@ -106,16 +120,7 @@ class Squid(pygame.sprite.Sprite):
         if frame - self._last_collision < PARALYSIS_TIME:
             self._img_id = f"squid{self._ai_num}-hurt"
             # 反彈
-            if self._collision_dir == "UP":
-                self.rect.centery += self._vel
-            elif self._collision_dir == "DOWN":
-                self.rect.centery -= self._vel
-            elif self._collision_dir == "LEFT":
-                self.rect.centerx += self._vel
-                self.angle = self.ANGLE_TO_RIGHT
-            elif self._collision_dir == "RIGHT":
-                self.rect.centerx -= self._vel
-                self.angle = self.ANGLE_TO_LEFT
+            self.move(self._collision_dir)
         else:
             self._state = SquidState.INVINCIBLE
             self._last_collision = frame
@@ -129,23 +134,38 @@ class Squid(pygame.sprite.Sprite):
             self._last_collision = frame
 
         pass
-    def move(self, motion):
-        """
-        Move the squid based on the motion command.
-        """
-        if motion == "UP":
-            self.rect.centery -= self._vel
-        elif motion == "DOWN":
-            self.rect.centery += self._vel
-        elif motion == "LEFT":
-            self.rect.centerx -= self._vel
-            self.angle = self.ANGLE_TO_LEFT
-        elif motion == "RIGHT":
-            self.rect.centerx += self._vel
-            self.angle = self.ANGLE_TO_RIGHT
-        else:
-            self.angle = 0
+    def move_up(self):
+        """Move the squid up."""
+        self.rect.centery -= self._vel
+        self.angle = 0
 
+    def move_down(self):
+        """Move the squid down."""
+        self.rect.centery += self._vel
+        self.angle = 0
+
+    def move_left(self):
+        """Move the squid left."""
+        self.rect.centerx -= self._vel
+        self.angle = self.ANGLE_TO_LEFT
+
+    def move_right(self):
+        """Move the squid right."""
+        self.rect.centerx += self._vel
+        self.angle = self.ANGLE_TO_RIGHT
+    def move_none(self):
+        """Move the squid none."""
+        self.angle = 0
+    def move(self, motion: Motion):
+        """Move the squid based on the motion command."""
+        motion_method = {
+            Motion.UP: self.move_up,
+            Motion.DOWN: self.move_down,
+            Motion.LEFT: self.move_left,
+            Motion.RIGHT: self.move_right,
+            Motion.NONE: self.move_none
+        }
+        motion_method[motion]()
     def _update_normal(self, motion):
         self._img_id = f"squid{self._ai_num}"
         self.move(motion)  # Use the new move method
@@ -183,10 +203,10 @@ class Squid(pygame.sprite.Sprite):
         self._last_collision = frame
         sounds.append(COLLISION_OBJ)
         # TODO update collision dir
-        if self._motion != "NONE":
+        if self._motion != Motion.NONE:
             self._collision_dir = self._motion
         else:
-            self._collision_dir = random.choice(["UP", "DOWN", "RIGHT", "LEFT"])
+            self._collision_dir = random.choice([Motion.UP, Motion.DOWN, Motion.RIGHT, Motion.LEFT])
 
         if collision_score < 0:
             self._state = SquidState.PARALYSIS
