@@ -1,4 +1,5 @@
 import copy
+from enum import Enum
 import os.path
 
 import pandas as pd
@@ -13,7 +14,130 @@ from .foods import *
 from .game_object import Squid, LevelParams, ScoreText, CryingStar, WindowConfig
 
 FOOD_LIST = [Food1, Food2, Food3, Garbage1, Garbage2, Garbage3]
+class RunningState(Enum):
+    OPENING = 0
+    TRANSITION = 1
+    ENDING = 2
+    PLAYING = 3
+    RESET = 4
+class EndingState():
+    def __init__(self):
+        self.frame_count = 0
+        self._info_text = {}
+        self._sound = [PASS_OBJ]
+        self._reset()
+    def update(self,result):
+        self._info_text["content"] = result
+        if self.frame_count == 0:
+            self._sound = [PASS_OBJ]
+        else:
+            self._sound = []
+        
+        if 0 < self.frame_count < 30:
+            self._info_text["y"] +=10 
+        elif 30 <= self.frame_count < 60:
+            pass
+        elif 60 <= self.frame_count < 90:
+            self._info_text["y"] +=10 
+        elif 90 <= self.frame_count:
+            self._reset()
+            return RunningState.RESET
+        self.frame_count += 1
+        return RunningState.ENDING
+    def get_scene_progress_data(self):
+        return create_scene_progress_data(
+            frame=self.frame_count, 
+            background=[], 
+            object_list=[self._info_text], 
+            foreground=[], 
+            toggle=[], 
+            musics=[], sounds=self._sound
+            )
+    def _reset(self):
+        self.frame_count = 0
+        self._info_text = create_text_view_data("Ending", 130, 0, "#EEEEEE", "64px Consolas BOLD")
+        self._sound = [PASS_OBJ]
 
+class TransitionState():
+    def __init__(self):
+        self.frame_count = 0
+        self._info_text = {}
+        self._sound = [PASS_OBJ]
+        self._reset()
+    def update(self,p1_score,p2_score):
+        text = f"1P: {p1_score} vs 2P: {p2_score}"
+        self._info_text["content"] = text
+        if self.frame_count == 0:
+            self._sound = [PASS_OBJ]
+        else:
+            self._sound = []
+
+        if self.frame_count < 30:
+            self._info_text["y"] += 10
+        elif 30 <= self.frame_count < 60:
+            pass
+        elif 60 <= self.frame_count < 90:
+            self._info_text["y"] += 10
+        elif self.frame_count ==90:
+            self._sound=[PASS_OBJ]
+        elif 91 <= self.frame_count:
+            self._reset()
+            return RunningState.PLAYING
+        self.frame_count += 1
+        return RunningState.TRANSITION
+    def get_scene_progress_data(self):
+        return create_scene_progress_data(
+            frame=self.frame_count, 
+            background=[], 
+            object_list=[self._info_text], 
+            foreground=[], 
+            toggle=[], 
+            musics=[], sounds=self._sound
+            )
+    def _reset(self):
+        self.frame_count = 0
+        self._info_text = create_text_view_data("Ready", 230, 0, "#EEEEEE", "64px Consolas BOLD")
+        self._sound.append(PASS_OBJ)
+
+
+class OpeningState():
+    def __init__(self):
+        self.frame_count = 0
+        self._ready_text = create_text_view_data("Ready", 300, 300, "#EEEEEE", "64px Consolas BOLD")
+        self._go_text = create_text_view_data("Go! ", -300, -360, "#EEEEEE", "64px Consolas BOLD")
+    def update(self):
+        if self.frame_count < 30:
+            self._ready_text["content"] = "Ready "+"."*(self.frame_count%5)
+            # self._ready_text["x"] += 10
+        elif 30 <= self.frame_count < 60:
+            self._ready_text["content"] = "Ready"
+            
+            self._go_text = create_text_view_data("Fight! ", 320, 360, "#EEEEEE", "64px Consolas BOLD")
+
+        elif 60 <= self.frame_count < 90:
+            self._ready_text["x"] += 30
+            self._go_text["x"] -= 30
+        elif 90 <= self.frame_count:
+            self.frame_count=0
+            self._reset()
+            return RunningState.PLAYING
+        self.frame_count += 1
+        return RunningState.OPENING
+        
+    def get_scene_progress_data(self):
+        return create_scene_progress_data(
+            frame=self.frame_count, 
+            background=[], 
+            object_list=[self._ready_text, self._go_text], 
+            foreground=[], 
+            toggle=[], 
+            musics=[], sounds=[]
+            )
+
+    def _reset(self):
+        self.frame_count = 0
+        self._ready_text = create_text_view_data("Ready", 300, 300, "#EEEEEE", "64px Consolas BOLD")
+        self._go_text = create_text_view_data("Go! ", -300, -360, "#EEEEEE", "64px Consolas BOLD")
 
 class SwimmingSquidBattle(PaiaGame):
     """
@@ -31,7 +155,7 @@ class SwimmingSquidBattle(PaiaGame):
         self._new_food_frame = 0
         self._music = []
         self._status = GameStatus.GAME_ALIVE
-
+        self._running_state = RunningState.OPENING
         self.game_result_state = GameResultState.FAIL
         self.scene = Scene(width=WIDTH, height=HEIGHT, color=BG_COLOR, bias_x=0, bias_y=0)
         self._level = level
@@ -58,7 +182,9 @@ class SwimmingSquidBattle(PaiaGame):
         }
         self._last_collision = -30
         self._init_game()
-
+        self._opening_state = OpeningState()
+        self._transition_state = TransitionState()
+        self._ending_state = EndingState()
     def _init_game_by_file(self, level_file_path: str):
         try:
             with open(level_file_path) as f:
@@ -128,79 +254,103 @@ class SwimmingSquidBattle(PaiaGame):
             # change bgm
             self._music = [MusicProgressSchema(music_id=f"bgm0{(self._current_round_num - 1) % 3 + 1}").__dict__]
 
+    
     def update(self, commands):
         # handle command
         # TODO add game state to decide to render opening or game
-        ai_1p_cmd = commands[get_ai_name(0)]
-        if ai_1p_cmd is not None:
-            action_1 = ai_1p_cmd[0]
-        else:
-            action_1 = "NONE"
-
-        ai_2p_cmd = commands[get_ai_name(1)]
-        if ai_2p_cmd is not None:
-            action_2 = ai_2p_cmd[0]
-        else:
-            action_2 = "NONE"
-
-        self.squid1.update(self.frame_count, action_1)
-        self.squid2.update(self.frame_count, action_2)
-        revise_squid_coordinate(self.squid1, self.playground)
-        revise_squid_coordinate(self.squid2, self.playground)
-        # create new food
-        if self.frame_count - self._new_food_frame > 150:
-            for i in range(6):
-                if self._foods_max_num[i] > self._foods_num[i]:
-                    self._foods_num[i] += 1
-                    self._create_foods(FOOD_LIST[i], 1)
-            self._new_food_frame = self.frame_count
-
-        # update sprite
-        self.foods.update(playground=self.playground, squid=self.squid1)
-        self._help_texts.update()
-        # handle collision
-
-        self._check_foods_collision()
-        # self._timer = round(time.time() - self._begin_time, 3)
-        self._check_squids_collision()
-
-        self.frame_count += 1
-        self._frame_count_down = self._frame_limit - self.frame_count
-        # self.draw()
-
-        if not self.is_running:
-            # 五戰三勝的情況下不能直接回傳，因此紀錄 winner 後，重啟遊戲
-            self.update_winner()
-
-            if self.is_passed:
-                self._sounds.append(PASS_OBJ)
-            else:
-                self._sounds.append(FAIL_OBJ)
-
-            status = GameStatus.GAME_ALIVE
-            if self.squid1.score > self.squid2.score:
-                status = GameStatus.GAME_1P_WIN
-            elif self.squid2.score > self.squid1.score:
-                status = GameStatus.GAME_2P_WIN
-            else:
-                status = GameStatus.GAME_DRAW
-            self._status = status
-
+        if self._running_state == RunningState.OPENING:
+            self._running_state = self._opening_state.update()
+            self.frame_count += 1
+        elif self._running_state == RunningState.TRANSITION:
+            self._running_state = self._transition_state.update(self._winner.count("1P"), self._winner.count("2P"))
+            self.frame_count += 1
+        elif self._running_state == RunningState.ENDING:
+            result = f"1P {self._winner.count('1P')} vs 2P {self._winner.count('2P')}"
             if self._winner.count("1P") > self._game_times / 2:  # 1P 贏
-                print("玩家 1 獲勝！")
-                return "RESET"
+                result+="  1P win !"
+                
             elif self._winner.count("2P") > self._game_times / 2:  # 2P 贏
+                result+="  2P win!"
 
-                print("玩家 2 獲勝！")
-                return "RESET"
+            self._running_state = self._ending_state.update(result)
+            self.frame_count += 1
+        elif self._running_state == RunningState.RESET:
+            return "RESET"
+        elif self._running_state == RunningState.PLAYING:
+            
+        
+            ai_1p_cmd = commands[get_ai_name(0)]
+            if ai_1p_cmd is not None:
+                action_1 = ai_1p_cmd[0]
             else:
-                self._current_round_num += 1
+                action_1 = "NONE"
 
-                self._init_game()
-            self._status = status
-        else:
-            self._status = GameStatus.GAME_ALIVE
-            # return "RESET"
+            ai_2p_cmd = commands[get_ai_name(1)]
+            if ai_2p_cmd is not None:
+                action_2 = ai_2p_cmd[0]
+            else:
+                action_2 = "NONE"
+
+            self.squid1.update(self.frame_count, action_1)
+            self.squid2.update(self.frame_count, action_2)
+            revise_squid_coordinate(self.squid1, self.playground)
+            revise_squid_coordinate(self.squid2, self.playground)
+            # create new food
+            if self.frame_count - self._new_food_frame > 150:
+                for i in range(6):
+                    if self._foods_max_num[i] > self._foods_num[i]:
+                        self._foods_num[i] += 1
+                        self._create_foods(FOOD_LIST[i], 1)
+                self._new_food_frame = self.frame_count
+
+            # update sprite
+            self.foods.update(playground=self.playground, squid=self.squid1)
+            self._help_texts.update()
+            # handle collision
+
+            self._check_foods_collision()
+            # self._timer = round(time.time() - self._begin_time, 3)
+            self._check_squids_collision()
+
+            self.frame_count += 1
+            self._frame_count_down = self._frame_limit - self.frame_count
+            # self.draw()
+
+            if not self.is_running:
+                # 五戰三勝的情況下不能直接回傳，因此紀錄 winner 後，重啟遊戲
+                self.update_winner()
+
+                # if self.is_passed:
+                #     self._sounds.append(PASS_OBJ)
+                # else:
+                #     self._sounds.append(FAIL_OBJ)
+
+                status = GameStatus.GAME_ALIVE
+                if self.squid1.score > self.squid2.score:
+                    status = GameStatus.GAME_1P_WIN
+                elif self.squid2.score > self.squid1.score:
+                    status = GameStatus.GAME_2P_WIN
+                else:
+                    status = GameStatus.GAME_DRAW
+                self._status = status
+
+                if self._winner.count("1P") > self._game_times / 2:  # 1P 贏
+                    print("玩家 1 獲勝！")
+                    self._running_state = RunningState.ENDING
+                    # return "RESET"
+                elif self._winner.count("2P") > self._game_times / 2:  # 2P 贏
+
+                    print("玩家 2 獲勝！")
+                    self._running_state = RunningState.ENDING
+                    # return "RESET"
+                else:
+                    self._current_round_num += 1
+                    self._running_state = RunningState.TRANSITION
+                    self._init_game()
+                self._status = status
+            else:
+                self._status = GameStatus.GAME_ALIVE
+                # return "RESET"
 
     def _check_foods_collision(self):
         hits = pygame.sprite.groupcollide(self.squids, self.foods, dokilla=False, dokillb=False)
@@ -369,6 +519,7 @@ class SwimmingSquidBattle(PaiaGame):
 
     def reset(self):
         # 重新啟動遊戲
+        self._running_state=RunningState.OPENING
         self._current_round_num = 1
         self._winner.clear()
         self._init_game()
@@ -467,11 +618,18 @@ class SwimmingSquidBattle(PaiaGame):
         }
         return scene_init_data
 
+
     @check_game_progress
     def get_scene_progress_data(self):
         """
         Get the position of game objects for drawing on the web
         """
+        if self._running_state == RunningState.OPENING:
+            return self._opening_state.get_scene_progress_data()
+        elif self._running_state == RunningState.TRANSITION:
+            return self._transition_state.get_scene_progress_data()
+        elif self._running_state == RunningState.ENDING:
+            return self._ending_state.get_scene_progress_data()
         foods_data = [food.game_object_data for food in self.foods]
 
         game_obj_list = [self.squid1.game_object_data, self.squid2.game_object_data]
