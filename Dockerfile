@@ -1,4 +1,4 @@
-FROM paiatech/mlgame:10.4.6a2-slim
+FROM paiatech/mlgame:10.5.1-slim
 ADD . /game
 WORKDIR /game
 RUN apt-get update && apt-get install -y \
