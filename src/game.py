@@ -185,6 +185,9 @@ class SwimmingSquidBattle(PaiaGame):
         self._opening_state = OpeningState()
         self._transition_state = TransitionState()
         self._ending_state = EndingState()
+        self.ai_enabled=False
+
+
     def _init_game_by_file(self, level_file_path: str):
         try:
             with open(level_file_path) as f:
@@ -261,9 +264,11 @@ class SwimmingSquidBattle(PaiaGame):
         if self._running_state == RunningState.OPENING:
             self._running_state = self._opening_state.update()
             self.frame_count += 1
+
         elif self._running_state == RunningState.TRANSITION:
             self._running_state = self._transition_state.update(self._winner.count("1P"), self._winner.count("2P"))
             self.frame_count += 1
+
         elif self._running_state == RunningState.ENDING:
             result = f"1P {self._winner.count('1P')} vs 2P {self._winner.count('2P')}"
             if self._winner.count("1P") > self._game_times / 2:  # 1P 贏
@@ -277,7 +282,7 @@ class SwimmingSquidBattle(PaiaGame):
         elif self._running_state == RunningState.RESET:
             return "RESET"
         elif self._running_state == RunningState.PLAYING:
-            
+            self.ai_enabled = True
         
             ai_1p_cmd = commands[get_ai_name(0)]
             if ai_1p_cmd is not None:
@@ -351,6 +356,9 @@ class SwimmingSquidBattle(PaiaGame):
             else:
                 self._status = GameStatus.GAME_ALIVE
                 # return "RESET"
+
+
+        self.ai_enabled = bool(self._running_state == RunningState.PLAYING)
 
     def _check_foods_collision(self):
         hits = pygame.sprite.groupcollide(self.squids, self.foods, dokilla=False, dokillb=False)
