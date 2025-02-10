@@ -19,7 +19,7 @@ SCORE_COLOR_MINUS = "#ec407a"
 # ball -> squid
 # BALL_COLOR = "#FFEB3B"
 SQUID_W = 30
-SQUID_H = 45
+SQUID_H = 60
 LEVEL_THRESHOLDS = [10, 30, 60, 100, 150, 200]
 LEVEL_PROPERTIES = {
     1: {'size_ratio': 1.0, 'vel': 25},
@@ -105,6 +105,9 @@ COLLISION_PATH = path.join(SOUND_PATH, "collision.mp3")
 BG_PATH = path.join(ASSET_IMAGE_DIR, "background.png")
 SQUID_PATH = path.join(ASSET_IMAGE_DIR, "squid.png")
 SQUID_HURT_PATH = path.join(ASSET_IMAGE_DIR, "squid-hurt.png")
+
+
+
 SQUID2_PATH = path.join(ASSET_IMAGE_DIR, "squid2.png")
 SQUID2_HURT_PATH = path.join(ASSET_IMAGE_DIR, "squid2-hurt.png")
 STAR_PATH = path.join(ASSET_IMAGE_DIR, "star.png")
@@ -127,9 +130,9 @@ GARBAGE01_PATH = path.join(ASSET_IMAGE_DIR, "garbage_01.png")
 GARBAGE02_PATH = path.join(ASSET_IMAGE_DIR, "garbage_02.png")
 GARBAGE03_PATH = path.join(ASSET_IMAGE_DIR, "garbage_03.png")
 GAME_VER = get_game_version(path.join(path.dirname(__file__), "..", "game_config.json"))
-ASSET_IMG_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/main/asset/img/"
-MUSIC_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/main/asset/music/"
-SOUND_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/main/asset/sounds/"
+ASSET_IMG_URL = f"https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/{GAME_VER}/asset/img/"
+MUSIC_URL = f"https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/{GAME_VER}/asset/music/"
+SOUND_URL = f"https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/{GAME_VER}/asset/sounds/"
 BG_URL = ASSET_IMG_URL + "background.png"
 SQUID_URL = ASSET_IMG_URL + "squid.png"
 SQUID_HURT_URL = ASSET_IMG_URL + "squid-hurt.png"
@@ -171,3 +174,53 @@ LV_DOWN_OBJ = SoundProgressSchema(sound_id='lv_down').__dict__
 COLLISION_OBJ = SoundProgressSchema(sound_id='collision').__dict__
 INVINCIBLE_TIME = 30
 PARALYSIS_TIME = 8
+
+# Define paths for squid images
+SQUID1_ID = "squid1"
+SQUID1_HURT_ID = "squid1_hurt"
+SQUID1_LEFT_1_ID = "squid1_left_1"
+SQUID1_LEFT_2_ID = "squid1_left_2"
+SQUID1_RIGHT_1_ID = "squid1_right_1"
+SQUID1_RIGHT_2_ID = "squid1_right_2"
+SQUID1_LOVELY_ID = "squid1_lovely"
+
+SQUID1_PATH = path.join(ASSET_IMAGE_DIR, "squid1_0.png")
+SQUID1_HURT_PATH = path.join(ASSET_IMAGE_DIR, "squid1_hurt.png")
+SQUID1_LEFT_1_PATH = path.join(ASSET_IMAGE_DIR, "squid1_left_1.png")
+SQUID1_LEFT_2_PATH = path.join(ASSET_IMAGE_DIR, "squid1_left_2.png")
+SQUID1_RIGHT_1_PATH = path.join(ASSET_IMAGE_DIR, "squid1_right_1.png")
+SQUID1_RIGHT_2_PATH = path.join(ASSET_IMAGE_DIR, "squid1_right_2.png")
+SQUID1_LOVELY_PATH = path.join(ASSET_IMAGE_DIR, "squid1_lovely.png")
+SQUID1_URL = ASSET_IMG_URL + "squid1.png"
+SQUID1_HURT_URL = ASSET_IMG_URL + "squid1_hurt.png"
+SQUID1_LEFT_1_URL = ASSET_IMG_URL + "squid1_left_1.png"
+SQUID1_LEFT_2_URL = ASSET_IMG_URL + "squid1_left_2.png"
+SQUID1_RIGHT_1_URL = ASSET_IMG_URL + "squid1_right_1.png"
+SQUID1_RIGHT_2_URL = ASSET_IMG_URL + "squid1_right_2.png"
+SQUID1_LOVELY_URL = ASSET_IMG_URL + "squid1_lovely.png"
+
+
+
+# Define paths for squid images
+SQUID2_ID = "squid2"
+SQUID2_HURT_ID = "squid2_hurt"
+SQUID2_LEFT_1_ID = "squid2_left_1"
+SQUID2_LEFT_2_ID = "squid2_left_2"
+SQUID2_RIGHT_1_ID = "squid2_right_1"
+SQUID2_RIGHT_2_ID = "squid2_right_2"
+SQUID2_LOVELY_ID = "squid2_lovely"
+
+SQUID2_PATH = path.join(ASSET_IMAGE_DIR, "squid2_0.png")
+SQUID2_HURT_PATH = path.join(ASSET_IMAGE_DIR, "squid2_hurt.png")
+SQUID2_LEFT_1_PATH = path.join(ASSET_IMAGE_DIR, "squid2_left_1.png")
+SQUID2_LEFT_2_PATH = path.join(ASSET_IMAGE_DIR, "squid2_left_2.png")
+SQUID2_RIGHT_1_PATH = path.join(ASSET_IMAGE_DIR, "squid2_right_1.png")
+SQUID2_RIGHT_2_PATH = path.join(ASSET_IMAGE_DIR, "squid2_right_2.png")
+SQUID2_LOVELY_PATH = path.join(ASSET_IMAGE_DIR, "squid2_lovely.png")
+SQUID2_URL = ASSET_IMG_URL + "squid2.png"
+SQUID2_HURT_URL = ASSET_IMG_URL + "squid2_hurt.png"
+SQUID2_LEFT_1_URL = ASSET_IMG_URL + "squid2_left_1.png"
+SQUID2_LEFT_2_URL = ASSET_IMG_URL + "squid2_left_2.png"
+SQUID2_RIGHT_1_URL = ASSET_IMG_URL + "squid2_right_1.png"
+SQUID2_RIGHT_2_URL = ASSET_IMG_URL + "squid2_right_2.png"
+SQUID2_LOVELY_URL = ASSET_IMG_URL + "squid2_lovely.png"
