@@ -118,7 +118,7 @@ class Squid(pygame.sprite.Sprite):
         # self.rect.center = center
     def _update_paralysis(self, frame):
         if frame - self._last_collision < PARALYSIS_TIME:
-            self._img_id = f"squid{self._ai_num}-hurt"
+            self._img_id = f"squid{self._ai_num}_hurt"
             # 反彈
             self.move(self._collision_dir)
         else:
@@ -128,7 +128,7 @@ class Squid(pygame.sprite.Sprite):
     def _update_invincible(self, frame,motion):
         self.move(motion)
         if frame - self._last_collision < INVINCIBLE_TIME:
-            self._img_id = f"squid{self._ai_num}-hurt"
+            self._img_id = f"squid{self._ai_num}_hurt"
         else:
             self._state = SquidState.NORMAL
             self._last_collision = frame
