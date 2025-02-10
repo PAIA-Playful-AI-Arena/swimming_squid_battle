@@ -555,7 +555,7 @@ class SwimmingSquidBattle(PaiaGame):
             # create_text_view_data(f"{self._winner.count('1P')}:{self._winner.count('2P')}", 795, 40, "#EEEEEE",
             #                       "32px Consolas BOLD"),
 
-            create_text_view_data(f"{self._frame_count_down:04d}", (WIDTH)/2-60, 50, "#EEEEEE", "48px Arial BOLD"),
+            create_text_view_data(f"{self._frame_count_down:04d}", (WIDTH)/2-85, 50, "#EEEEEE", "48px burnfont"),
             # # create_text_view_data(f"", 785, 80, "#EEEEEE", "18px Consolas BOLD"),
             # create_text_view_data(f"File :{os.path.basename(self._used_file)}", 745, 120, "#EEEEEE",
             #                       "20px Consolas BOLD"),
@@ -570,7 +570,7 @@ class SwimmingSquidBattle(PaiaGame):
             # create_text_view_data(f"Vel    : {self.squid1.vel:2d}", 785, 280, "#EEEEEE", "16px Consolas BOLD"),
 
             create_rect_view_data("squid1_scorebar", (WIDTH-900)/2+20, 63, scorebar1_width, 35, "#ffffff"),
-            create_text_view_data(f"{self.squid1.score:03d}/{self._score_to_pass:03d}", (WIDTH-900)/2+20, 75, "#000000", "24px Consolas BOLD"),
+            create_text_view_data(f"{self.squid1.score:03d}/{self._score_to_pass:03d}", (WIDTH-900)/2+20, 75, "#000000", "20px burnfont"),
 
 
             # # create_text_view_data("2P", 705, 310, "#EEEEEE", "22px Consolas BOLD"),
@@ -580,7 +580,7 @@ class SwimmingSquidBattle(PaiaGame):
             #                       440, "#EEEEEE", "16px Consolas BOLD"),
             # create_text_view_data(f"Vel    : {self.squid2.vel:2d}", 785, 470, "#EEEEEE", "16px Consolas BOLD"),
             create_rect_view_data("squid2_scorebar", WIDTH/2+425-scorebar2_width, 63,scorebar2_width,35,"#e6544d"),
-            create_text_view_data(f"{self.squid2.score:03d}/{self._score_to_pass:03d}", WIDTH-(WIDTH-900)/2-150, 75, "#ffffff", "24px Consolas BOLD"),
+            create_text_view_data(f"{self.squid2.score:03d}/{self._score_to_pass:03d}", WIDTH-(WIDTH-900)/2-150, 75, "#ffffff", "20px burnfont"),
         ]
         game_obj_list.extend(foods_data)
         backgrounds = [
