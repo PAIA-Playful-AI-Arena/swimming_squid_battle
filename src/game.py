@@ -197,7 +197,7 @@ class SwimmingSquidBattle(PaiaGame):
                 self._new_food_frame = self.frame_count
 
             # update sprite
-            self.foods.update(playground=self.playground, squid=self.squid1)
+            self.foods.update(playground=self.playground)
             self._help_texts.update()
             # handle collision
 
