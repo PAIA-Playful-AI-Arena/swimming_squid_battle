@@ -7,10 +7,10 @@ from mlgame.utils.enum import StringEnum
 from mlgame.view.audio_model import SoundProgressSchema
 
 # game
-WIDTH = 950
+WIDTH = 1280
 WIDTH_OF_INFO = 250
 
-HEIGHT = 600
+HEIGHT = 768
 BG_COLOR = "#2B2B49"
 PG_COLOR = "#B3E5FC"
 SCORE_COLOR_PLUS = "#76ff03"
@@ -224,3 +224,6 @@ SQUID2_LEFT_2_URL = ASSET_IMG_URL + "squid2_left_2.png"
 SQUID2_RIGHT_1_URL = ASSET_IMG_URL + "squid2_right_1.png"
 SQUID2_RIGHT_2_URL = ASSET_IMG_URL + "squid2_right_2.png"
 SQUID2_LOVELY_URL = ASSET_IMG_URL + "squid2_lovely.png"
+
+SCOREBAR_PATH = path.join(ASSET_IMAGE_DIR, "scorebar.png")
+SCOREBAR_URL = ASSET_IMG_URL + "scorebar.png"

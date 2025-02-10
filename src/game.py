@@ -122,7 +122,7 @@ class SwimmingSquidBattle(PaiaGame):
             self._score_to_pass = game_params.score_to_pass
             self._frame_limit = game_params.time_to_play
 
-            self.playground.center = ((WIDTH - WIDTH_OF_INFO) / 2, HEIGHT / 2)
+            self.playground.center = (WIDTH / 2, HEIGHT / 2)
             self._food_window = WindowConfig(
                 left=self.playground.left, right=self.playground.right,
                 top=self.playground.top, bottom=self.playground.bottom)
@@ -491,6 +491,7 @@ class SwimmingSquidBattle(PaiaGame):
                 create_asset_init_data(SQUID2_RIGHT_2_ID, SQUID_W, SQUID_H, SQUID2_RIGHT_2_PATH, SQUID2_RIGHT_2_URL),
                 
                 
+                create_asset_init_data("scorebar", 900, 172, SCOREBAR_PATH, SCOREBAR_URL),
                 create_asset_init_data("star", SQUID_H, SQUID_H, STAR_PATH, STAR_URL),
                 create_asset_init_data(IMG_ID_FOOD01_L, FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_L_PATH, FOOD01_L_URL),
                 create_asset_init_data(IMG_ID_FOOD02_L, FOOD_LV2_SIZE, FOOD_LV2_SIZE, FOOD02_L_PATH, FOOD02_L_URL),
@@ -543,35 +544,43 @@ class SwimmingSquidBattle(PaiaGame):
         ]
         game_obj_list.extend(foods_data)
         game_obj_list.extend(help_texts)
+        scorebar1_width = remap(self.squid1.score, 0, self._score_to_pass, 100, 285)
+        scorebar2_width = remap(self.squid2.score, 0, self._score_to_pass, 100, 285)
         toggle_objs = [
-            create_text_view_data(f"Round {self._current_round_num} / {self._game_times}", 770, 10, "#EEEEEE",
-                                  "22px Arial BOLD"),
+            create_image_view_data("scorebar", (WIDTH-900)/2, 0, 900, 172),
+            
+            # create_text_view_data(f"Round {self._current_round_num} / {self._game_times}", 770, 10, "#EEEEEE",
+            #                       "22px Arial BOLD"),
 
-            create_text_view_data(f"{self._winner.count('1P')}:{self._winner.count('2P')}", 795, 40, "#EEEEEE",
-                                  "32px Consolas BOLD"),
+            # create_text_view_data(f"{self._winner.count('1P')}:{self._winner.count('2P')}", 795, 40, "#EEEEEE",
+            #                       "32px Consolas BOLD"),
 
-            create_text_view_data(f"Timer:{self._frame_count_down:04d}", 745, 80, "#EEEEEE", "20px Consolas BOLD"),
-            # create_text_view_data(f"", 785, 80, "#EEEEEE", "18px Consolas BOLD"),
-            create_text_view_data(f"File :{os.path.basename(self._used_file)}", 745, 120, "#EEEEEE",
-                                  "20px Consolas BOLD"),
-            # create_text_view_data(f"File :{self._level_file}", 605, 80, "#EEEEEE", "10px Consolas BOLD"),
-            create_text_view_data(f"Goal :{self._score_to_pass:04d} pt", 745, 160, "#EEEEEE", "20px Consolas BOLD"),
-            # create_text_view_data(f"", 785, 140, "#EEEEEE", "18px Consolas BOLD"),
-            create_image_view_data("squid1", 705, 220, 76, 114),
-            # create_text_view_data("1P", 705, 130, "#EEEEEE", "22px Consolas BOLD"),
-            create_text_view_data(f"Lv     : {self.squid1.lv}", 785, 220, "#EEEEEE", "16px Consolas BOLD"),
-            create_text_view_data(f"Next Lv: {LEVEL_THRESHOLDS[self.squid1.lv - 1] - self.squid1.score :04d} pt", 785,
-                                  250, "#EEEEEE", "16px Consolas BOLD"),
-            create_text_view_data(f"Vel    : {self.squid1.vel:2d}", 785, 280, "#EEEEEE", "16px Consolas BOLD"),
-            create_text_view_data(f"Score  : {self.squid1.score:04d} pt", 785, 310, "#EEEEEE", "16px Consolas BOLD"),
+            create_text_view_data(f"{self._frame_count_down:04d}", (WIDTH)/2-60, 50, "#EEEEEE", "48px Arial BOLD"),
+            # # create_text_view_data(f"", 785, 80, "#EEEEEE", "18px Consolas BOLD"),
+            # create_text_view_data(f"File :{os.path.basename(self._used_file)}", 745, 120, "#EEEEEE",
+            #                       "20px Consolas BOLD"),
+            # # create_text_view_data(f"File :{self._level_file}", 605, 80, "#EEEEEE", "10px Consolas BOLD"),
+            # create_text_view_data(f"Goal :{self._score_to_pass:04d} pt", 745, 160, "#EEEEEE", "20px Consolas BOLD"),
+            # # create_text_view_data(f"", 785, 140, "#EEEEEE", "18px Consolas BOLD"),
+            # create_image_view_data("squid1", 705, 220, 76, 114),
+            # # create_text_view_data("1P", 705, 130, "#EEEEEE", "22px Consolas BOLD"),
+            # create_text_view_data(f"Lv     : {self.squid1.lv}", 785, 220, "#EEEEEE", "16px Consolas BOLD"),
+            # create_text_view_data(f"Next Lv: {LEVEL_THRESHOLDS[self.squid1.lv - 1] - self.squid1.score :04d} pt", 785,
+            #                       250, "#EEEEEE", "16px Consolas BOLD"),
+            # create_text_view_data(f"Vel    : {self.squid1.vel:2d}", 785, 280, "#EEEEEE", "16px Consolas BOLD"),
 
-            # create_text_view_data("2P", 705, 310, "#EEEEEE", "22px Consolas BOLD"),
-            create_image_view_data("squid2", 705, 410, 76, 114),
-            create_text_view_data(f"Lv     : {self.squid2.lv}", 785, 410, "#EEEEEE", "16px Consolas BOLD"),
-            create_text_view_data(f"Next Lv: {LEVEL_THRESHOLDS[self.squid2.lv - 1] - self.squid2.score :04d} pt", 785,
-                                  440, "#EEEEEE", "16px Consolas BOLD"),
-            create_text_view_data(f"Vel    : {self.squid2.vel:2d}", 785, 470, "#EEEEEE", "16px Consolas BOLD"),
-            create_text_view_data(f"Score  : {self.squid2.score:04d} pt", 785, 500, "#EEEEEE", "16px Consolas BOLD"),
+            create_rect_view_data("squid1_scorebar", (WIDTH-900)/2+20, 63, scorebar1_width, 35, "#ffffff"),
+            create_text_view_data(f"{self.squid1.score:03d}/{self._score_to_pass:03d}", (WIDTH-900)/2+20, 75, "#000000", "24px Consolas BOLD"),
+
+
+            # # create_text_view_data("2P", 705, 310, "#EEEEEE", "22px Consolas BOLD"),
+            # create_image_view_data("squid2", 705, 410, 76, 114),
+            # create_text_view_data(f"Lv     : {self.squid2.lv}", 785, 410, "#EEEEEE", "16px Consolas BOLD"),
+            # create_text_view_data(f"Next Lv: {LEVEL_THRESHOLDS[self.squid2.lv - 1] - self.squid2.score :04d} pt", 785,
+            #                       440, "#EEEEEE", "16px Consolas BOLD"),
+            # create_text_view_data(f"Vel    : {self.squid2.vel:2d}", 785, 470, "#EEEEEE", "16px Consolas BOLD"),
+            create_rect_view_data("squid2_scorebar", WIDTH/2+425-scorebar2_width, 63,scorebar2_width,35,"#e6544d"),
+            create_text_view_data(f"{self.squid2.score:03d}/{self._score_to_pass:03d}", WIDTH-(WIDTH-900)/2-150, 75, "#ffffff", "24px Consolas BOLD"),
         ]
         game_obj_list.extend(foods_data)
         backgrounds = [
@@ -586,7 +595,8 @@ class SwimmingSquidBattle(PaiaGame):
         scene_progress = create_scene_progress_data(
             frame=self.frame_count, background=backgrounds,
             object_list=game_obj_list,
-            foreground=foregrounds, toggle=toggle_objs,
+            foreground=foregrounds,
+            toggle=toggle_objs,
             musics=self._music,
             sounds=self._sounds
         )
@@ -727,3 +737,16 @@ def divide_window_into_grid(window: WindowConfig, rows: int = 10, cols: int = 10
     random.shuffle(grid_positions)
 
     return grid_positions
+
+
+def remap(value: int, fromLow: int, fromHigh: int, toLow: int, toHigh: int):
+
+    if fromLow > fromHigh:
+        raise ValueError("fromLow must be less than fromHigh")
+    if toLow > toHigh:
+        raise ValueError("toLow must be less than toHigh")
+    if value < fromLow:
+        return toLow
+    elif value > fromHigh:
+        return toHigh
+    return (value - fromLow) * (toHigh - toLow) / (fromHigh - fromLow) + toLow
