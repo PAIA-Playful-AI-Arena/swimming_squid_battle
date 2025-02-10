@@ -1,143 +1,35 @@
 import copy
-from enum import Enum
 import os.path
 
 import pandas as pd
 import pygame
 
-from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
+from mlgame.core.model import GameProgressSchema
+from mlgame.game.paia_game import GameState, PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
 from mlgame.view.audio_model import create_music_init_data, create_sound_init_data, MusicProgressSchema
 from mlgame.view.decorator import check_game_progress, check_game_result, check_scene_init_data
 from mlgame.view.view_model import *
 from .foods import *
 from .game_object import Squid, LevelParams, ScoreText, CryingStar, WindowConfig
+from .game_state import EndingState, TransitionState, OpeningState, RunningState
 
 FOOD_LIST = [Food1, Food2, Food3, Garbage1, Garbage2, Garbage3]
-class RunningState(Enum):
-    OPENING = 0
-    TRANSITION = 1
-    ENDING = 2
-    PLAYING = 3
-    RESET = 4
-class EndingState():
+
+
+class PlayingState(GameState):
     def __init__(self):
-        self.frame_count = 0
-        self._info_text = {}
-        self._sound = [PASS_OBJ]
-        self._reset()
-    def update(self,result):
-        self._info_text["content"] = result
-        if self.frame_count == 0:
-            self._sound = [PASS_OBJ]
-        else:
-            self._sound = []
-        
-        if 0 < self.frame_count < 30:
-            self._info_text["y"] +=10 
-        elif 30 <= self.frame_count < 60:
-            pass
-        elif 60 <= self.frame_count < 90:
-            self._info_text["y"] +=10 
-        elif 90 <= self.frame_count:
-            self._reset()
-            return RunningState.RESET
-        self.frame_count += 1
-        return RunningState.ENDING
-    def get_scene_progress_data(self):
-        return create_scene_progress_data(
-            frame=self.frame_count, 
-            background=[], 
-            object_list=[self._info_text], 
-            foreground=[], 
-            toggle=[], 
-            musics=[], sounds=self._sound
-            )
-    def _reset(self):
-        self.frame_count = 0
-        self._info_text = create_text_view_data("Ending", 130, 0, "#EEEEEE", "64px Consolas BOLD")
-        self._sound = [PASS_OBJ]
-
-class TransitionState():
-    def __init__(self):
-        self.frame_count = 0
-        self._info_text = {}
-        self._sound = [PASS_OBJ]
-        self._reset()
-    def update(self,p1_score,p2_score):
-        text = f"1P: {p1_score} vs 2P: {p2_score}"
-        self._info_text["content"] = text
-        if self.frame_count == 0:
-            self._sound = [PASS_OBJ]
-        else:
-            self._sound = []
-
-        if self.frame_count < 30:
-            self._info_text["y"] += 10
-        elif 30 <= self.frame_count < 60:
-            pass
-        elif 60 <= self.frame_count < 90:
-            self._info_text["y"] += 10
-        elif self.frame_count ==90:
-            self._sound=[PASS_OBJ]
-        elif 91 <= self.frame_count:
-            self._reset()
-            return RunningState.PLAYING
-        self.frame_count += 1
-        return RunningState.TRANSITION
-    def get_scene_progress_data(self):
-        return create_scene_progress_data(
-            frame=self.frame_count, 
-            background=[], 
-            object_list=[self._info_text], 
-            foreground=[], 
-            toggle=[], 
-            musics=[], sounds=self._sound
-            )
-    def _reset(self):
-        self.frame_count = 0
-        self._info_text = create_text_view_data("Ready", 230, 0, "#EEEEEE", "64px Consolas BOLD")
-        self._sound.append(PASS_OBJ)
-
-
-class OpeningState():
-    def __init__(self):
-        self.frame_count = 0
-        self._ready_text = create_text_view_data("Ready", 300, 300, "#EEEEEE", "64px Consolas BOLD")
-        self._go_text = create_text_view_data("Go! ", -300, -360, "#EEEEEE", "64px Consolas BOLD")
-    def update(self):
-        if self.frame_count < 30:
-            self._ready_text["content"] = "Ready "+"."*(self.frame_count%5)
-            # self._ready_text["x"] += 10
-        elif 30 <= self.frame_count < 60:
-            self._ready_text["content"] = "Ready"
-            
-            self._go_text = create_text_view_data("Fight! ", 320, 360, "#EEEEEE", "64px Consolas BOLD")
-
-        elif 60 <= self.frame_count < 90:
-            self._ready_text["x"] += 30
-            self._go_text["x"] -= 30
-        elif 90 <= self.frame_count:
-            self.frame_count=0
-            self._reset()
-            return RunningState.PLAYING
-        self.frame_count += 1
-        return RunningState.OPENING
-        
-    def get_scene_progress_data(self):
-        return create_scene_progress_data(
-            frame=self.frame_count, 
-            background=[], 
-            object_list=[self._ready_text, self._go_text], 
-            foreground=[], 
-            toggle=[], 
-            musics=[], sounds=[]
-            )
-
-    def _reset(self):
-        self.frame_count = 0
-        self._ready_text = create_text_view_data("Ready", 300, 300, "#EEEEEE", "64px Consolas BOLD")
-        self._go_text = create_text_view_data("Go! ", -300, -360, "#EEEEEE", "64px Consolas BOLD")
+        self._winner = []
+        self._foods_num = []
+        self._foods_max_num = []
+        self._add_score = {"1P": 0, "2P": 0}
+        self._game_params = {}
+    def update(self, *args, **kwargs):
+        pass
+    def get_scene_progress_data(self)->GameProgressSchema:
+        pass
+    def reset(self):
+        pass
 
 class SwimmingSquidBattle(PaiaGame):
     """
@@ -182,12 +74,22 @@ class SwimmingSquidBattle(PaiaGame):
         }
         self._last_collision = -30
         self._init_game()
-        self._opening_state = OpeningState()
-        self._transition_state = TransitionState()
-        self._ending_state = EndingState()
+        self._state_map = {
+            RunningState.OPENING: OpeningState(self),
+            RunningState.TRANSITION: TransitionState(self),
+            RunningState.ENDING: EndingState(self),
+        }
+        self.current_state = self._state_map[RunningState.OPENING]
         self.ai_enabled=False
-
-
+        
+    def set_game_state(self, state: RunningState):
+        
+        self._running_state = state
+        if state in self._state_map.keys():
+            self.current_state = self._state_map[state]
+        else:
+            self.current_state = None
+    
     def _init_game_by_file(self, level_file_path: str):
         try:
             with open(level_file_path) as f:
@@ -261,24 +163,10 @@ class SwimmingSquidBattle(PaiaGame):
     def update(self, commands):
         # handle command
         # TODO add game state to decide to render opening or game
-        if self._running_state == RunningState.OPENING:
-            self._running_state = self._opening_state.update()
+        if isinstance(self.current_state,(OpeningState,TransitionState,EndingState)):
+            self.current_state.update()
             self.frame_count += 1
 
-        elif self._running_state == RunningState.TRANSITION:
-            self._running_state = self._transition_state.update(self._winner.count("1P"), self._winner.count("2P"))
-            self.frame_count += 1
-
-        elif self._running_state == RunningState.ENDING:
-            result = f"1P {self._winner.count('1P')} vs 2P {self._winner.count('2P')}"
-            if self._winner.count("1P") > self._game_times / 2:  # 1P 贏
-                result+="  1P win !"
-                
-            elif self._winner.count("2P") > self._game_times / 2:  # 2P 贏
-                result+="  2P win!"
-
-            self._running_state = self._ending_state.update(result)
-            self.frame_count += 1
         elif self._running_state == RunningState.RESET:
             return "RESET"
         elif self._running_state == RunningState.PLAYING:
@@ -341,16 +229,17 @@ class SwimmingSquidBattle(PaiaGame):
 
                 if self._winner.count("1P") > self._game_times / 2:  # 1P 贏
                     print("玩家 1 獲勝！")
-                    self._running_state = RunningState.ENDING
+                    self.set_game_state(RunningState.ENDING)
+
                     # return "RESET"
                 elif self._winner.count("2P") > self._game_times / 2:  # 2P 贏
 
                     print("玩家 2 獲勝！")
-                    self._running_state = RunningState.ENDING
+                    self.set_game_state(RunningState.ENDING)
                     # return "RESET"
                 else:
                     self._current_round_num += 1
-                    self._running_state = RunningState.TRANSITION
+                    self.set_game_state(RunningState.TRANSITION)
                     self._init_game()
                 self._status = status
             else:
@@ -527,7 +416,7 @@ class SwimmingSquidBattle(PaiaGame):
 
     def reset(self):
         # 重新啟動遊戲
-        self._running_state=RunningState.OPENING
+        self.set_game_state(RunningState.OPENING)
         self._current_round_num = 1
         self._winner.clear()
         self._init_game()
@@ -632,12 +521,9 @@ class SwimmingSquidBattle(PaiaGame):
         """
         Get the position of game objects for drawing on the web
         """
-        if self._running_state == RunningState.OPENING:
-            return self._opening_state.get_scene_progress_data()
-        elif self._running_state == RunningState.TRANSITION:
-            return self._transition_state.get_scene_progress_data()
-        elif self._running_state == RunningState.ENDING:
-            return self._ending_state.get_scene_progress_data()
+        if isinstance(self.current_state,(OpeningState,TransitionState,EndingState)):
+            return self.current_state.get_scene_progress_data()
+        
         foods_data = [food.game_object_data for food in self.foods]
 
         game_obj_list = [self.squid1.game_object_data, self.squid2.game_object_data]
