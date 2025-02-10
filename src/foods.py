@@ -53,7 +53,7 @@ class Food1(Food):
 
         self.image_id = IMG_ID_FOOD01_R if self._vel > 0 else IMG_ID_FOOD01_L
 
-    def update(self, playground: Rect, squid: pygame.sprite.Sprite):
+    def update(self, playground: Rect):
 
         self.rect_float_x += self._vel
         self.rect_float_y += random.choice([-0.3, -0.5, -0.7, 0, 0.3, 0.5, 0.7])
@@ -74,7 +74,7 @@ class Food2(Food):
         self._vel = FOOD2_VEL * random.choice([-1, 1])
         self.image_id = IMG_ID_FOOD02_R if self._vel > 0 else IMG_ID_FOOD02_L
 
-    def update(self, playground: Rect, squid: pygame.sprite.Sprite):
+    def update(self, playground: Rect):
         self.rect_float_x += self._vel
         self.rect_float_y += random.choice([-0.5, -0.7, -1, -1.3, 0, 1, 1.3, 0.3, 0.5, 0.7])
         self.rect.centerx = self.rect_float_x
@@ -94,7 +94,7 @@ class Food3(Food):
         self._vel = FOOD3_VEL * random.choice([-1, 1])
         self.image_id = IMG_ID_FOOD03_R if self._vel > 0 else IMG_ID_FOOD03_L
 
-    def update(self, playground: Rect, squid: pygame.sprite.Sprite):
+    def update(self, playground: Rect):
         self.rect_float_x += self._vel
         self.rect_float_y += random.choice([-0.7, -1.7, -2.7, 0, 2.7,  1.7, 0.7])
         self.rect.centerx = self.rect_float_x
@@ -114,7 +114,7 @@ class Garbage(Food):
         self._vel = FOOD1_VEL
         self._bias_x_list = [-0.5, -0.7, -1, -1.3, 0, 1, 1.3, 0.3, 0.5, 0.7]
 
-    def update(self, playground: Rect, squid: pygame.sprite.Sprite):
+    def update(self, playground: Rect):
         self.rect_float_x += random.choice(self._bias_x_list)
         self.rect_float_y += self._vel
         self.rect.centerx = self.rect_float_x
