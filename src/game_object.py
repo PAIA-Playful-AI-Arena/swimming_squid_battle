@@ -86,7 +86,8 @@ class Squid(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         self._ai_num = ai_id
-        self._img_id = f"squid{self._ai_num}"
+        self._temp_img_id = f"squid{self._ai_num}_right"
+        self._img_id = f"{self._temp_img_id}_1"
         self._state = SquidState.NORMAL
         self.origin_image = pygame.Surface([SQUID_W, SQUID_H])
         self.image = self.origin_image
@@ -100,6 +101,7 @@ class Squid(pygame.sprite.Sprite):
         self._last_collision = 0
         self._collision_dir = None
         self._motion = None
+        self._animation_num = 1
 
     def update(self, frame, motion:Motion):
         # for motion in motions:
@@ -110,12 +112,8 @@ class Squid(pygame.sprite.Sprite):
             self._update_invincible(frame,self._motion)
         else:
             self._update_normal(self._motion)
-
-        # self.image = pygame.transform.rotate(self.origin_image, self.angle)
-        # print(self.angle)
-        # center = self.rect.center
-        # self.rect = self.image.get_rect()
-        # self.rect.center = center
+        
+        
     def _update_paralysis(self, frame):
         if frame - self._last_collision < PARALYSIS_TIME:
             self._img_id = f"squid{self._ai_num}_hurt"
@@ -148,11 +146,13 @@ class Squid(pygame.sprite.Sprite):
         """Move the squid left."""
         self.rect.centerx -= self._vel
         self.angle = self.ANGLE_TO_LEFT
+        self._temp_img_id = f"squid{self._ai_num}_left"
 
     def move_right(self):
         """Move the squid right."""
         self.rect.centerx += self._vel
         self.angle = self.ANGLE_TO_RIGHT
+        self._temp_img_id = f"squid{self._ai_num}_right"
     def move_none(self):
         """Move the squid none."""
         self.angle = 0
@@ -165,9 +165,11 @@ class Squid(pygame.sprite.Sprite):
             Motion.RIGHT: self.move_right,
             Motion.NONE: self.move_none
         }
+        if motion != Motion.NONE:
+            self._animation_num = (self._animation_num)%2+1
         motion_method[motion]()
     def _update_normal(self, motion):
-        self._img_id = f"squid{self._ai_num}"
+        self._img_id = f"{self._temp_img_id}_{self._animation_num}"
         self.move(motion)  # Use the new move method
 
     @property
