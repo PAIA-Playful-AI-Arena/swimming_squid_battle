@@ -240,11 +240,26 @@ DOT_LOSE_URL = ASSET_IMG_URL + "dot_lose.png"
 DOT_NONE_PATH = path.join(ASSET_IMAGE_DIR, "dot_none.png")
 DOT_NONE_URL = ASSET_IMG_URL + "dot_none.png"
 
+# Opening
 IMG_ID_OPENNING_BG = "opening_bg"
 IMG_ID_OPENNING_LOGO = "opening_logo"
 OPENNING_BG_PATH = path.join(ASSET_IMAGE_DIR, "opening_bg.png")
 OPENNING_BG_URL = ASSET_IMG_URL + "opening_bg.png"
-
 OPENNING_LOGO_PATH = path.join(ASSET_IMAGE_DIR, "opening_logo.png")
 OPENNING_LOGO_URL = ASSET_IMG_URL + "opening_logo.png"
+
+# Transition
+IMG_ID_TRANSITION_BG = "transition_bg"
+IMG_ID_TRANSITION_CROWN = "transition_crown"
+IMG_ID_TRANSITION_P1 = "transition_p1"
+IMG_ID_TRANSITION_P2 = "transition_p2"
+
+TRANSITION_BG_PATH = path.join(ASSET_IMAGE_DIR, "transition_bg.png")
+TRANSITION_BG_URL = ASSET_IMG_URL + "transition_bg.png"
+TRANSITION_CROWN_PATH = path.join(ASSET_IMAGE_DIR, "transition_crown.png")
+TRANSITION_CROWN_URL = ASSET_IMG_URL + "transition_crown.png"
+TRANSITION_P1_PATH = path.join(ASSET_IMAGE_DIR, "transition_p1.png")
+TRANSITION_P1_URL = ASSET_IMG_URL + "transition_p1.png"
+TRANSITION_P2_PATH = path.join(ASSET_IMAGE_DIR, "transition_p2.png")
+TRANSITION_P2_URL = ASSET_IMG_URL + "transition_p2.png"
 

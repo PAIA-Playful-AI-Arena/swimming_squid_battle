@@ -1,7 +1,8 @@
 from enum import Enum
 from math import sin
+import math
 
-from .env import IMG_ID_OPENNING_BG, IMG_ID_OPENNING_LOGO, PASS_OBJ
+from .env import HEIGHT, IMG_ID_OPENNING_BG, IMG_ID_OPENNING_LOGO, IMG_ID_TRANSITION_BG, IMG_ID_TRANSITION_CROWN, IMG_ID_TRANSITION_P1, IMG_ID_TRANSITION_P2, PASS_OBJ, WIDTH
 from mlgame.game.paia_game import GameState
 from mlgame.view.view_model import create_image_view_data, create_scene_progress_data, create_text_view_data
 
@@ -58,25 +59,30 @@ class TransitionState(GameState):
         self.frame_count = 0
         self._info_text = {}
         self._sound = [PASS_OBJ]
+        self._crown_x = 0
+        self._crown_y = HEIGHT/2-125
+        self._crown_y_degree = 0
+        self._crown_y_bias = 0
+        self._p1_score = 0
+        self._p2_score = 0
         self.reset()
     def update(self):
-        p1_score = self._game._winner.count("1P")
-        p2_score = self._game._winner.count("2P")
-        text = f"1P: {p1_score} vs 2P: {p2_score}"
-        self._info_text["content"] = text
+        self._p1_score = self._game.squid1.score
+        self._p2_score = self._game.squid2.score
+        self._crown_y_degree += 0.15
+        self._crown_y_bias = 10*sin(self._crown_y_degree)
+        if self._p1_score > self._p2_score:
+            self._crown_x = WIDTH/2-368
+        elif self._p1_score < self._p2_score:
+            self._crown_x = WIDTH/2+124
+        
         if self.frame_count == 0:
             self._sound = [PASS_OBJ]
         else:
             self._sound = []
 
-        if self.frame_count < 30:
-            self._info_text["y"] += 10
-        elif 30 <= self.frame_count < 60:
+        if self.frame_count < 90:
             pass
-        elif 60 <= self.frame_count < 90:
-            self._info_text["y"] += 10
-        elif self.frame_count ==90:
-            self._sound=[PASS_OBJ]
         elif 91 <= self.frame_count:
             self.reset()
             self._game.set_game_state(RunningState.PLAYING)
@@ -85,8 +91,16 @@ class TransitionState(GameState):
     def get_scene_progress_data(self):
         return create_scene_progress_data(
             frame=self.frame_count,
-            background=[],
-            object_list=[self._info_text],
+            background=[
+                create_image_view_data(IMG_ID_TRANSITION_BG, 0, 0, 1280, 768),
+                ],
+            object_list=[
+                create_image_view_data(IMG_ID_TRANSITION_P1, WIDTH/2-328, HEIGHT/2-164/2, 164, 164),
+                create_image_view_data(IMG_ID_TRANSITION_P2, WIDTH/2+164, HEIGHT/2-164/2, 164, 164),
+                create_text_view_data(f"{self._p1_score:03d}pt", WIDTH/2-328, HEIGHT/2+164, "#EEEEEE", "48px Burnfont BOLD"),
+                create_text_view_data(f"{self._p2_score:03d}pt", WIDTH/2+164, HEIGHT/2+164, "#EEEEEE", "48px Burnfont BOLD"),
+                create_image_view_data(IMG_ID_TRANSITION_CROWN, self._crown_x, self._crown_y+self._crown_y_bias, 114, 80),
+                ],
             foreground=[],
             toggle=[],
             musics=[], sounds=self._sound
@@ -131,9 +145,8 @@ class OpeningState(GameState):
 
     def reset(self):
         self.frame_count = 0
-        self._ready_text = create_text_view_data("Ready", 300, 300, "#EEEEEE", "64px Consolas BOLD")
-        self._go_text = create_text_view_data("Go! ", -300, -360, "#EEEEEE", "64px Consolas BOLD")
-
+        self._logo_bias_degree = 0
+        self._logo_bias = sin(self._logo_bias_degree)
 
 class RunningState(Enum):
     OPENING = 0
