@@ -536,16 +536,19 @@ class SwimmingSquidBattle(PaiaGame):
             if i < len(self._winner):
                 if self._winner[i] == "1P":
                     result.append(
-                        create_image_view_data(IMG_ID_DOT_WIN, 100+i*30, 20,20,20)
+                        create_image_view_data(IMG_ID_DOT_WIN, 200+i*30, 20,20,20)
                     )
                 else:
                     result.append(
-                        create_image_view_data(IMG_ID_DOT_LOSE, 100+i*30, 20,20,20)
+                        create_image_view_data(IMG_ID_DOT_LOSE, 200+i*30, 20,20,20)
                     )
             else:
                 result.append(
-                    create_image_view_data(IMG_ID_DOT_NONE, 100+i*30, 20,20,20)
+                    create_image_view_data(IMG_ID_DOT_NONE, 200+i*30, 20,20,20)
                 )
+        result.append(
+            create_text_view_data(f"Lv{self.squid1.lv}", 150, 20, "#EEEEEE", "20px burnfont"),
+        )
         return result
     def _p2_score_objs(self):
         result = []
@@ -553,16 +556,19 @@ class SwimmingSquidBattle(PaiaGame):
             if i < len(self._winner):
                 if self._winner[i] == "2P":
                     result.append(
-                        create_image_view_data(IMG_ID_DOT_WIN, 800+i*30, 20,20,20)
+                        create_image_view_data(IMG_ID_DOT_WIN, 1000+i*30, 20,20,20)
                     )
                 else:
                     result.append(
-                        create_image_view_data(IMG_ID_DOT_LOSE, 800+i*30, 20,20,20)
+                        create_image_view_data(IMG_ID_DOT_LOSE, 1000+i*30, 20,20,20)
                     )
             else:
                 result.append(
-                    create_image_view_data(IMG_ID_DOT_NONE, 800+i*30, 20,20,20)
+                    create_image_view_data(IMG_ID_DOT_NONE, 1000+i*30, 20,20,20)
                 )
+        result.append(
+            create_text_view_data(f"Lv{self.squid2.lv}", 950, 20, "#EEEEEE", "20px burnfont"),
+        )
         return result
     @check_game_progress
     def get_scene_progress_data(self):
