@@ -505,6 +505,8 @@ class SwimmingSquidBattle(PaiaGame):
                 create_asset_init_data(IMG_ID_DOT_WIN, 20, 20, DOT_WIN_PATH, DOT_WIN_URL),
                 create_asset_init_data(IMG_ID_DOT_LOSE, 20, 20, DOT_LOSE_PATH, DOT_LOSE_URL),
                 create_asset_init_data(IMG_ID_DOT_NONE, 20, 20, DOT_NONE_PATH, DOT_NONE_URL),
+                create_asset_init_data(IMG_ID_OPENNING_BG, 1280, 768, OPENNING_BG_PATH, OPENNING_BG_URL),
+                create_asset_init_data(IMG_ID_OPENNING_LOGO, 506, 256, OPENNING_LOGO_PATH, OPENNING_LOGO_URL),
             ],
             "background": [
                 # create_image_view_data(
