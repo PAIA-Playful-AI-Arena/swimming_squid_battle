@@ -227,3 +227,15 @@ SQUID2_LOVELY_URL = ASSET_IMG_URL + "squid2_lovely.png"
 
 SCOREBAR_PATH = path.join(ASSET_IMAGE_DIR, "scorebar.png")
 SCOREBAR_URL = ASSET_IMG_URL + "scorebar.png"
+
+IMG_ID_DOT_WIN = "dot_win"
+IMG_ID_DOT_LOSE = "dot_lose"
+IMG_ID_DOT_NONE = "dot_none"
+DOT_WIN_PATH = path.join(ASSET_IMAGE_DIR, "dot_win.png")
+DOT_WIN_URL = ASSET_IMG_URL + "dot_win.png"
+
+DOT_LOSE_PATH = path.join(ASSET_IMAGE_DIR, "dot_lose.png")
+DOT_LOSE_URL = ASSET_IMG_URL + "dot_lose.png"
+
+DOT_NONE_PATH = path.join(ASSET_IMAGE_DIR, "dot_none.png")
+DOT_NONE_URL = ASSET_IMG_URL + "dot_none.png"

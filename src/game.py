@@ -7,7 +7,7 @@ import pygame
 from mlgame.core.model import GameProgressSchema
 from mlgame.game.paia_game import GameState, PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
-from mlgame.view.audio_model import create_music_init_data, create_sound_init_data, MusicProgressSchema
+from mlgame.view.audio_model import create_sound_init_data, MusicProgressSchema
 from mlgame.view.decorator import check_game_progress, check_game_result, check_scene_init_data
 from mlgame.view.view_model import *
 from .foods import *
@@ -502,6 +502,9 @@ class SwimmingSquidBattle(PaiaGame):
                 create_asset_init_data("garbage01", FOOD_LV1_SIZE, FOOD_LV1_SIZE, GARBAGE01_PATH, GARBAGE01_URL),
                 create_asset_init_data("garbage02", FOOD_LV2_SIZE, FOOD_LV2_SIZE, GARBAGE02_PATH, GARBAGE02_URL),
                 create_asset_init_data("garbage03", FOOD_LV3_SIZE, FOOD_LV3_SIZE, GARBAGE03_PATH, GARBAGE03_URL),
+                create_asset_init_data(IMG_ID_DOT_WIN, 20, 20, DOT_WIN_PATH, DOT_WIN_URL),
+                create_asset_init_data(IMG_ID_DOT_LOSE, 20, 20, DOT_LOSE_PATH, DOT_LOSE_URL),
+                create_asset_init_data(IMG_ID_DOT_NONE, 20, 20, DOT_NONE_PATH, DOT_NONE_URL),
             ],
             "background": [
                 # create_image_view_data(
@@ -509,9 +512,9 @@ class SwimmingSquidBattle(PaiaGame):
                 #     self.playground.w, self.playground.h)
             ],
             "musics": [
-                create_music_init_data("bgm01", file_path=BGM01_PATH, github_raw_url=BGM01_URL),
-                create_music_init_data("bgm02", file_path=BGM02_PATH, github_raw_url=BGM02_URL),
-                create_music_init_data("bgm03", file_path=BGM03_PATH, github_raw_url=BGM03_URL),
+                # create_music_init_data("bgm01", file_path=BGM01_PATH, github_raw_url=BGM01_URL),
+                # create_music_init_data("bgm02", file_path=BGM02_PATH, github_raw_url=BGM02_URL),
+                # create_music_init_data("bgm03", file_path=BGM03_PATH, github_raw_url=BGM03_URL),
 
             ],
             # Create the sounds list using create_sound_init_data
@@ -527,7 +530,40 @@ class SwimmingSquidBattle(PaiaGame):
         }
         return scene_init_data
 
-
+    def _p1_score_objs(self):
+        result = []
+        for i in range(self._game_times):
+            if i < len(self._winner):
+                if self._winner[i] == "1P":
+                    result.append(
+                        create_image_view_data(IMG_ID_DOT_WIN, 100+i*30, 20,20,20)
+                    )
+                else:
+                    result.append(
+                        create_image_view_data(IMG_ID_DOT_LOSE, 100+i*30, 20,20,20)
+                    )
+            else:
+                result.append(
+                    create_image_view_data(IMG_ID_DOT_NONE, 100+i*30, 20,20,20)
+                )
+        return result
+    def _p2_score_objs(self):
+        result = []
+        for i in range(self._game_times):
+            if i < len(self._winner):
+                if self._winner[i] == "2P":
+                    result.append(
+                        create_image_view_data(IMG_ID_DOT_WIN, 800+i*30, 20,20,20)
+                    )
+                else:
+                    result.append(
+                        create_image_view_data(IMG_ID_DOT_LOSE, 800+i*30, 20,20,20)
+                    )
+            else:
+                result.append(
+                    create_image_view_data(IMG_ID_DOT_NONE, 800+i*30, 20,20,20)
+                )
+        return result
     @check_game_progress
     def get_scene_progress_data(self):
         """
@@ -582,6 +618,8 @@ class SwimmingSquidBattle(PaiaGame):
             create_rect_view_data("squid2_scorebar", WIDTH/2+425-scorebar2_width, 63,scorebar2_width,35,"#e6544d"),
             create_text_view_data(f"{self.squid2.score:03d}/{self._score_to_pass:03d}", WIDTH-(WIDTH-900)/2-150, 75, "#ffffff", "20px burnfont"),
         ]
+        toggle_objs.extend(self._p1_score_objs())
+        toggle_objs.extend(self._p2_score_objs())
         game_obj_list.extend(foods_data)
         backgrounds = [
             create_image_view_data(
