@@ -239,3 +239,12 @@ DOT_LOSE_URL = ASSET_IMG_URL + "dot_lose.png"
 
 DOT_NONE_PATH = path.join(ASSET_IMAGE_DIR, "dot_none.png")
 DOT_NONE_URL = ASSET_IMG_URL + "dot_none.png"
+
+IMG_ID_OPENNING_BG = "opening_bg"
+IMG_ID_OPENNING_LOGO = "opening_logo"
+OPENNING_BG_PATH = path.join(ASSET_IMAGE_DIR, "opening_bg.png")
+OPENNING_BG_URL = ASSET_IMG_URL + "opening_bg.png"
+
+OPENNING_LOGO_PATH = path.join(ASSET_IMAGE_DIR, "opening_logo.png")
+OPENNING_LOGO_URL = ASSET_IMG_URL + "opening_logo.png"
+

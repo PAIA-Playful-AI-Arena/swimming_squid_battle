@@ -1,8 +1,9 @@
 from enum import Enum
+from math import sin
 
-from .env import PASS_OBJ
+from .env import IMG_ID_OPENNING_BG, IMG_ID_OPENNING_LOGO, PASS_OBJ
 from mlgame.game.paia_game import GameState
-from mlgame.view.view_model import create_scene_progress_data, create_text_view_data
+from mlgame.view.view_model import create_image_view_data, create_scene_progress_data, create_text_view_data
 
 
 class EndingState(GameState):
@@ -99,20 +100,14 @@ class OpeningState(GameState):
     def __init__(self, game: 'SwimmingSquidBattle'):
         self._game = game
         self.frame_count = 0
-        self._ready_text = create_text_view_data("Ready", 300, 300, "#EEEEEE", "64px Consolas BOLD")
-        self._go_text = create_text_view_data("Go! ", -300, -360, "#EEEEEE", "64px Consolas BOLD")
+        # self._ready_text = create_text_view_data("Ready", 300, 300, "#EEEEEE", "64px Consolas BOLD")
+        # self._go_text = create_text_view_data("Go! ", -300, -360, "#EEEEEE", "64px Consolas BOLD")
+        self._logo_bias_degree = 0
+        self._logo_bias = sin(self._logo_bias_degree)
     def update(self):
-        if self.frame_count < 30:
-            self._ready_text["content"] = "Ready "+"."*(self.frame_count%5)
-            # self._ready_text["x"] += 10
-        elif 30 <= self.frame_count < 60:
-            self._ready_text["content"] = "Ready"
-
-            self._go_text = create_text_view_data("Fight! ", 320, 360, "#EEEEEE", "64px Consolas BOLD")
-
-        elif 60 <= self.frame_count < 90:
-            self._ready_text["x"] += 30
-            self._go_text["x"] -= 30
+        if self.frame_count < 90:
+            self._logo_bias_degree += 0.15
+            self._logo_bias = 15*sin(self._logo_bias_degree)
         elif 90 <= self.frame_count:
             self.frame_count=0
             self.reset()
@@ -122,8 +117,13 @@ class OpeningState(GameState):
     def get_scene_progress_data(self):
         return create_scene_progress_data(
             frame=self.frame_count,
-            background=[],
-            object_list=[self._ready_text, self._go_text],
+            background=[
+                create_image_view_data(IMG_ID_OPENNING_BG, 0, 0, 1280, 768),
+                create_image_view_data(IMG_ID_OPENNING_LOGO, 1280/2-506/2, 768/2-256/2+self._logo_bias, 506, 256),
+                ],
+            object_list=[
+                # self._ready_text, self._go_text
+                ],
             foreground=[],
             toggle=[],
             musics=[], sounds=[]
