@@ -263,3 +263,7 @@ TRANSITION_P1_URL = ASSET_IMG_URL + "transition_p1.png"
 TRANSITION_P2_PATH = path.join(ASSET_IMAGE_DIR, "transition_p2.png")
 TRANSITION_P2_URL = ASSET_IMG_URL + "transition_p2.png"
 
+# ending
+IMG_ID_ENDING_TROPHY = "ending_trophy"
+ENDING_TROPHY_PATH = path.join(ASSET_IMAGE_DIR, "ending_trophy.png")
+ENDING_TROPHY_URL = ASSET_IMG_URL + "ending_trophy.png"

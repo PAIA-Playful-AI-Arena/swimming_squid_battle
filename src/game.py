@@ -512,6 +512,7 @@ class SwimmingSquidBattle(PaiaGame):
                 create_asset_init_data(IMG_ID_TRANSITION_CROWN, 172, 120, TRANSITION_CROWN_PATH, TRANSITION_CROWN_URL),
                 create_asset_init_data(IMG_ID_TRANSITION_P1, 164, 164, TRANSITION_P1_PATH, TRANSITION_P1_URL),
                 create_asset_init_data(IMG_ID_TRANSITION_P2, 164, 164, TRANSITION_P2_PATH, TRANSITION_P2_URL),
+                create_asset_init_data(IMG_ID_ENDING_TROPHY, 628, 511, ENDING_TROPHY_PATH, ENDING_TROPHY_URL),
             ],
             "background": [
                 # create_image_view_data(
