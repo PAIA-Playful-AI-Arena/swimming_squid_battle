@@ -89,7 +89,8 @@ class SwimmingSquidBattle(PaiaGame):
             self.current_state = self._state_map[state]
         else:
             self.current_state = None
-    
+        if state == RunningState.PLAYING:
+            self._init_game()
     def _init_game_by_file(self, level_file_path: str):
         try:
             with open(level_file_path) as f:
@@ -240,7 +241,7 @@ class SwimmingSquidBattle(PaiaGame):
                 else:
                     self._current_round_num += 1
                     self.set_game_state(RunningState.TRANSITION)
-                    self._init_game()
+                    
                 self._status = status
             else:
                 self._status = GameStatus.GAME_ALIVE
@@ -507,6 +508,10 @@ class SwimmingSquidBattle(PaiaGame):
                 create_asset_init_data(IMG_ID_DOT_NONE, 20, 20, DOT_NONE_PATH, DOT_NONE_URL),
                 create_asset_init_data(IMG_ID_OPENNING_BG, 1280, 768, OPENNING_BG_PATH, OPENNING_BG_URL),
                 create_asset_init_data(IMG_ID_OPENNING_LOGO, 506, 256, OPENNING_LOGO_PATH, OPENNING_LOGO_URL),
+                create_asset_init_data(IMG_ID_TRANSITION_BG, 1280, 768, TRANSITION_BG_PATH, TRANSITION_BG_URL),
+                create_asset_init_data(IMG_ID_TRANSITION_CROWN, 172, 120, TRANSITION_CROWN_PATH, TRANSITION_CROWN_URL),
+                create_asset_init_data(IMG_ID_TRANSITION_P1, 164, 164, TRANSITION_P1_PATH, TRANSITION_P1_URL),
+                create_asset_init_data(IMG_ID_TRANSITION_P2, 164, 164, TRANSITION_P2_PATH, TRANSITION_P2_URL),
             ],
             "background": [
                 # create_image_view_data(
