@@ -1,5 +1,8 @@
 from enum import Enum
 from math import sin
+from random import randint
+
+from mlgame.view.audio_model import MusicProgressSchema
 
 from .env import HEIGHT, IMG_ID_DOT_LOSE, IMG_ID_DOT_NONE, IMG_ID_DOT_WIN, IMG_ID_ENDING_TROPHY, IMG_ID_OPENNING_BG, IMG_ID_OPENNING_LOGO, IMG_ID_TRANSITION_BG, IMG_ID_TRANSITION_CROWN, IMG_ID_TRANSITION_P1, IMG_ID_TRANSITION_P2, PASS_OBJ, WIDTH
 from mlgame.game.paia_game import GameState
@@ -199,7 +202,8 @@ class OpeningState(GameState):
                 ],
             foreground=[],
             toggle=[],
-            musics=[], sounds=[]
+            musics=[MusicProgressSchema(music_id=f"bgm0{randint(1, 3)}").__dict__] if self.frame_count == 2 else [],
+            sounds=[]
             )
 
     def reset(self):

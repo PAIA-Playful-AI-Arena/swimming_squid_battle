@@ -7,7 +7,7 @@ import pygame
 from mlgame.core.model import GameProgressSchema
 from mlgame.game.paia_game import GameState, PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
-from mlgame.view.audio_model import create_sound_init_data, MusicProgressSchema
+from mlgame.view.audio_model import create_sound_init_data, create_music_init_data
 from mlgame.view.decorator import check_game_progress, check_game_result, check_scene_init_data
 from mlgame.view.view_model import *
 from .foods import *
@@ -157,8 +157,6 @@ class SwimmingSquidBattle(PaiaGame):
             game_params.top = self.playground.top
             self._game_params = game_params
 
-            # change bgm
-            self._music = [MusicProgressSchema(music_id=f"bgm0{(self._current_round_num - 1) % 3 + 1}").__dict__]
 
     
     def update(self, commands):
@@ -520,9 +518,9 @@ class SwimmingSquidBattle(PaiaGame):
                 #     self.playground.w, self.playground.h)
             ],
             "musics": [
-                # create_music_init_data("bgm01", file_path=BGM01_PATH, github_raw_url=BGM01_URL),
-                # create_music_init_data("bgm02", file_path=BGM02_PATH, github_raw_url=BGM02_URL),
-                # create_music_init_data("bgm03", file_path=BGM03_PATH, github_raw_url=BGM03_URL),
+                create_music_init_data("bgm01", file_path=BGM01_PATH, github_raw_url=BGM01_URL),
+                create_music_init_data("bgm02", file_path=BGM02_PATH, github_raw_url=BGM02_URL),
+                create_music_init_data("bgm03", file_path=BGM03_PATH, github_raw_url=BGM03_URL),
 
             ],
             # Create the sounds list using create_sound_init_data
@@ -530,7 +528,6 @@ class SwimmingSquidBattle(PaiaGame):
                 create_sound_init_data("eat_good_food", file_path=EATING_GOOD_PATH, github_raw_url=EATING_GOOD_URL),
                 create_sound_init_data("eat_bad_food", file_path=EATING_BAD_PATH, github_raw_url=EATING_BAD_URL),
                 create_sound_init_data("pass", file_path=PASS_PATH, github_raw_url=PASS_URL),
-                create_sound_init_data("fail", file_path=FAIL_PATH, github_raw_url=FAIL_URL),
                 create_sound_init_data("lv_up", file_path=LV_UP_PATH, github_raw_url=LV_UP_URL),
                 create_sound_init_data("lv_down", file_path=LV_DOWN_PATH, github_raw_url=LV_DOWN_URL),
                 create_sound_init_data("collision", file_path=COLLISION_PATH, github_raw_url=COLLISION_URL)
@@ -616,9 +613,13 @@ class SwimmingSquidBattle(PaiaGame):
         toggle_objs.extend(self._p2_info())
         game_obj_list.extend(foods_data)
         backgrounds = [
-            create_image_view_data(
-                'bg', self.playground.x, self.playground.y,
-                self.playground.w, self.playground.h)
+            create_image_view_data('bg', 0, 0,WIDTH,HEIGHT),
+            create_rect_view_data('mask1', 0, 0,WIDTH,self.playground.y,"#00000088"),
+            create_rect_view_data('mask2', 0, self.playground.y+self.playground.h,  WIDTH,HEIGHT-self.playground.bottom,"#00000088"),
+            create_rect_view_data('mask3', 0, self.playground.top, self.playground.left,self.playground.height,"#00000088"),
+            create_rect_view_data('mask4', self.playground.right, self.playground.top,WIDTH-self.playground.right,self.playground.height,"#00000088")
+            # create_
+            # create_image_view_data('bg', self.playground.x, self.playground.y,self.playground.w, self.playground.h)
         ]
         foregrounds = [
 
@@ -782,3 +783,5 @@ def remap(value: int, fromLow: int, fromHigh: int, toLow: int, toHigh: int):
     elif value > fromHigh:
         return toHigh
     return (value - fromLow) * (toHigh - toLow) / (fromHigh - fromLow) + toLow
+
+
