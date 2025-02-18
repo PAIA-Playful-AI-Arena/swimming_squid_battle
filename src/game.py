@@ -560,6 +560,8 @@ class SwimmingSquidBattle(PaiaGame):
                 create_text_view_data(f"Lv{self.squid1.lv}", 150, 20, "#EEEEEE", "20px burnfont"),
                 create_rect_view_data("squid1_scorebar",WIDTH/2-120-scorebar1_width, 50, scorebar1_width, 45, "#000000CC"),
                 create_text_view_data(f"{self.squid1.score:03d}/{self._score_to_pass:03d}", (WIDTH/2-500)+30, 60, "#EEEEEE", "20px burnfont"),
+                create_image_view_data(IMG_ID_TRANSITION_P1, x=WIDTH/2-570, y=40, width=60, height=60),
+
             ]
         )
         return result
@@ -586,6 +588,7 @@ class SwimmingSquidBattle(PaiaGame):
                 create_text_view_data(f"Lv{self.squid2.lv}", 950, 20, "#EEEEEE", "20px burnfont"),
                 create_rect_view_data("squid2_scorebar", WIDTH/2+130,50,scorebar2_width,50,"#000000CC"),
                 create_text_view_data(f"{self.squid2.score:03d}/{self._score_to_pass:03d}", WIDTH/2+370, 60, "#EEEEEE", "20px burnfont"),
+                create_image_view_data(IMG_ID_TRANSITION_P2, x=WIDTH/2+510, y=40, width=60, height=60),
             ]   
         )
         return result
