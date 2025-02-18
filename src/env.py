@@ -110,7 +110,6 @@ SQUID_HURT_PATH = path.join(ASSET_IMAGE_DIR, "squid-hurt.png")
 
 SQUID2_PATH = path.join(ASSET_IMAGE_DIR, "squid2.png")
 SQUID2_HURT_PATH = path.join(ASSET_IMAGE_DIR, "squid2-hurt.png")
-STAR_PATH = path.join(ASSET_IMAGE_DIR, "star.png")
 
 IMG_ID_FOOD01_L = "food_01_L"
 IMG_ID_FOOD02_L = "food_02_L"
@@ -138,7 +137,6 @@ SQUID_URL = ASSET_IMG_URL + "squid.png"
 SQUID_HURT_URL = ASSET_IMG_URL + "squid-hurt.png"
 SQUID2_URL = ASSET_IMG_URL + "squid2.png"
 SQUID2_HURT_URL = ASSET_IMG_URL + "squid2-hurt.png"
-STAR_URL = ASSET_IMG_URL + "star.png"
 # Food URLs
 FOOD01_L_URL = ASSET_IMG_URL + "food_01_L.png"
 FOOD02_L_URL = ASSET_IMG_URL + "food_02_L.png"  # Assuming the naming pattern is similar
@@ -174,53 +172,60 @@ INVINCIBLE_TIME = 30
 PARALYSIS_TIME = 8
 
 # Define paths for squid images
-SQUID1_ID = "squid1"
-SQUID1_HURT_ID = "squid1_hurt"
-SQUID1_LEFT_1_ID = "squid1_left_1"
-SQUID1_LEFT_2_ID = "squid1_left_2"
-SQUID1_RIGHT_1_ID = "squid1_right_1"
-SQUID1_RIGHT_2_ID = "squid1_right_2"
+SQUID1_HURT_1_ID = "squid1_hurt_1"
+SQUID1_HURT_2_ID = "squid1_hurt_2"
+SQUID1_1_ID = "squid1_1"
+SQUID1_2_ID = "squid1_2"
+SQUID1_3_ID = "squid1_3"
+SQUID1_4_ID = "squid1_4"
+SQUID1_5_ID = "squid1_5"
 SQUID1_LOVELY_ID = "squid1_lovely"
 
-SQUID1_PATH = path.join(ASSET_IMAGE_DIR, "squid1_0.png")
-SQUID1_HURT_PATH = path.join(ASSET_IMAGE_DIR, "squid1_hurt.png")
-SQUID1_LEFT_1_PATH = path.join(ASSET_IMAGE_DIR, "squid1_left_1.png")
-SQUID1_LEFT_2_PATH = path.join(ASSET_IMAGE_DIR, "squid1_left_2.png")
-SQUID1_RIGHT_1_PATH = path.join(ASSET_IMAGE_DIR, "squid1_right_1.png")
-SQUID1_RIGHT_2_PATH = path.join(ASSET_IMAGE_DIR, "squid1_right_2.png")
+SQUID1_HURT_1_PATH = path.join(ASSET_IMAGE_DIR, "squid1_hurt_1.png")
+SQUID1_HURT_2_PATH = path.join(ASSET_IMAGE_DIR, "squid1_hurt_2.png")
+SQUID1_1_PATH = path.join(ASSET_IMAGE_DIR, "squid1_1.png")
+SQUID1_2_PATH = path.join(ASSET_IMAGE_DIR, "squid1_2.png")
+SQUID1_3_PATH = path.join(ASSET_IMAGE_DIR, "squid1_3.png")
+SQUID1_4_PATH = path.join(ASSET_IMAGE_DIR, "squid1_4.png")
+SQUID1_5_PATH = path.join(ASSET_IMAGE_DIR, "squid1_5.png")
+
 SQUID1_LOVELY_PATH = path.join(ASSET_IMAGE_DIR, "squid1_lovely.png")
-SQUID1_URL = ASSET_IMG_URL + "squid1.png"
-SQUID1_HURT_URL = ASSET_IMG_URL + "squid1_hurt.png"
-SQUID1_LEFT_1_URL = ASSET_IMG_URL + "squid1_left_1.png"
-SQUID1_LEFT_2_URL = ASSET_IMG_URL + "squid1_left_2.png"
-SQUID1_RIGHT_1_URL = ASSET_IMG_URL + "squid1_right_1.png"
-SQUID1_RIGHT_2_URL = ASSET_IMG_URL + "squid1_right_2.png"
+SQUID1_HURT_1_URL = ASSET_IMG_URL + "squid1_hurt_1.png"
+SQUID1_HURT_2_URL = ASSET_IMG_URL + "squid1_hurt_2.png"
+SQUID1_1_URL = ASSET_IMG_URL + "squid1_1.png"
+SQUID1_2_URL = ASSET_IMG_URL + "squid1_2.png"
+SQUID1_3_URL = ASSET_IMG_URL + "squid1_3.png"
+SQUID1_4_URL = ASSET_IMG_URL + "squid1_4.png"
+SQUID1_5_URL = ASSET_IMG_URL + "squid1_5.png"
 SQUID1_LOVELY_URL = ASSET_IMG_URL + "squid1_lovely.png"
 
 
-
 # Define paths for squid images
-SQUID2_ID = "squid2"
-SQUID2_HURT_ID = "squid2_hurt"
-SQUID2_LEFT_1_ID = "squid2_left_1"
-SQUID2_LEFT_2_ID = "squid2_left_2"
-SQUID2_RIGHT_1_ID = "squid2_right_1"
-SQUID2_RIGHT_2_ID = "squid2_right_2"
+SQUID2_HURT_1_ID = "squid2_hurt_1"
+SQUID2_HURT_2_ID = "squid2_hurt_2"
+SQUID2_1_ID = "squid2_1"
+SQUID2_2_ID = "squid2_2"
+SQUID2_3_ID = "squid2_3"
+SQUID2_4_ID = "squid2_4"
+SQUID2_5_ID = "squid2_5"
 SQUID2_LOVELY_ID = "squid2_lovely"
 
-SQUID2_PATH = path.join(ASSET_IMAGE_DIR, "squid2_0.png")
-SQUID2_HURT_PATH = path.join(ASSET_IMAGE_DIR, "squid2_hurt.png")
-SQUID2_LEFT_1_PATH = path.join(ASSET_IMAGE_DIR, "squid2_left_1.png")
-SQUID2_LEFT_2_PATH = path.join(ASSET_IMAGE_DIR, "squid2_left_2.png")
-SQUID2_RIGHT_1_PATH = path.join(ASSET_IMAGE_DIR, "squid2_right_1.png")
-SQUID2_RIGHT_2_PATH = path.join(ASSET_IMAGE_DIR, "squid2_right_2.png")
+SQUID2_HURT_1_PATH = path.join(ASSET_IMAGE_DIR, "squid2_hurt_1.png")
+SQUID2_HURT_2_PATH = path.join(ASSET_IMAGE_DIR, "squid2_hurt_2.png")
+SQUID2_1_PATH = path.join(ASSET_IMAGE_DIR, "squid2_1.png")
+SQUID2_2_PATH = path.join(ASSET_IMAGE_DIR, "squid2_2.png")
+SQUID2_3_PATH = path.join(ASSET_IMAGE_DIR, "squid2_3.png")
+SQUID2_4_PATH = path.join(ASSET_IMAGE_DIR, "squid2_4.png")
+SQUID2_5_PATH = path.join(ASSET_IMAGE_DIR, "squid2_5.png")
 SQUID2_LOVELY_PATH = path.join(ASSET_IMAGE_DIR, "squid2_lovely.png")
-SQUID2_URL = ASSET_IMG_URL + "squid2.png"
-SQUID2_HURT_URL = ASSET_IMG_URL + "squid2_hurt.png"
-SQUID2_LEFT_1_URL = ASSET_IMG_URL + "squid2_left_1.png"
-SQUID2_LEFT_2_URL = ASSET_IMG_URL + "squid2_left_2.png"
-SQUID2_RIGHT_1_URL = ASSET_IMG_URL + "squid2_right_1.png"
-SQUID2_RIGHT_2_URL = ASSET_IMG_URL + "squid2_right_2.png"
+
+SQUID2_HURT_1_URL = ASSET_IMG_URL + "squid2_hurt_1.png"
+SQUID2_HURT_2_URL = ASSET_IMG_URL + "squid2_hurt_2.png"
+SQUID2_1_URL = ASSET_IMG_URL + "squid2_1.png"
+SQUID2_2_URL = ASSET_IMG_URL + "squid2_2.png"
+SQUID2_3_URL = ASSET_IMG_URL + "squid2_3.png"
+SQUID2_4_URL = ASSET_IMG_URL + "squid2_4.png"
+SQUID2_5_URL = ASSET_IMG_URL + "squid2_5.png"
 SQUID2_LOVELY_URL = ASSET_IMG_URL + "squid2_lovely.png"
 
 SCOREBAR_PATH = path.join(ASSET_IMAGE_DIR, "scorebar.png")
