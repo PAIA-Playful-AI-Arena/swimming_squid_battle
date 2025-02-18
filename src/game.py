@@ -289,7 +289,7 @@ class SwimmingSquidBattle(PaiaGame):
                 (self.squid1.rect.centerx + self.squid2.rect.centerx) / 2,
                 (self.squid1.rect.centery + self.squid2.rect.centery) / 2
             )
-            CryingStar(center[0], center[1], self._help_texts)
+            # CryingStar(center[0], center[1], self._help_texts)
             if self.squid1.lv > self.squid2.lv:
                 self.squid1.collision_between_squids(COLLISION_SCORE["WIN"], self.frame_count, self._sounds)
                 ScoreText(
@@ -476,20 +476,22 @@ class SwimmingSquidBattle(PaiaGame):
             "scene": self.scene.__dict__,
             "assets": [
                 create_asset_init_data("bg", 1280, 768, BG_PATH, BG_URL),
-                create_asset_init_data(SQUID1_ID, SQUID_W, SQUID_H, SQUID1_PATH, SQUID1_URL),
-                create_asset_init_data(SQUID1_HURT_ID, SQUID_W, SQUID_H, SQUID1_HURT_PATH, SQUID1_HURT_URL),
-                create_asset_init_data(SQUID1_LEFT_1_ID, SQUID_W, SQUID_H, SQUID1_LEFT_1_PATH, SQUID1_LEFT_1_URL),
-                create_asset_init_data(SQUID1_LEFT_2_ID, SQUID_W, SQUID_H, SQUID1_LEFT_2_PATH, SQUID1_LEFT_2_URL),
-                create_asset_init_data(SQUID1_RIGHT_1_ID, SQUID_W, SQUID_H, SQUID1_RIGHT_1_PATH, SQUID1_RIGHT_1_URL),
-                create_asset_init_data(SQUID1_RIGHT_2_ID, SQUID_W, SQUID_H, SQUID1_RIGHT_2_PATH, SQUID1_RIGHT_2_URL),
+                create_asset_init_data(SQUID1_HURT_1_ID, SQUID_W, SQUID_H, SQUID1_HURT_1_PATH, SQUID1_HURT_1_URL),
+                create_asset_init_data(SQUID1_HURT_2_ID, SQUID_W, SQUID_H, SQUID1_HURT_2_PATH, SQUID1_HURT_2_URL),
+                create_asset_init_data(SQUID1_1_ID, SQUID_W, SQUID_H, SQUID1_1_PATH, SQUID1_1_URL),
+                create_asset_init_data(SQUID1_2_ID, SQUID_W, SQUID_H, SQUID1_2_PATH, SQUID1_2_URL),
+                create_asset_init_data(SQUID1_3_ID, SQUID_W, SQUID_H, SQUID1_3_PATH, SQUID1_3_URL),
+                create_asset_init_data(SQUID1_4_ID, SQUID_W, SQUID_H, SQUID1_4_PATH, SQUID1_4_URL),
+                create_asset_init_data(SQUID1_5_ID, SQUID_W, SQUID_H, SQUID1_5_PATH, SQUID1_5_URL),
                 create_asset_init_data(SQUID1_LOVELY_ID, SQUID_W, SQUID_H, SQUID1_LOVELY_PATH, SQUID1_LOVELY_URL),
-                create_asset_init_data(SQUID2_ID, SQUID_W, SQUID_H, SQUID2_PATH, SQUID2_URL),
-                create_asset_init_data(SQUID2_HURT_ID, SQUID_W, SQUID_H, SQUID2_HURT_PATH, SQUID2_HURT_URL),
-                create_asset_init_data(SQUID2_LEFT_1_ID, SQUID_W, SQUID_H, SQUID2_LEFT_1_PATH, SQUID2_LEFT_1_URL),
-                create_asset_init_data(SQUID2_LEFT_2_ID, SQUID_W, SQUID_H, SQUID2_LEFT_2_PATH, SQUID2_LEFT_2_URL),
-                create_asset_init_data(SQUID2_RIGHT_1_ID, SQUID_W, SQUID_H, SQUID2_RIGHT_1_PATH, SQUID2_RIGHT_1_URL),
-                create_asset_init_data(SQUID2_RIGHT_2_ID, SQUID_W, SQUID_H, SQUID2_RIGHT_2_PATH, SQUID2_RIGHT_2_URL),
-                
+                create_asset_init_data(SQUID2_HURT_1_ID, SQUID_W, SQUID_H, SQUID2_HURT_1_PATH, SQUID2_HURT_1_URL),
+                create_asset_init_data(SQUID2_HURT_2_ID, SQUID_W, SQUID_H, SQUID2_HURT_2_PATH, SQUID2_HURT_2_URL),
+                create_asset_init_data(SQUID2_1_ID, SQUID_W, SQUID_H, SQUID2_1_PATH, SQUID2_1_URL),
+                create_asset_init_data(SQUID2_2_ID, SQUID_W, SQUID_H, SQUID2_2_PATH, SQUID2_2_URL),
+                create_asset_init_data(SQUID2_3_ID, SQUID_W, SQUID_H, SQUID2_3_PATH, SQUID2_3_URL),
+                create_asset_init_data(SQUID2_4_ID, SQUID_W, SQUID_H, SQUID2_4_PATH, SQUID2_4_URL),
+                create_asset_init_data(SQUID2_5_ID, SQUID_W, SQUID_H, SQUID2_5_PATH, SQUID2_5_URL),
+                create_asset_init_data(SQUID2_LOVELY_ID, SQUID_W, SQUID_H, SQUID2_LOVELY_PATH, SQUID2_LOVELY_URL),
                 
                 create_asset_init_data("scorebar", 1000, 150, SCOREBAR_PATH, SCOREBAR_URL),
                 create_asset_init_data("colorbar", 350, 50, COLORBAR_PATH, COLORBAR_URL),
