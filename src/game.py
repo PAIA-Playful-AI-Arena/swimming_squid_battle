@@ -1,4 +1,5 @@
 import copy
+import math
 import os.path
 
 import pandas as pd
@@ -474,7 +475,7 @@ class SwimmingSquidBattle(PaiaGame):
         scene_init_data = {
             "scene": self.scene.__dict__,
             "assets": [
-                create_asset_init_data("bg", 1000, 1000, BG_PATH, BG_URL),
+                create_asset_init_data("bg", 1280, 768, BG_PATH, BG_URL),
                 create_asset_init_data(SQUID1_ID, SQUID_W, SQUID_H, SQUID1_PATH, SQUID1_URL),
                 create_asset_init_data(SQUID1_HURT_ID, SQUID_W, SQUID_H, SQUID1_HURT_PATH, SQUID1_HURT_URL),
                 create_asset_init_data(SQUID1_LEFT_1_ID, SQUID_W, SQUID_H, SQUID1_LEFT_1_PATH, SQUID1_LEFT_1_URL),
@@ -490,8 +491,9 @@ class SwimmingSquidBattle(PaiaGame):
                 create_asset_init_data(SQUID2_RIGHT_2_ID, SQUID_W, SQUID_H, SQUID2_RIGHT_2_PATH, SQUID2_RIGHT_2_URL),
                 
                 
-                create_asset_init_data("scorebar", 900, 172, SCOREBAR_PATH, SCOREBAR_URL),
-                create_asset_init_data("star", SQUID_H, SQUID_H, STAR_PATH, STAR_URL),
+                create_asset_init_data("scorebar", 1000, 150, SCOREBAR_PATH, SCOREBAR_URL),
+                create_asset_init_data("colorbar", 350, 50, COLORBAR_PATH, COLORBAR_URL),
+                # create_asset_init_data("star", SQUID_H, SQUID_H, STAR_PATH, STAR_URL),
                 create_asset_init_data(IMG_ID_FOOD01_L, FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_L_PATH, FOOD01_L_URL),
                 create_asset_init_data(IMG_ID_FOOD02_L, FOOD_LV2_SIZE, FOOD_LV2_SIZE, FOOD02_L_PATH, FOOD02_L_URL),
                 create_asset_init_data(IMG_ID_FOOD03_L, FOOD_LV3_SIZE, FOOD_LV3_SIZE, FOOD03_L_PATH, FOOD03_L_URL),
@@ -551,13 +553,13 @@ class SwimmingSquidBattle(PaiaGame):
                 result.append(
                     create_image_view_data(IMG_ID_DOT_NONE, 200+i*30, 20,20,20)
                 )
-        scorebar1_width = remap(self.squid1.score, 0, self._score_to_pass, 100, 285)
+        scorebar1_width = 350-remap(self.squid1.score, 0, self._score_to_pass, 10, 350)
         
         result.extend(
             [
                 create_text_view_data(f"Lv{self.squid1.lv}", 150, 20, "#EEEEEE", "20px burnfont"),
-                create_rect_view_data("squid1_scorebar", 150, 63, scorebar1_width, 35, "#ffffff"),
-                create_text_view_data(f"{self.squid1.score:03d}/{self._score_to_pass:03d}", 150, 75, "#000000", "20px burnfont"),
+                create_rect_view_data("squid1_scorebar",WIDTH/2-120-scorebar1_width, 50, scorebar1_width, 45, "#000000CC"),
+                create_text_view_data(f"{self.squid1.score:03d}/{self._score_to_pass:03d}", (WIDTH/2-500)+30, 60, "#EEEEEE", "20px burnfont"),
             ]
         )
         return result
@@ -577,14 +579,14 @@ class SwimmingSquidBattle(PaiaGame):
                 result.append(
                     create_image_view_data(IMG_ID_DOT_NONE, 1000+i*30, 20,20,20)
                 )
-        scorebar2_width = remap(self.squid2.score, 0, self._score_to_pass, 100, 285)
+        scorebar2_width = 350-remap(self.squid2.score, 0, self._score_to_pass, 10, 350)
 
         result.extend(
             [
                 create_text_view_data(f"Lv{self.squid2.lv}", 950, 20, "#EEEEEE", "20px burnfont"),
-                create_rect_view_data("squid2_scorebar", WIDTH/2+425-scorebar2_width, 63,scorebar2_width,35,"#e6544d"),
-                create_text_view_data(f"{self.squid2.score:03d}/{self._score_to_pass:03d}", WIDTH-(WIDTH-900)/2-150, 75, "#ffffff", "20px burnfont"),
-            ]
+                create_rect_view_data("squid2_scorebar", WIDTH/2+130,50,scorebar2_width,50,"#000000CC"),
+                create_text_view_data(f"{self.squid2.score:03d}/{self._score_to_pass:03d}", WIDTH/2+370, 60, "#EEEEEE", "20px burnfont"),
+            ]   
         )
         return result
     @check_game_progress
@@ -604,8 +606,12 @@ class SwimmingSquidBattle(PaiaGame):
         game_obj_list.extend(foods_data)
         game_obj_list.extend(help_texts)
         toggle_objs = [
-            create_image_view_data("scorebar", (WIDTH-900)/2, 0, 900, 172),
-            
+            create_image_view_data("scorebar", (WIDTH-1000)/2, 0, 1000, 150),
+            # 1P    
+            create_image_view_data("colorbar", (WIDTH/2-500)+20, 50, 350, 40),
+            # 2P
+            create_image_view_data("colorbar", WIDTH/2+130, 50, 350, 40,math.pi),
+
             create_text_view_data(f"{self._frame_count_down:04d}", (WIDTH)/2-85, 50, "#EEEEEE", "48px burnfont"),
             
         ]
