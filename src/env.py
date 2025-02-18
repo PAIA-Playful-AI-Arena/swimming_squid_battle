@@ -160,7 +160,6 @@ BGM03_URL = MUSIC_URL + BGM02_FILE_NAME
 EATING_GOOD_URL = SOUND_URL + "eat_good_food.mp3"
 EATING_BAD_URL = SOUND_URL + "eat_bad_food.mp3"
 PASS_URL = SOUND_URL + "pass.mp3"
-FAIL_URL = SOUND_URL + "fail.mp3"
 LV_UP_URL = SOUND_URL + "lv_up.mp3"
 LV_DOWN_URL = SOUND_URL + "lv_down.mp3"
 COLLISION_URL = SOUND_URL + "collision.mp3"
@@ -168,7 +167,6 @@ COLLISION_URL = SOUND_URL + "collision.mp3"
 EATING_GOOD_OBJ = SoundProgressSchema(sound_id='eat_good_food').__dict__
 EATING_BAD_OBJ = SoundProgressSchema(sound_id='eat_bad_food').__dict__
 PASS_OBJ = SoundProgressSchema(sound_id='pass').__dict__
-FAIL_OBJ = SoundProgressSchema(sound_id='fail').__dict__
 LV_UP_OBJ = SoundProgressSchema(sound_id='lv_up').__dict__
 LV_DOWN_OBJ = SoundProgressSchema(sound_id='lv_down').__dict__
 COLLISION_OBJ = SoundProgressSchema(sound_id='collision').__dict__
