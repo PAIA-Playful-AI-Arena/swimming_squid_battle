@@ -37,7 +37,7 @@ class LevelParams(pydantic.BaseModel):
     @validator('playground_size_w', pre=True)
     def validate_playground_size_w(cls, value):
         min_size = 100
-        max_size = 650
+        max_size = 1200
         if value < min_size:
             return min_size
         if value > max_size:
@@ -47,7 +47,7 @@ class LevelParams(pydantic.BaseModel):
     @validator('playground_size_h', pre=True)
     def validate_playground_size_h(cls, value):
         min_size = 100
-        max_size = 550
+        max_size = 650
         if value < min_size:
             return min_size
         if value > max_size:
