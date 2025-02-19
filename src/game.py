@@ -124,7 +124,7 @@ class SwimmingSquidBattle(PaiaGame):
             self._score_to_pass = game_params.score_to_pass
             self._frame_limit = game_params.time_to_play
 
-            self.playground.center = (WIDTH / 2, HEIGHT / 2)
+            self.playground.center = (WIDTH / 2, (HEIGHT)/2+60)
             self._food_window = WindowConfig(
                 left=self.playground.left, right=self.playground.right,
                 top=self.playground.top, bottom=self.playground.bottom)
@@ -136,8 +136,8 @@ class SwimmingSquidBattle(PaiaGame):
             self._garbage_pos_list = []
 
             # init game
-            self.squid1 = Squid(1, 200, 300)
-            self.squid2 = Squid(2, 500, 300)
+            self.squid1 = Squid(1, (WIDTH-game_params.playground_size_w)/2, (HEIGHT)/2)
+            self.squid2 = Squid(2, (WIDTH+game_params.playground_size_w)/2, (HEIGHT)/2)
             self.squids.empty()
             self.squids.add(self.squid1)
             self.squids.add(self.squid2)
@@ -539,27 +539,29 @@ class SwimmingSquidBattle(PaiaGame):
         }
         return scene_init_data
 
+    @property
     def _p1_info(self):
         result = []
         for i in range(self._game_times):
+            dot_x = WIDTH/2-450+i*30
             if i < len(self._winner):
                 if self._winner[i] == "1P":
                     result.append(
-                        create_image_view_data(IMG_ID_DOT_WIN, 200+i*30, 20,20,20)
+                        create_image_view_data(IMG_ID_DOT_WIN, dot_x, 20,20,20)
                     )
                 else:
                     result.append(
-                        create_image_view_data(IMG_ID_DOT_LOSE, 200+i*30, 20,20,20)
+                        create_image_view_data(IMG_ID_DOT_LOSE, dot_x, 20,20,20)
                     )
             else:
                 result.append(
-                    create_image_view_data(IMG_ID_DOT_NONE, 200+i*30, 20,20,20)
+                    create_image_view_data(IMG_ID_DOT_NONE, dot_x, 20,20,20)
                 )
         scorebar1_width = 350-remap(self.squid1.score, 0, self._score_to_pass, 10, 350)
         
         result.extend(
             [
-                create_text_view_data(f"Lv{self.squid1.lv}", 150, 20, "#EEEEEE", "20px burnfont"),
+                create_text_view_data(f"Lv{self.squid1.lv}", WIDTH/2-500, 20, "#EEEEEE", "20px burnfont"),
                 create_rect_view_data("squid1_scorebar",WIDTH/2-120-scorebar1_width, 50, scorebar1_width, 45, "#000000CC"),
                 create_text_view_data(f"{self.squid1.score:03d}/{self._score_to_pass:03d}", (WIDTH/2-500)+30, 60, "#EEEEEE", "20px burnfont"),
                 create_image_view_data(IMG_ID_TRANSITION_P1, x=WIDTH/2-570, y=40, width=60, height=60),
@@ -567,29 +569,33 @@ class SwimmingSquidBattle(PaiaGame):
             ]
         )
         return result
+    
+    @property
     def _p2_info(self):
         result = []
         for i in range(self._game_times):
+            dot_x = WIDTH/2+350+i*30
+
             if i < len(self._winner):
                 if self._winner[i] == "2P":
                     result.append(
-                        create_image_view_data(IMG_ID_DOT_WIN, 1000+i*30, 20,20,20)
+                        create_image_view_data(IMG_ID_DOT_WIN, dot_x, 20,20,20)
                     )
                 else:
                     result.append(
-                        create_image_view_data(IMG_ID_DOT_LOSE, 1000+i*30, 20,20,20)
+                        create_image_view_data(IMG_ID_DOT_LOSE, dot_x, 20,20,20)
                     )
             else:
                 result.append(
-                    create_image_view_data(IMG_ID_DOT_NONE, 1000+i*30, 20,20,20)
+                    create_image_view_data(IMG_ID_DOT_NONE, dot_x, 20,20,20)
                 )
         scorebar2_width = 350-remap(self.squid2.score, 0, self._score_to_pass, 10, 350)
 
         result.extend(
             [
-                create_text_view_data(f"Lv{self.squid2.lv}", 950, 20, "#EEEEEE", "20px burnfont"),
+                create_text_view_data(f"Lv{self.squid2.lv}", WIDTH/2+300, 20, "#EEEEEE", "20px burnfont"),
                 create_rect_view_data("squid2_scorebar", WIDTH/2+130,50,scorebar2_width,50,"#000000CC"),
-                create_text_view_data(f"{self.squid2.score:03d}/{self._score_to_pass:03d}", WIDTH/2+370, 60, "#EEEEEE", "20px burnfont"),
+                create_text_view_data(f"{self.squid2.score:03d}/{self._score_to_pass:03d}", WIDTH/2+370, 60, "#FDAFAA", "20px burnfont"),
                 create_image_view_data(IMG_ID_TRANSITION_P2, x=WIDTH/2+510, y=40, width=60, height=60),
             ]   
         )
@@ -620,15 +626,15 @@ class SwimmingSquidBattle(PaiaGame):
             create_text_view_data(f"{self._frame_count_down:04d}", (WIDTH)/2-85, 50, "#EEEEEE", "48px burnfont"),
             
         ]
-        toggle_objs.extend(self._p1_info())
-        toggle_objs.extend(self._p2_info())
+        toggle_objs.extend(self._p1_info)
+        toggle_objs.extend(self._p2_info)
         game_obj_list.extend(foods_data)
         backgrounds = [
             create_image_view_data('bg', 0, 0,WIDTH,HEIGHT),
             create_rect_view_data('mask1', 0, 0,WIDTH,self.playground.y,"#00000088"),
-            create_rect_view_data('mask2', 0, self.playground.y+self.playground.h,  WIDTH,HEIGHT-self.playground.bottom,"#00000088"),
+            create_rect_view_data('mask2', 0, self.playground.y+self.playground.h,  WIDTH,max(HEIGHT-self.playground.bottom,0),"#00000088"),
             create_rect_view_data('mask3', 0, self.playground.top, self.playground.left,self.playground.height,"#00000088"),
-            create_rect_view_data('mask4', self.playground.right, self.playground.top,WIDTH-self.playground.right,self.playground.height,"#00000088")
+            create_rect_view_data('mask4', self.playground.right, self.playground.top,max(WIDTH-self.playground.right,0),self.playground.height,"#00000088")
             # create_
             # create_image_view_data('bg', self.playground.x, self.playground.y,self.playground.w, self.playground.h)
         ]
