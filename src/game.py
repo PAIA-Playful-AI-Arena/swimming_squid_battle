@@ -136,12 +136,13 @@ class SwimmingSquidBattle(PaiaGame):
             self._garbage_pos_list = []
 
             # init game
-            self.squid1 = Squid(1, (WIDTH-game_params.playground_size_w)/2, (HEIGHT)/2)
-            self.squid2 = Squid(2, (WIDTH+game_params.playground_size_w)/2, (HEIGHT)/2)
+            self.squid1 = Squid(1, WIDTH/2-game_params.playground_size_w/4, (HEIGHT)/2+20)
+            self.squid2 = Squid(2, WIDTH/2+game_params.playground_size_w/4, (HEIGHT)/2+20)
             self.squids.empty()
             self.squids.add(self.squid1)
             self.squids.add(self.squid2)
             self.foods.empty()
+            # TODO 需要調整食物的生成位置
             for i in range(6):
                 self._create_foods(FOOD_LIST[i], self._foods_num[i])
 
