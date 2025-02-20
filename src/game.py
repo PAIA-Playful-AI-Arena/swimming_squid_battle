@@ -12,7 +12,7 @@ from mlgame.view.audio_model import create_sound_init_data, create_music_init_da
 from mlgame.view.decorator import check_game_progress, check_game_result, check_scene_init_data
 from mlgame.view.view_model import *
 from .foods import *
-from .game_object import Squid, LevelParams, ScoreText, CryingStar, WindowConfig
+from .game_object import Squid, LevelParams, ScoreText, WindowConfig
 from .game_state import EndingState, TransitionState, OpeningState, RunningState
 
 FOOD_LIST = [Food1, Food2, Food3, Garbage1, Garbage2, Garbage3]
@@ -618,31 +618,30 @@ class SwimmingSquidBattle(PaiaGame):
         game_obj_list.extend(foods_data)
         game_obj_list.extend(help_texts)
         toggle_objs = [
-            create_image_view_data("scorebar", (WIDTH-1000)/2, 0, 1000, 150),
-            # 1P    
-            create_image_view_data("colorbar", (WIDTH/2-500)+20, 50, 350, 40),
-            # 2P
-            create_image_view_data("colorbar", WIDTH/2+130, 50, 350, 40,math.pi),
-
-            create_text_view_data(f"{self._frame_count_down:04d}", (WIDTH)/2-85, 50, "#EEEEEE", "48px burnfont"),
-            
+            create_text_view_data(f"level : {self._level_file.split('/')[-1]}", 10, HEIGHT-20, "#EEEEEE", "14px Arial BOLD"),
         ]
-        toggle_objs.extend(self._p1_info)
-        toggle_objs.extend(self._p2_info)
+
         game_obj_list.extend(foods_data)
         backgrounds = [
             create_image_view_data('bg', 0, 0,WIDTH,HEIGHT),
             create_rect_view_data('mask1', 0, 0,WIDTH,self.playground.y,"#00000088"),
             create_rect_view_data('mask2', 0, self.playground.y+self.playground.h,  WIDTH,max(HEIGHT-self.playground.bottom,0),"#00000088"),
             create_rect_view_data('mask3', 0, self.playground.top, self.playground.left,self.playground.height,"#00000088"),
-            create_rect_view_data('mask4', self.playground.right, self.playground.top,max(WIDTH-self.playground.right,0),self.playground.height,"#00000088")
-            # create_
-            # create_image_view_data('bg', self.playground.x, self.playground.y,self.playground.w, self.playground.h)
+            create_rect_view_data('mask4', self.playground.right, self.playground.top,max(WIDTH-self.playground.right,0),self.playground.height,"#00000088"),
+
         ]
         foregrounds = [
+            create_image_view_data("scorebar", (WIDTH-1000)/2, 0, 1000, 150),
+            # 1P    
+            create_image_view_data("colorbar", (WIDTH/2-500)+20, 50, 350, 40),
+            # 2P
+            create_image_view_data("colorbar", WIDTH/2+130, 50, 350, 40,math.pi),
 
+            create_text_view_data(f"{self._frame_count_down:04d}", (WIDTH)/2-72, 50, "#EEEEEE", "48px burnfont"),
+            
         ]
-
+        foregrounds.extend(self._p1_info)
+        foregrounds.extend(self._p2_info)
         scene_progress = create_scene_progress_data(
             frame=self.frame_count, background=backgrounds,
             object_list=game_obj_list,
