@@ -1,8 +1,8 @@
 {
-  "time_to_play": 600,
-  "playground_size_w":700,
-  "playground_size_h":550,
-  "score_to_pass": 10,
+  "time_to_play": 1200,
+  "playground_size_w":1200,
+  "playground_size_h":650,
+  "score_to_pass": 100,
   "food_1": 3,
   "food_1_max": 5,
   "food_2": 2,
