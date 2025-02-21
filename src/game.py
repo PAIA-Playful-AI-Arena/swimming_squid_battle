@@ -5,8 +5,7 @@ import os.path
 import pandas as pd
 import pygame
 
-from mlgame.core.model import GameProgressSchema
-from mlgame.game.paia_game import GameState, PaiaGame, GameResultState, GameStatus
+from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
 from mlgame.view.audio_model import create_sound_init_data, create_music_init_data
 from mlgame.view.decorator import check_game_progress, check_game_result, check_scene_init_data
@@ -17,20 +16,6 @@ from .game_state import EndingState, TransitionState, OpeningState, RunningState
 
 FOOD_LIST = [Food1, Food2, Food3, Garbage1, Garbage2, Garbage3]
 
-
-class PlayingState(GameState):
-    def __init__(self):
-        self._winner = []
-        self._foods_num = []
-        self._foods_max_num = []
-        self._add_score = {"1P": 0, "2P": 0}
-        self._game_params = {}
-    def update(self, *args, **kwargs):
-        pass
-    def get_scene_progress_data(self)->GameProgressSchema:
-        pass
-    def reset(self):
-        pass
 
 class SwimmingSquidBattle(PaiaGame):
     """
@@ -712,26 +697,37 @@ class SwimmingSquidBattle(PaiaGame):
             food = FOOD_TYPE(self.foods)
             if isinstance(food, (Food1, Food2, Food3,)):
                 # if food pos list is empty , re-create
-                if len(self._food_pos_list) < 1:
-                    self._food_pos_list = divide_window_into_grid(
-                        self._food_window)
-                pos = self._food_pos_list.pop()
-                food.set_center_x_and_y(
-                    pos[0],
-                    pos[1]
-                )
+                self._set_food_position(food)
 
 
             elif isinstance(food, (Garbage1, Garbage2, Garbage3,)):
                 if len(self._garbage_pos_list) < 1:
-                    self._garbage_pos_list = divide_window_into_grid(
-                        self._garbage_window, rows=1, cols=10)
+                    self._garbage_pos_list = divide_window_into_grid(self._garbage_window, rows=3, cols=10)
                 pos = self._garbage_pos_list.pop()
                 food.set_center_x_and_y(
                     pos[0],
                     pos[1]
                 )
         pass
+
+    def _set_food_position(self, food):
+        while True:
+            if len(self._food_pos_list) < 1:
+                self._food_pos_list = divide_window_into_grid(self._food_window)
+            pos = self._food_pos_list.pop()
+            food.set_center_x_and_y(pos[0], pos[1])
+            if not self._is_food_collided_with_squids(food):
+                break
+
+            
+    def _is_food_collided_with_squids(self, food):
+        """
+        Detects if a food item will collide with both squids.
+        """
+        squid1_collision = pygame.sprite.collide_rect_ratio(2.0)( food, self.squid1)
+        squid2_collision = pygame.sprite.collide_rect_ratio(2.0)(food, self.squid2)
+        return squid1_collision or squid2_collision
+        
 
     def update_winner(self):
 
@@ -769,7 +765,7 @@ def revise_squid_coordinate(squid: Squid, playground: pygame.Rect):
     pass
 
 
-def divide_window_into_grid(window: WindowConfig, rows: int = 10, cols: int = 10) -> list[(int, int)]:
+def divide_window_into_grid(window: WindowConfig, rows: int = 6, cols: int = 8) -> list[(int, int)]:
     grid_positions = []
 
     # Calculate width and height of each grid piece

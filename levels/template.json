@@ -9,11 +9,11 @@
   "food_2_max": 3,
   "food_3": 5,
   "food_3_max": 7,
-  "garbage_1": 1,
-  "garbage_1_max": 4,
-  "garbage_2": 1,
-  "garbage_2_max": 3,
-  "garbage_3": 1,
-  "garbage_3_max": 2
+  "garbage_1": 4,
+  "garbage_1_max": 8,
+  "garbage_2": 4,
+  "garbage_2_max": 8,
+  "garbage_3": 4,
+  "garbage_3_max": 8
 
 }
