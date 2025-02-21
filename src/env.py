@@ -7,10 +7,10 @@ from mlgame.utils.enum import StringEnum
 from mlgame.view.audio_model import SoundProgressSchema
 
 # game
-WIDTH = 950
+WIDTH = 1280
 WIDTH_OF_INFO = 250
 
-HEIGHT = 600
+HEIGHT = 768
 BG_COLOR = "#2B2B49"
 PG_COLOR = "#B3E5FC"
 SCORE_COLOR_PLUS = "#76ff03"
@@ -19,7 +19,7 @@ SCORE_COLOR_MINUS = "#ec407a"
 # ball -> squid
 # BALL_COLOR = "#FFEB3B"
 SQUID_W = 30
-SQUID_H = 45
+SQUID_H = 60
 LEVEL_THRESHOLDS = [10, 30, 60, 100, 150, 200]
 LEVEL_PROPERTIES = {
     1: {'size_ratio': 1.0, 'vel': 25},
@@ -31,9 +31,9 @@ LEVEL_PROPERTIES = {
 }
 
 COLLISION_SCORE = {
-    "WIN": 10,
-    "LOSE": -10,
-    "DRAW": -5
+    "WIN": 7,
+    "LOSE": -7,
+    "DRAW": -3
 }
 
 ASSET_IMAGE_DIR = path.join(path.dirname(__file__), "../asset/img")
@@ -105,9 +105,11 @@ COLLISION_PATH = path.join(SOUND_PATH, "collision.mp3")
 BG_PATH = path.join(ASSET_IMAGE_DIR, "background.png")
 SQUID_PATH = path.join(ASSET_IMAGE_DIR, "squid.png")
 SQUID_HURT_PATH = path.join(ASSET_IMAGE_DIR, "squid-hurt.png")
+
+
+
 SQUID2_PATH = path.join(ASSET_IMAGE_DIR, "squid2.png")
 SQUID2_HURT_PATH = path.join(ASSET_IMAGE_DIR, "squid2-hurt.png")
-STAR_PATH = path.join(ASSET_IMAGE_DIR, "star.png")
 
 IMG_ID_FOOD01_L = "food_01_L"
 IMG_ID_FOOD02_L = "food_02_L"
@@ -127,15 +129,14 @@ GARBAGE01_PATH = path.join(ASSET_IMAGE_DIR, "garbage_01.png")
 GARBAGE02_PATH = path.join(ASSET_IMAGE_DIR, "garbage_02.png")
 GARBAGE03_PATH = path.join(ASSET_IMAGE_DIR, "garbage_03.png")
 GAME_VER = get_game_version(path.join(path.dirname(__file__), "..", "game_config.json"))
-ASSET_IMG_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/main/asset/img/"
-MUSIC_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/main/asset/music/"
-SOUND_URL = "https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/main/asset/sounds/"
+ASSET_IMG_URL = f"https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/{GAME_VER}/asset/img/"
+MUSIC_URL = f"https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/{GAME_VER}/asset/music/"
+SOUND_URL = f"https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/{GAME_VER}/asset/sounds/"
 BG_URL = ASSET_IMG_URL + "background.png"
 SQUID_URL = ASSET_IMG_URL + "squid.png"
 SQUID_HURT_URL = ASSET_IMG_URL + "squid-hurt.png"
 SQUID2_URL = ASSET_IMG_URL + "squid2.png"
 SQUID2_HURT_URL = ASSET_IMG_URL + "squid2-hurt.png"
-STAR_URL = ASSET_IMG_URL + "star.png"
 # Food URLs
 FOOD01_L_URL = ASSET_IMG_URL + "food_01_L.png"
 FOOD02_L_URL = ASSET_IMG_URL + "food_02_L.png"  # Assuming the naming pattern is similar
@@ -157,7 +158,6 @@ BGM03_URL = MUSIC_URL + BGM02_FILE_NAME
 EATING_GOOD_URL = SOUND_URL + "eat_good_food.mp3"
 EATING_BAD_URL = SOUND_URL + "eat_bad_food.mp3"
 PASS_URL = SOUND_URL + "pass.mp3"
-FAIL_URL = SOUND_URL + "fail.mp3"
 LV_UP_URL = SOUND_URL + "lv_up.mp3"
 LV_DOWN_URL = SOUND_URL + "lv_down.mp3"
 COLLISION_URL = SOUND_URL + "collision.mp3"
@@ -165,7 +165,111 @@ COLLISION_URL = SOUND_URL + "collision.mp3"
 EATING_GOOD_OBJ = SoundProgressSchema(sound_id='eat_good_food').__dict__
 EATING_BAD_OBJ = SoundProgressSchema(sound_id='eat_bad_food').__dict__
 PASS_OBJ = SoundProgressSchema(sound_id='pass').__dict__
-FAIL_OBJ = SoundProgressSchema(sound_id='fail').__dict__
 LV_UP_OBJ = SoundProgressSchema(sound_id='lv_up').__dict__
 LV_DOWN_OBJ = SoundProgressSchema(sound_id='lv_down').__dict__
 COLLISION_OBJ = SoundProgressSchema(sound_id='collision').__dict__
+INVINCIBLE_TIME = 30
+PARALYSIS_TIME = 8
+
+# Define paths for squid images
+SQUID1_HURT_1_ID = "squid1_hurt_1"
+SQUID1_HURT_2_ID = "squid1_hurt_2"
+SQUID1_1_ID = "squid1_1"
+SQUID1_2_ID = "squid1_2"
+SQUID1_3_ID = "squid1_3"
+SQUID1_4_ID = "squid1_4"
+SQUID1_5_ID = "squid1_5"
+SQUID1_LOVELY_ID = "squid1_lovely"
+
+SQUID1_HURT_1_PATH = path.join(ASSET_IMAGE_DIR, "squid1_hurt_1.png")
+SQUID1_HURT_2_PATH = path.join(ASSET_IMAGE_DIR, "squid1_hurt_2.png")
+SQUID1_1_PATH = path.join(ASSET_IMAGE_DIR, "squid1_1.png")
+SQUID1_2_PATH = path.join(ASSET_IMAGE_DIR, "squid1_2.png")
+SQUID1_3_PATH = path.join(ASSET_IMAGE_DIR, "squid1_3.png")
+SQUID1_4_PATH = path.join(ASSET_IMAGE_DIR, "squid1_4.png")
+SQUID1_5_PATH = path.join(ASSET_IMAGE_DIR, "squid1_5.png")
+
+SQUID1_LOVELY_PATH = path.join(ASSET_IMAGE_DIR, "squid1_lovely.png")
+SQUID1_HURT_1_URL = ASSET_IMG_URL + "squid1_hurt_1.png"
+SQUID1_HURT_2_URL = ASSET_IMG_URL + "squid1_hurt_2.png"
+SQUID1_1_URL = ASSET_IMG_URL + "squid1_1.png"
+SQUID1_2_URL = ASSET_IMG_URL + "squid1_2.png"
+SQUID1_3_URL = ASSET_IMG_URL + "squid1_3.png"
+SQUID1_4_URL = ASSET_IMG_URL + "squid1_4.png"
+SQUID1_5_URL = ASSET_IMG_URL + "squid1_5.png"
+SQUID1_LOVELY_URL = ASSET_IMG_URL + "squid1_lovely.png"
+
+
+# Define paths for squid images
+SQUID2_HURT_1_ID = "squid2_hurt_1"
+SQUID2_HURT_2_ID = "squid2_hurt_2"
+SQUID2_1_ID = "squid2_1"
+SQUID2_2_ID = "squid2_2"
+SQUID2_3_ID = "squid2_3"
+SQUID2_4_ID = "squid2_4"
+SQUID2_5_ID = "squid2_5"
+SQUID2_LOVELY_ID = "squid2_lovely"
+
+SQUID2_HURT_1_PATH = path.join(ASSET_IMAGE_DIR, "squid2_hurt_1.png")
+SQUID2_HURT_2_PATH = path.join(ASSET_IMAGE_DIR, "squid2_hurt_2.png")
+SQUID2_1_PATH = path.join(ASSET_IMAGE_DIR, "squid2_1.png")
+SQUID2_2_PATH = path.join(ASSET_IMAGE_DIR, "squid2_2.png")
+SQUID2_3_PATH = path.join(ASSET_IMAGE_DIR, "squid2_3.png")
+SQUID2_4_PATH = path.join(ASSET_IMAGE_DIR, "squid2_4.png")
+SQUID2_5_PATH = path.join(ASSET_IMAGE_DIR, "squid2_5.png")
+SQUID2_LOVELY_PATH = path.join(ASSET_IMAGE_DIR, "squid2_lovely.png")
+
+SQUID2_HURT_1_URL = ASSET_IMG_URL + "squid2_hurt_1.png"
+SQUID2_HURT_2_URL = ASSET_IMG_URL + "squid2_hurt_2.png"
+SQUID2_1_URL = ASSET_IMG_URL + "squid2_1.png"
+SQUID2_2_URL = ASSET_IMG_URL + "squid2_2.png"
+SQUID2_3_URL = ASSET_IMG_URL + "squid2_3.png"
+SQUID2_4_URL = ASSET_IMG_URL + "squid2_4.png"
+SQUID2_5_URL = ASSET_IMG_URL + "squid2_5.png"
+SQUID2_LOVELY_URL = ASSET_IMG_URL + "squid2_lovely.png"
+
+SCOREBAR_PATH = path.join(ASSET_IMAGE_DIR, "scorebar.png")
+SCOREBAR_URL = ASSET_IMG_URL + "scorebar.png"
+COLORBAR_PATH = path.join(ASSET_IMAGE_DIR, "colorbar.png")
+COLORBAR_URL = ASSET_IMG_URL + "colorbar.png"
+
+
+IMG_ID_DOT_WIN = "dot_win"
+IMG_ID_DOT_LOSE = "dot_lose"
+IMG_ID_DOT_NONE = "dot_none"
+DOT_WIN_PATH = path.join(ASSET_IMAGE_DIR, "dot_win.png")
+DOT_WIN_URL = ASSET_IMG_URL + "dot_win.png"
+
+DOT_LOSE_PATH = path.join(ASSET_IMAGE_DIR, "dot_lose.png")
+DOT_LOSE_URL = ASSET_IMG_URL + "dot_lose.png"
+
+DOT_NONE_PATH = path.join(ASSET_IMAGE_DIR, "dot_none.png")
+DOT_NONE_URL = ASSET_IMG_URL + "dot_none.png"
+
+# Opening
+IMG_ID_OPENNING_BG = "opening_bg"
+IMG_ID_OPENNING_LOGO = "opening_logo"
+OPENNING_BG_PATH = path.join(ASSET_IMAGE_DIR, "opening_bg.png")
+OPENNING_BG_URL = ASSET_IMG_URL + "opening_bg.png"
+OPENNING_LOGO_PATH = path.join(ASSET_IMAGE_DIR, "opening_logo.png")
+OPENNING_LOGO_URL = ASSET_IMG_URL + "opening_logo.png"
+
+# Transition
+IMG_ID_TRANSITION_BG = "transition_bg"
+IMG_ID_TRANSITION_CROWN = "transition_crown"
+IMG_ID_TRANSITION_P1 = "transition_p1"
+IMG_ID_TRANSITION_P2 = "transition_p2"
+
+TRANSITION_BG_PATH = path.join(ASSET_IMAGE_DIR, "transition_bg.png")
+TRANSITION_BG_URL = ASSET_IMG_URL + "transition_bg.png"
+TRANSITION_CROWN_PATH = path.join(ASSET_IMAGE_DIR, "transition_crown.png")
+TRANSITION_CROWN_URL = ASSET_IMG_URL + "transition_crown.png"
+TRANSITION_P1_PATH = path.join(ASSET_IMAGE_DIR, "transition_p1.png")
+TRANSITION_P1_URL = ASSET_IMG_URL + "transition_p1.png"
+TRANSITION_P2_PATH = path.join(ASSET_IMAGE_DIR, "transition_p2.png")
+TRANSITION_P2_URL = ASSET_IMG_URL + "transition_p2.png"
+
+# ending
+IMG_ID_ENDING_TROPHY = "ending_trophy"
+ENDING_TROPHY_PATH = path.join(ASSET_IMAGE_DIR, "ending_trophy.png")
+ENDING_TROPHY_URL = ASSET_IMG_URL + "ending_trophy.png"
