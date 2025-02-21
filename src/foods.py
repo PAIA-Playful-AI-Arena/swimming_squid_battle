@@ -137,11 +137,11 @@ class Garbage(Food):
         self._vel = FOOD1_VEL
         self._bias_x_list = [-0.5, -0.7, -1, -1.3, 0, 1, 1.3, 0.3, 0.5, 0.7]
         self._x_degree = 0
-        self._x_bias = random.choice(self._bias_x_list)
+        self._basic_vel_x = random.choice(self._bias_x_list)
 
     def update(self, playground: Rect):
         self._x_degree += 0.12
-        self.rect_float_x += 0.5*sin(self._x_degree)+self._x_bias
+        self.rect_float_x += 0.5*sin(self._x_degree)+self._basic_vel_x
         self.rect_float_y += self._vel
         self.rect.centerx = self.rect_float_x
         self.rect.centery = self.rect_float_y
@@ -152,6 +152,7 @@ class Garbage(Food):
             self.rect_float_y = self.rect.centery
             self.rect_float_x = random.randint(playground.left, playground.right)
             self.rect.centerx = self.rect_float_x
+            self._basic_vel_x = random.choice(self._bias_x_list)
 
         pass
 
