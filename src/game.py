@@ -7,11 +7,12 @@ import pygame
 
 from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
+from mlgame.utils.logger import logger
 from mlgame.view.audio_model import create_sound_init_data, create_music_init_data
 from mlgame.view.decorator import check_game_progress, check_game_result, check_scene_init_data
 from mlgame.view.view_model import *
 from .foods import *
-from .game_object import Squid, LevelParams, ScoreText, WindowConfig
+from .game_object import Squid, LevelParams, ScoreText, WindowConfig, ForegroundText
 from .game_state import EndingState, TransitionState, OpeningState, RunningState
 
 FOOD_LIST = [Food1, Food2, Food3, Garbage1, Garbage2, Garbage3]
@@ -42,6 +43,7 @@ class SwimmingSquidBattle(PaiaGame):
         self.foods = pygame.sprite.Group()
         self.squids = pygame.sprite.Group()
         self._help_texts = pygame.sprite.Group()
+        self._fore_help_texts = pygame.sprite.Group()
         self._sounds = []
         # self.sound_controller = SoundController(sound)
         self._overtime_count = 0
@@ -185,6 +187,7 @@ class SwimmingSquidBattle(PaiaGame):
             # update sprite
             self.foods.update(playground=self.playground)
             self._help_texts.update()
+            self._fore_help_texts.update()
             # handle collision
 
             self._check_foods_collision()
@@ -418,11 +421,35 @@ class SwimmingSquidBattle(PaiaGame):
     @property
     def is_passed(self):
         if self.squid1.score >= self._score_to_pass or self.squid2.score >= self._score_to_pass:  # 達成目標分數
-            if self.squid1.score == self.squid2.score and self._overtime_count < 1:  # 延長賽
-                self._frame_limit += 600
-                self._score_to_pass += 50
-                self._overtime_count += 1
-                print("同分延長賽")
+            if self.squid1.score == self.squid2.score:  # 延長賽
+                extra_frame = 600
+                self._frame_limit += extra_frame
+                extra_point = 50
+                self._score_to_pass += extra_point
+                self._foods_max_num[random.randint(3, len(self._foods_max_num)-1)] += 2
+                ForegroundText(
+                    text=f"+{extra_frame}",
+                    color=SCORE_COLOR_PLUS,
+                    x=WIDTH / 2 + 80,
+                    y=70,
+                    groups=self._fore_help_texts
+                )
+                ForegroundText(
+                    text=f"+{extra_point}",
+                    color=SCORE_COLOR_PLUS,
+                    x=WIDTH / 2 - 300,
+                    y=80,
+                    groups=self._fore_help_texts
+                )
+                ForegroundText(
+                    text=f"+{extra_point}",
+                    color=SCORE_COLOR_PLUS,
+                    x=WIDTH / 2 + 200,
+                    y=80,
+                    groups=self._fore_help_texts
+                )
+
+                logger.info("同分進入延長賽，調升過關門檻，增加垃圾數量")
                 return False
             return True
         else:
@@ -432,12 +459,20 @@ class SwimmingSquidBattle(PaiaGame):
     def time_out(self):
         if self.frame_count >= self._frame_limit:
             if self.squid1.score == self.squid2.score and self._overtime_count < 1:  # 延長賽
-                self._frame_limit += 300
-                self._overtime_count += 1
-                print("超時延長賽")
+                extra_frame = 10
+                self._frame_limit += extra_frame
+                self._foods_max_num[random.randint(3, len(self._foods_max_num)-1)] += 2
+                ForegroundText(
+                    text=f"+{extra_frame}",
+                    color=SCORE_COLOR_PLUS,
+                    x=WIDTH/2+80,
+                    y=70,
+                    groups=self._fore_help_texts
+                )
+                logger.info("時間到，平手進入延長賽，垃圾數量增加")
                 return False
             else:
-                print("時間到")
+                logger.info("時間到")
                 return True
         else:
             return False
@@ -627,6 +662,7 @@ class SwimmingSquidBattle(PaiaGame):
         ]
         foregrounds.extend(self._p1_info)
         foregrounds.extend(self._p2_info)
+        foregrounds.extend([obj.game_object_data for obj in self._fore_help_texts])
         scene_progress = create_scene_progress_data(
             frame=self.frame_count, background=backgrounds,
             object_list=game_obj_list,

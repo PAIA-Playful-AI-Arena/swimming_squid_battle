@@ -133,13 +133,15 @@ class Squid(pygame.sprite.Sprite):
         if frame - self._last_collision < PARALYSIS_TIME:
             self._img_id = f"squid{self._ai_num}_hurt_{frame//4%2+1}"
             # 反彈
-            self.move(self._collision_dir)
+            # self.move(self._collision_dir)
+            self.motion_method[self._collision_dir]()
         else:
             self._state = SquidState.INVINCIBLE
             self._last_collision = frame
             
     def _update_invincible(self, frame,motion):
-        self.move(motion)
+        
+        self.motion_method[motion]()
         if frame - self._last_collision < INVINCIBLE_TIME:
             self._img_id = f"squid{self._ai_num}_hurt_{frame//4%2+1}"
         else:
@@ -276,6 +278,27 @@ class ScoreText(pygame.sprite.Sprite):
         return create_text_view_data(
             self._text, self.rect.centerx, self.rect.centery, self._color,
             "24px Arial BOLD")
+
+class ForegroundText(pygame.sprite.Sprite):
+    def __init__(self, text, color, x, y, groups):
+        pygame.sprite.Sprite.__init__(self, groups)
+        self.rect = pygame.Rect(x, y, SQUID_W, SQUID_H)
+        self.rect.center = (x, y)
+        self._text = text
+        self._color = color
+        self._live_frame = 30
+
+    def update(self):
+        self._live_frame -= 1
+        self.rect.centery -= 2
+        if self._live_frame <= 0:
+            self.kill()
+
+    @property
+    def game_object_data(self):
+        return create_text_view_data(
+            self._text, self.rect.centerx, self.rect.centery, self._color,
+            "32px burnfont")
 
 
 class CryingStar(pygame.sprite.Sprite):
