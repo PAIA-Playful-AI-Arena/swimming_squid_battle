@@ -31,9 +31,9 @@ LEVEL_PROPERTIES = {
 }
 
 COLLISION_SCORE = {
-    "WIN": 10,
-    "LOSE": -10,
-    "DRAW": -5
+    "WIN": 7,
+    "LOSE": -7,
+    "DRAW": -3
 }
 
 ASSET_IMAGE_DIR = path.join(path.dirname(__file__), "../asset/img")
