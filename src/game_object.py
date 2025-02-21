@@ -104,19 +104,31 @@ class Squid(pygame.sprite.Sprite):
         self._animation_num = 1
         self._animation_direction = 1
         self._wave_degree = 0
+        self.motion_method = {
+            Motion.UP: self.move_up,
+            Motion.DOWN: self.move_down,
+            Motion.LEFT: self.move_left,
+            Motion.RIGHT: self.move_right,
+            Motion.NONE: self.move_none
+        }
     def update(self, frame, motion:Motion):
         # for motion in motions:
         self._motion = Motion(motion)
-        self._wave_degree += 0.15
-        self.rect.y += math.sin(self._wave_degree)
+
         if self._state == SquidState.PARALYSIS:
             self._update_paralysis(frame)
         elif self._state == SquidState.INVINCIBLE:
             self._update_invincible(frame,self._motion)
         else:
-            self._update_normal(self._motion)
-        
-        
+            # normal action
+            self._img_id = f"squid{self._ai_num}_{self._animation_num}"
+            if frame % 4 == 0:
+                self._animation_num += self._animation_direction
+                if self._animation_num == 5 or self._animation_num == 1:
+                    self._animation_direction = -self._animation_direction
+            self.motion_method[motion]()
+            
+
     def _update_paralysis(self, frame):
         if frame - self._last_collision < PARALYSIS_TIME:
             self._img_id = f"squid{self._ai_num}_hurt_{frame//4%2+1}"
@@ -156,27 +168,12 @@ class Squid(pygame.sprite.Sprite):
         self.angle = self.ANGLE_TO_RIGHT
     def move_none(self):
         """Move the squid none."""
+        self._wave_degree += 0.15
+        self.rect.y += math.sin(self._wave_degree)
         self.angle = 0
     def move(self, motion: Motion):
         """Move the squid based on the motion command."""
-        motion_method = {
-            Motion.UP: self.move_up,
-            Motion.DOWN: self.move_down,
-            Motion.LEFT: self.move_left,
-            Motion.RIGHT: self.move_right,
-            Motion.NONE: self.move_none
-        }
-        if motion != Motion.NONE:
-            self._animation_num += self._animation_direction
-            if self._animation_num == 5 or self._animation_num == 1:
-                self._animation_direction = -self._animation_direction
-            
-        else:
-            self._animation_num = 3
-        motion_method[motion]()
-    def _update_normal(self, motion):
-        self._img_id = f"squid{self._ai_num}_{self._animation_num}"
-        self.move(motion)  # Use the new move method
+        pass
 
     @property
     def game_object_data(self):

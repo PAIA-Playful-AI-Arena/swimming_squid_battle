@@ -11,7 +11,7 @@ FOOD1_VEL = 1
 FOOD2_VEL = 2
 FOOD3_VEL = 4
 
-def bonuding(value,lower_bound,upper_bound):
+def bounding(value, lower_bound, upper_bound):
     return max(min(value,upper_bound),lower_bound)
 def sigmoid(x):
     value = 1 / (1 + 2 * exp(-x/10))
@@ -39,7 +39,7 @@ class Food(pygame.sprite.Sprite):
         if not(self.target):
             self.target = (
                 random.randint(playground.left+10, playground.right-20),
-                bonuding(
+                bounding(
                     self.rect_float_y + random.choice([1,-1])*random.randint(30, 50),
                     playground.top,
                     playground.bottom
@@ -49,7 +49,7 @@ class Food(pygame.sprite.Sprite):
         elif abs(self.rect_float_x - self.target[0]) < 8 and abs(self.rect_float_y - self.target[1]) < 8:
             self.target = (
                 random.randint(playground.left+10, playground.right-20),
-                bonuding(
+                bounding(
                     self.target[1]+ random.choice([1,-1])*random.randint(30, 50),
                     playground.top,
                     playground.bottom
