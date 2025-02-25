@@ -1,10 +1,10 @@
 import copy
-import math
 import os.path
 
 import pandas as pd
 import pygame
 
+from mlgame.argument.model import AINameEnum, GroupAI
 from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
 from mlgame.utils.logger import logger
@@ -16,6 +16,7 @@ from .game_object import Squid, LevelParams, ScoreText, WindowConfig, Foreground
 from .game_state import EndingState, TransitionState, OpeningState, RunningState
 
 FOOD_LIST = [Food1, Food2, Food3, Garbage1, Garbage2, Garbage3]
+EXTRA_FRAME = 300
 
 
 class SwimmingSquidBattle(PaiaGame):
@@ -28,9 +29,9 @@ class SwimmingSquidBattle(PaiaGame):
             level: int = -1,
             level_file: str = "",
             game_times: int = 1,
-            sound: str = "off",
+            group_ai_list:list[GroupAI] = None,
             *args, **kwargs):
-        super().__init__(user_num=1)
+        super().__init__(user_num=1,group_ai_list=group_ai_list)
         self._new_food_frame = 0
         self._music = []
         self._status = GameStatus.GAME_ALIVE
@@ -69,6 +70,7 @@ class SwimmingSquidBattle(PaiaGame):
         }
         self.current_state = self._state_map[RunningState.OPENING]
         self.ai_enabled=False
+        self.group_ai_dict = {ai.ai_name:ai for ai in group_ai_list}
         
     def set_game_state(self, state: RunningState):
         
@@ -422,13 +424,13 @@ class SwimmingSquidBattle(PaiaGame):
     def is_passed(self):
         if self.squid1.score >= self._score_to_pass or self.squid2.score >= self._score_to_pass:  # 達成目標分數
             if self.squid1.score == self.squid2.score:  # 延長賽
-                extra_frame = 600
-                self._frame_limit += extra_frame
+
+                self._frame_limit += EXTRA_FRAME
                 extra_point = 50
                 self._score_to_pass += extra_point
                 self._foods_max_num[random.randint(3, len(self._foods_max_num)-1)] += 2
                 ForegroundText(
-                    text=f"+{extra_frame}",
+                    text=f"+{EXTRA_FRAME}",
                     color=SCORE_COLOR_PLUS,
                     x=WIDTH / 2 + 80,
                     y=70,
@@ -459,11 +461,10 @@ class SwimmingSquidBattle(PaiaGame):
     def time_out(self):
         if self.frame_count >= self._frame_limit:
             if self.squid1.score == self.squid2.score and self._overtime_count < 1:  # 延長賽
-                extra_frame = 10
-                self._frame_limit += extra_frame
+                self._frame_limit += EXTRA_FRAME
                 self._foods_max_num[random.randint(3, len(self._foods_max_num)-1)] += 2
                 ForegroundText(
-                    text=f"+{extra_frame}",
+                    text=f"+{EXTRA_FRAME}",
                     color=SCORE_COLOR_PLUS,
                     x=WIDTH/2+80,
                     y=70,
@@ -515,7 +516,6 @@ class SwimmingSquidBattle(PaiaGame):
                 create_asset_init_data(SQUID2_LOVELY_ID, SQUID_W, SQUID_H, SQUID2_LOVELY_PATH, SQUID2_LOVELY_URL),
                 
                 create_asset_init_data("scorebar", 1000, 150, SCOREBAR_PATH, SCOREBAR_URL),
-                create_asset_init_data("colorbar", 350, 50, COLORBAR_PATH, COLORBAR_URL),
                 # create_asset_init_data("star", SQUID_H, SQUID_H, STAR_PATH, STAR_URL),
                 create_asset_init_data(IMG_ID_FOOD01_L, FOOD_LV1_SIZE, FOOD_LV1_SIZE, FOOD01_L_PATH, FOOD01_L_URL),
                 create_asset_init_data(IMG_ID_FOOD02_L, FOOD_LV2_SIZE, FOOD_LV2_SIZE, FOOD02_L_PATH, FOOD02_L_URL),
@@ -562,29 +562,34 @@ class SwimmingSquidBattle(PaiaGame):
 
     @property
     def _p1_info(self):
-        result = []
+        scorebar1_width = 350-remap(self.squid1.score, 0, self._score_to_pass, 10, 350)
+
+        result = [
+            create_rect_view_data("squid1_scorebar",WIDTH/2-130-scorebar1_width, 45, scorebar1_width, 60, "#000000CC"),
+        ]
+        dot_y = 100
         for i in range(self._game_times):
             dot_x = WIDTH/2-450+i*30
             if i < len(self._winner):
                 if self._winner[i] == "1P":
                     result.append(
-                        create_image_view_data(IMG_ID_DOT_WIN, dot_x, 20,20,20)
+                        create_image_view_data(IMG_ID_DOT_WIN, dot_x, dot_y,20,20)
                     )
                 else:
                     result.append(
-                        create_image_view_data(IMG_ID_DOT_LOSE, dot_x, 20,20,20)
+                        create_image_view_data(IMG_ID_DOT_LOSE, dot_x, dot_y,20,20)
                     )
             else:
                 result.append(
-                    create_image_view_data(IMG_ID_DOT_NONE, dot_x, 20,20,20)
+                    create_image_view_data(IMG_ID_DOT_NONE, dot_x, dot_y,20,20)
                 )
-        scorebar1_width = 350-remap(self.squid1.score, 0, self._score_to_pass, 10, 350)
+
         
         result.extend(
             [
-                create_text_view_data(f"Lv{self.squid1.lv}", WIDTH/2-500, 20, "#EEEEEE", "20px burnfont"),
-                create_rect_view_data("squid1_scorebar",WIDTH/2-120-scorebar1_width, 50, scorebar1_width, 45, "#000000CC"),
-                create_text_view_data(f"{self.squid1.score:03d}/{self._score_to_pass:03d}", (WIDTH/2-500)+30, 60, "#EEEEEE", "20px burnfont"),
+                create_text_view_data(f"{self.group_ai_dict[AINameEnum.P1.value].ai_label}", (WIDTH/2-570), 10, "#EEEEEE", "20px NotoSansTC BOLD"),
+                create_text_view_data(f"Lv{self.squid1.lv}", WIDTH/2-500, dot_y, "#EEEEEE", "20px burnfont"),
+                create_text_view_data(f"{self.squid1.score:03d}/{self._score_to_pass:03d}", (WIDTH/2-500)+30, 68, "#EEEEEE", "20px burnfont"),
                 create_image_view_data(IMG_ID_TRANSITION_P1, x=WIDTH/2-570, y=40, width=60, height=60),
 
             ]
@@ -593,30 +598,36 @@ class SwimmingSquidBattle(PaiaGame):
     
     @property
     def _p2_info(self):
-        result = []
+        scorebar2_width = 350-remap(self.squid2.score, 0, self._score_to_pass, 10, 350)
+
+        result = [
+            create_rect_view_data("squid2_scorebar", WIDTH/2+130,45,scorebar2_width,60,"#000000CC"),
+
+        ]
+        dot_y = 100
+
         for i in range(self._game_times):
             dot_x = WIDTH/2+350+i*30
 
             if i < len(self._winner):
                 if self._winner[i] == "2P":
                     result.append(
-                        create_image_view_data(IMG_ID_DOT_WIN, dot_x, 20,20,20)
+                        create_image_view_data(IMG_ID_DOT_WIN, dot_x, dot_y,20,20)
                     )
                 else:
                     result.append(
-                        create_image_view_data(IMG_ID_DOT_LOSE, dot_x, 20,20,20)
+                        create_image_view_data(IMG_ID_DOT_LOSE, dot_x, dot_y,20,20)
                     )
             else:
                 result.append(
-                    create_image_view_data(IMG_ID_DOT_NONE, dot_x, 20,20,20)
+                    create_image_view_data(IMG_ID_DOT_NONE, dot_x, dot_y,20,20)
                 )
-        scorebar2_width = 350-remap(self.squid2.score, 0, self._score_to_pass, 10, 350)
 
         result.extend(
             [
-                create_text_view_data(f"Lv{self.squid2.lv}", WIDTH/2+300, 20, "#EEEEEE", "20px burnfont"),
-                create_rect_view_data("squid2_scorebar", WIDTH/2+130,50,scorebar2_width,50,"#000000CC"),
-                create_text_view_data(f"{self.squid2.score:03d}/{self._score_to_pass:03d}", WIDTH/2+370, 60, "#FDAFAA", "20px burnfont"),
+                create_text_view_data(f"{self.group_ai_dict[AINameEnum.P2.value].ai_label}", (WIDTH/2+600-len(self.group_ai_dict[AINameEnum.P2.value].ai_label)*15), 10, "#EEEEEE", "20px NotoSansTC BOLD"),
+                create_text_view_data(f"{self.squid2.score:03d}/{self._score_to_pass:03d}", WIDTH/2+370, 68, "#FDAFAA", "20px burnfont"),
+                create_text_view_data(f"Lv{self.squid2.lv}", WIDTH/2+300, dot_y, "#EEEEEE", "20px burnfont"),
                 create_image_view_data(IMG_ID_TRANSITION_P2, x=WIDTH/2+510, y=40, width=60, height=60),
             ]   
         )
@@ -638,7 +649,7 @@ class SwimmingSquidBattle(PaiaGame):
         game_obj_list.extend(foods_data)
         game_obj_list.extend(help_texts)
         toggle_objs = [
-            create_text_view_data(f"level : {self._level_file.split('/')[-1]}", 10, HEIGHT-20, "#EEEEEE", "14px Arial BOLD"),
+            create_text_view_data(f"Env : '{self._level_file.split('/')[-1]}'", 10, HEIGHT-20, "#EEEEEE", "14px NotoSansTC BOLD"),
         ]
 
         game_obj_list.extend(foods_data)
@@ -652,10 +663,6 @@ class SwimmingSquidBattle(PaiaGame):
         ]
         foregrounds = [
             create_image_view_data("scorebar", (WIDTH-1000)/2, 0, 1000, 150),
-            # 1P    
-            create_image_view_data("colorbar", (WIDTH/2-500)+20, 50, 350, 40),
-            # 2P
-            create_image_view_data("colorbar", WIDTH/2+130, 50, 350, 40,math.pi),
 
             create_text_view_data(f"{self._frame_count_down:04d}", (WIDTH)/2-72, 50, "#EEEEEE", "48px burnfont"),
             
