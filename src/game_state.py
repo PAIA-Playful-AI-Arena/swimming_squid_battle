@@ -28,7 +28,7 @@ class EndingState(GameState):
         else:
             self._sound = []
 
-        if 0 < self.frame_count < 90:
+        if 0 < self.frame_count < 120:
 
             pass
         elif 90 <= self.frame_count:
@@ -143,7 +143,7 @@ class TransitionState(GameState):
         else:
             self._sound = []
 
-        if self.frame_count < 90:
+        if self.frame_count < 120:
             pass
         elif 91 <= self.frame_count:
             self.reset()
