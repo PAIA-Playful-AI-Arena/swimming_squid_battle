@@ -4,7 +4,7 @@ import os.path
 import pandas as pd
 import pygame
 
-from mlgame.argument.model import AINameEnum, GroupAI
+from mlgame.argument.model import AINameEnum, GroupAI, GroupEnum
 from mlgame.game.paia_game import PaiaGame, GameResultState, GameStatus
 from mlgame.utils.enum import get_ai_name
 from mlgame.utils.logger import logger
@@ -17,6 +17,7 @@ from .game_state import EndingState, TransitionState, OpeningState, RunningState
 
 FOOD_LIST = [Food1, Food2, Food3, Garbage1, Garbage2, Garbage3]
 EXTRA_FRAME = 300
+EXTRA_POINT = 50
 
 
 class SwimmingSquidBattle(PaiaGame):
@@ -29,9 +30,15 @@ class SwimmingSquidBattle(PaiaGame):
             level: int = -1,
             level_file: str = "",
             game_times: int = 1,
-            group_ai_list:list[GroupAI] = None,
+            group_ai_list=None,
             *args, **kwargs):
         super().__init__(user_num=1,group_ai_list=group_ai_list)
+        if group_ai_list is None:
+            ai_path = os.path.join(os.path.dirname(__file__),"..", "ml")
+            group_ai_list = [
+                GroupAI(group=GroupEnum.O, ai_name=AINameEnum.P1, ai_path=os.path.join(ai_path,"ml_play_manual_1P.py")),
+                GroupAI(group=GroupEnum.O, ai_name=AINameEnum.P2, ai_path=os.path.join(ai_path,"ml_play_manual_2P.py"))
+            ]
         self._new_food_frame = 0
         self._music = []
         self._status = GameStatus.GAME_ALIVE
@@ -426,8 +433,7 @@ class SwimmingSquidBattle(PaiaGame):
             if self.squid1.score == self.squid2.score:  # 延長賽
 
                 self._frame_limit += EXTRA_FRAME
-                extra_point = 50
-                self._score_to_pass += extra_point
+                self._score_to_pass += EXTRA_POINT
                 self._foods_max_num[random.randint(3, len(self._foods_max_num)-1)] += 2
                 ForegroundText(
                     text=f"+{EXTRA_FRAME}",
@@ -437,14 +443,14 @@ class SwimmingSquidBattle(PaiaGame):
                     groups=self._fore_help_texts
                 )
                 ForegroundText(
-                    text=f"+{extra_point}",
+                    text=f"+{EXTRA_POINT}",
                     color=SCORE_COLOR_PLUS,
                     x=WIDTH / 2 - 300,
                     y=80,
                     groups=self._fore_help_texts
                 )
                 ForegroundText(
-                    text=f"+{extra_point}",
+                    text=f"+{EXTRA_POINT}",
                     color=SCORE_COLOR_PLUS,
                     x=WIDTH / 2 + 200,
                     y=80,
@@ -639,6 +645,8 @@ class SwimmingSquidBattle(PaiaGame):
         """
         if isinstance(self.current_state,(OpeningState,TransitionState,EndingState)):
             return self.current_state.get_scene_progress_data()
+        elif self._running_state != RunningState.PLAYING:
+            return create_scene_progress_data(frame=self.frame_count)
         
         foods_data = [food.game_object_data for food in self.foods]
 
