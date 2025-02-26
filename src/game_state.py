@@ -157,13 +157,15 @@ class TransitionState(GameState):
                 create_image_view_data(IMG_ID_TRANSITION_BG, 0, 0, 1280, 768),
                 ],
             object_list=[
-                create_image_view_data(IMG_ID_TRANSITION_P1, WIDTH/2-328, HEIGHT/2-164/2, 164, 164),
-                create_image_view_data(IMG_ID_TRANSITION_P2, WIDTH/2+164, HEIGHT/2-164/2, 164, 164),
+                create_image_view_data(IMG_ID_TRANSITION_P1, WIDTH/2-328, HEIGHT/2-82, 164, 164),
+                create_image_view_data(IMG_ID_TRANSITION_P2, WIDTH/2+164, HEIGHT/2-82, 164, 164),
                 create_text_view_data(f"{self._p1_score:03d}pt", WIDTH/2-328, HEIGHT/2+164, "#EEEEEE", "48px Burnfont BOLD"),
                 create_text_view_data(f"{self._p2_score:03d}pt", WIDTH/2+164, HEIGHT/2+164, "#EEEEEE", "48px Burnfont BOLD"),
                 create_image_view_data(IMG_ID_TRANSITION_CROWN, self._crown_x, self._crown_y+self._crown_y_bias, 114, 80),
                 ],
-            foreground=[],
+            foreground=[
+                create_text_view_data(f"Round {len(self._game._winner)}", WIDTH/2-140, HEIGHT/2-300, "#EEEEEE", "64px Burnfont BOLD"),
+                ],
             toggle=[],
             musics=[], sounds=self._sound
             )
