@@ -7,7 +7,7 @@
 這是一個魷魚吃東西小遊戲，茫茫的海洋中有美味的食物，也有人類拋棄的垃圾，還出現了搶食物的同類！！
     請用你的AI幫助小小魷魚，面對雜亂的海洋，面對同類的競爭快快長大。
 
-![demo](https://github.com/PAIA-Playful-AI-Arena/swimming_squid_battle/blob/main/asset/banner.gif)
+![demo](https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/refs/heads/main/asset/banner.gif)
 
 ---
 

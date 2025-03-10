@@ -657,7 +657,7 @@ class SwimmingSquidBattle(PaiaGame):
         game_obj_list.extend(foods_data)
         game_obj_list.extend(help_texts)
         toggle_objs = [
-            create_text_view_data(f"Env : '{self._level_file.split('/')[-1]}'", 10, HEIGHT-20, "#EEEEEE", "14px NotoSansTC BOLD"),
+            create_text_view_data(f"{self._level_file.split('/')[-1]}", 10, HEIGHT-20, "#EEEEEE", "14px NotoSansTC BOLD"),
         ]
 
         game_obj_list.extend(foods_data)
