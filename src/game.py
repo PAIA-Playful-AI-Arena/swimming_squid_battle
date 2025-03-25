@@ -425,6 +425,7 @@ class SwimmingSquidBattle(PaiaGame):
             self._init_game_by_file(self._level_file)
         else:
             level_file_path = os.path.join(LEVEL_PATH, f"{self._level:03d}.json")
+            self._level_file = level_file_path
             self._init_game_by_file(level_file_path)
 
     @property
