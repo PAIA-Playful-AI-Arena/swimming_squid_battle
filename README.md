@@ -3,7 +3,8 @@
 ![swimming-squid-battle](https://img.shields.io/github/v/tag/PAIA-Playful-AI-Arena/swimming-squid-battle)
 
 [![MLGame](https://img.shields.io/badge/MLGame->10.6.a9-<COLOR>.svg)](https://github.com/PAIA-Playful-AI-Arena/MLGame)
-![Logo](https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/refs/tags/1.6.1/asset/logo.png)
+
+[//]: # (![Logo]&#40;https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/refs/tags/1.6.1/asset/logo.png&#41;)
 這是一個魷魚吃東西小遊戲，茫茫的海洋中有美味的食物，也有人類拋棄的垃圾，還出現了搶食物的同類！！
     請用你的AI幫助小小魷魚，面對雜亂的海洋，面對同類的競爭快快長大。
 
