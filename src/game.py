@@ -425,6 +425,7 @@ class SwimmingSquidBattle(PaiaGame):
             self._init_game_by_file(self._level_file)
         else:
             level_file_path = os.path.join(LEVEL_PATH, f"{self._level:03d}.json")
+            self._level_file = level_file_path
             self._init_game_by_file(level_file_path)
 
     @property
@@ -657,7 +658,7 @@ class SwimmingSquidBattle(PaiaGame):
         game_obj_list.extend(foods_data)
         game_obj_list.extend(help_texts)
         toggle_objs = [
-            create_text_view_data(f"Env : '{self._level_file.split('/')[-1]}'", 10, HEIGHT-20, "#EEEEEE", "14px NotoSansTC BOLD"),
+            create_text_view_data(f"{self._level_file.split('/')[-1]}", 10, HEIGHT-20, "#EEEEEE", "14px NotoSansTC BOLD"),
         ]
 
         game_obj_list.extend(foods_data)
