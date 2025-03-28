@@ -209,11 +209,7 @@ class Squid(pygame.sprite.Sprite):
         self._score += collision_score
         self._last_collision = frame
         sounds.append(COLLISION_OBJ)
-        # TODO update collision dir
-        if self._motion != Motion.NONE:
-            self._collision_dir = self._motion
-        else:
-            self._collision_dir = random.choice([Motion.UP, Motion.DOWN, Motion.RIGHT, Motion.LEFT])
+        self._collision_dir = random.choice([Motion.UP, Motion.DOWN, Motion.RIGHT, Motion.LEFT])
 
         if collision_score < 0:
             self._state = SquidState.PARALYSIS
