@@ -169,7 +169,7 @@ LV_UP_OBJ = SoundProgressSchema(sound_id='lv_up').__dict__
 LV_DOWN_OBJ = SoundProgressSchema(sound_id='lv_down').__dict__
 COLLISION_OBJ = SoundProgressSchema(sound_id='collision').__dict__
 INVINCIBLE_TIME = 30
-PARALYSIS_TIME = 5
+PARALYSIS_TIME = 8
 
 # Define paths for squid images
 SQUID1_HURT_1_ID = "squid1_hurt_1"

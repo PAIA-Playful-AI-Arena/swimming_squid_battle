@@ -1,4 +1,4 @@
-FROM paiatech/paia-game-env:20250328
+FROM paiatech/paia-game-env:20250312
 ADD . /game
 WORKDIR /game
 
