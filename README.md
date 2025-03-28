@@ -8,7 +8,7 @@
 這是一個魷魚吃東西小遊戲，茫茫的海洋中有美味的食物，也有人類拋棄的垃圾，還出現了搶食物的同類！！
     請用你的AI幫助小小魷魚，面對雜亂的海洋，面對同類的競爭快快長大。
 
-![demo](https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/refs/tags/1.6.1/asset/banner.gif)
+![demo](https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/refs/tags/1.6.2/asset/banner.gif)
 
 ---
 
@@ -16,7 +16,7 @@
 
 ## 啟動方式
 
-- 直接啟動 [main.py](https://github.com/PAIA-Playful-AI-Arena/swimming_squid_battle/blob/1.6.1/main.py) 即可執行
+- 直接啟動 [main.py](https://github.com/PAIA-Playful-AI-Arena/swimming_squid_battle/blob/1.6.2/main.py) 即可執行
 
 ## 遊戲參數設定
 
@@ -75,7 +75,7 @@ game = SwimmingSquidBattle(
 2. 玩家相撞：
    1. 兩隻魷魚相撞時，如果一方等級較高，則等級高者加 `6` 分，等級低者扣 `6` 分。
    2. 如果兩方等級相同，則雙方皆扣 `5` 分。
-   3. 受傷那一方，會麻痺 `8` frame，過程中隨機向一個方向移動。
+   3. 受傷那一方，會麻痺 `5` frame，過程中隨機向一個方向移動。
    4. 受傷那一方，麻痺效果解除後，將會有 `30` frame 的無敵時間，不會再受到對手的攻擊。
 
 ### 獲勝條件
