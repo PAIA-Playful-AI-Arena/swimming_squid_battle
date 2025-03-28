@@ -238,6 +238,9 @@ class Squid(pygame.sprite.Sprite):
     @property
     def lv(self):
         return self._lv
+    @property
+    def is_paralysis(self)->bool:
+        return self._state==SquidState.PARALYSIS
 
 
 def get_current_level(score: int) -> int:
