@@ -253,6 +253,8 @@ class SwimmingSquidBattle(PaiaGame):
 
         for squid, foods in hits.items():
             for food in foods:
+                if squid.is_paralysis:
+                    continue
                 squid.eat_food_and_change_level_and_play_sound(food, self._sounds)
                 to_remove_foods.add(food)
                 if isinstance(food, (Food1, Food2, Food3,)):
