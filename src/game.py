@@ -379,6 +379,9 @@ class SwimmingSquidBattle(PaiaGame):
             "opponent_x": self.squid2.rect.centerx,
             "opponent_y": self.squid2.rect.centery,
             "opponent_lv": self.squid2.lv,
+            "opponent_w": self.squid2.rect.width,
+            "opponent_h": self.squid2.rect.height,
+            "opponent_vel": self.squid2.vel,
             "foods": foods_data,
             "score": self.squid1.score,
             "score_to_pass": self._score_to_pass,
@@ -397,11 +400,14 @@ class SwimmingSquidBattle(PaiaGame):
             "opponent_x": self.squid1.rect.centerx,
             "opponent_y": self.squid1.rect.centery,
             "opponent_lv": self.squid1.lv,
+            "opponent_w": self.squid1.rect.width,
+            "opponent_h": self.squid1.rect.height,
+            "opponent_vel": self.squid1.vel,
             "foods": foods_data,
             "score": self.squid2.score,
             "score_to_pass": self._score_to_pass,
             "status": self.get_game_status(),
-            "env": self._game_params.__dict__
+            "env": self._game_params.__dict__,
         }
 
         to_players_data[get_ai_name(0)] = data_to_1p
