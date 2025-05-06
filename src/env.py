@@ -83,6 +83,37 @@ def get_game_version(json_file_path):
         return 'develop'
 
 
+def get_game_name(json_file_path):
+    """
+    Load a JSON file and return the value of the 'game_name' field.
+
+    :param json_file_path: Path to the JSON file.
+    :return: The game version if found, otherwise None.
+    """
+    if not os.path.exists(json_file_path):
+        print(f"Error: The file '{json_file_path}' does not exist.")
+        return None
+
+    try:
+        with open(json_file_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+    except json.JSONDecodeError as jde:
+        print(f"Error decoding JSON: {jde}")
+        return "swimming_squid_battle"
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return "develop"
+
+    # Check if 'game_name' exists in the JSON data
+    if 'game_name' in data:
+        return data['game_name']
+    else:
+        print("Error: 'game_name' field is missing in the JSON data.")
+        return 'develop'
+
+
+
+
 # path of assets
 ASSET_PATH = path.join(path.dirname(__file__), "..", "asset")
 LEVEL_PATH = path.join(path.dirname(__file__), "..", "levels")
@@ -129,9 +160,12 @@ GARBAGE01_PATH = path.join(ASSET_IMAGE_DIR, "garbage_01.png")
 GARBAGE02_PATH = path.join(ASSET_IMAGE_DIR, "garbage_02.png")
 GARBAGE03_PATH = path.join(ASSET_IMAGE_DIR, "garbage_03.png")
 GAME_VER = get_game_version(path.join(path.dirname(__file__), "..", "game_config.json"))
-ASSET_IMG_URL = f"https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/{GAME_VER}/asset/img/"
-MUSIC_URL = f"https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/{GAME_VER}/asset/music/"
-SOUND_URL = f"https://raw.githubusercontent.com/PAIA-Playful-AI-Arena/swimming_squid_battle/{GAME_VER}/asset/sounds/"
+GAME_NAME = get_game_name(path.join(path.dirname(__file__), "..", "game_config.json"))
+
+ASSET_BASE_URL=f"https://cdn.paia-arena.com/games/{GAME_NAME}"
+ASSET_IMG_URL = f"{ASSET_BASE_URL}/{GAME_VER}/asset/img/"
+MUSIC_URL = f"{ASSET_BASE_URL}/{GAME_VER}/asset/music/"
+SOUND_URL = f"{ASSET_BASE_URL}/{GAME_VER}/asset/sounds/"
 BG_URL = ASSET_IMG_URL + "background.png"
 SQUID_URL = ASSET_IMG_URL + "squid.png"
 SQUID_HURT_URL = ASSET_IMG_URL + "squid-hurt.png"
