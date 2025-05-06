@@ -1,3 +1,8 @@
+from http import HTTPStatus
+
+import requests
+from loguru import logger
+
 from ..src.game import SwimmingSquidBattle, remap
 
 from ..src.game_state import EndingState, OpeningState, RunningState, TransitionState
@@ -25,3 +30,11 @@ def test_remap():
     assert remap(-10, 0, 50, 0, 1000) == 0
 
 
+def test_resource_available():
+    game = SwimmingSquidBattle()
+    scene_info = game.get_scene_init_data()
+    asset = scene_info['assets']
+    for obj in asset:
+        resp = requests.get(obj['url'])
+        assert resp.status_code == HTTPStatus.OK , obj['url'] +"\n"+ resp.text
+        logger.info(f"get {obj['url']} successfully")
