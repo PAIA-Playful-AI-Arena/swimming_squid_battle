@@ -1,4 +1,4 @@
-export tag="1.6.3.1"
+export tag="1.6.4"
 export game="swimming_squid_battle"
 
 docker buildx build --platform linux/amd64,linux/arm64 \
