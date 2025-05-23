@@ -147,6 +147,7 @@ class SwimmingSquidBattle(PaiaGame):
             self._frame_count_down = self._frame_limit
             self._new_food_frame = 0
             self._overtime_count = 0
+            
 
             self._status = GameStatus.GAME_ALIVE
             game_params.left = self.playground.left
@@ -425,6 +426,12 @@ class SwimmingSquidBattle(PaiaGame):
         self.set_game_state(RunningState.OPENING)
         self._current_round_num = 1
         self._winner.clear()
+        self._record1 = {
+            "player_num": get_ai_name(0),
+        }
+        self._record2 = {
+            "player_num": get_ai_name(1),
+        }
         self._init_game()
 
     def _init_game(self):
