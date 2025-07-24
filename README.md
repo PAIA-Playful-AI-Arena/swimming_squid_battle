@@ -118,7 +118,7 @@ class MLPlay:
 
         actions = ["UP", "DOWN", "LEFT", "RIGHT", "NONE"]
 
-        return random.sample(actions, 1)
+        return [random.sample(actions, 1)]
 
     def reset(self):
         """
