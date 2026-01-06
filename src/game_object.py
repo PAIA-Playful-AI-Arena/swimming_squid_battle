@@ -191,6 +191,7 @@ class Squid(pygame.sprite.Sprite):
 
     def eat_food_and_change_level_and_play_sound(self, food: Food, sounds: list):
         self._score += food.score
+        self._score = max(0,self._score)
         new_lv = get_current_level(self._score)
 
         if new_lv > self._lv:

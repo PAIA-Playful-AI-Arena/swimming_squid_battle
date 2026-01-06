@@ -22,12 +22,12 @@ SQUID_W = 30
 SQUID_H = 60
 LEVEL_THRESHOLDS = [30, 60, 100, 140, 180, 220]
 LEVEL_PROPERTIES = {
-    1: {'size_ratio': 1.0, 'vel': 25},
-    2: {'size_ratio': 1.2, 'vel': 21},
-    3: {'size_ratio': 1.4, 'vel': 17},
-    4: {'size_ratio': 1.6, 'vel': 13},
-    5: {'size_ratio': 1.8, 'vel': 9},
-    6: {'size_ratio': 2.0, 'vel': 5},
+    1: {'size_ratio': 1.0, 'vel': 30},
+    2: {'size_ratio': 1.2, 'vel': 26},
+    3: {'size_ratio': 1.4, 'vel': 22},
+    4: {'size_ratio': 1.6, 'vel': 17},
+    5: {'size_ratio': 1.8, 'vel': 12},
+    6: {'size_ratio': 2.0, 'vel': 6},
 }
 
 COLLISION_SCORE = {
