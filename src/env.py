@@ -20,20 +20,20 @@ SCORE_COLOR_MINUS = "#ec407a"
 # BALL_COLOR = "#FFEB3B"
 SQUID_W = 30
 SQUID_H = 60
-LEVEL_THRESHOLDS = [10, 30, 60, 100, 150, 200]
+LEVEL_THRESHOLDS = [30, 60, 100, 140, 180, 220]
 LEVEL_PROPERTIES = {
     1: {'size_ratio': 1.0, 'vel': 25},
     2: {'size_ratio': 1.2, 'vel': 21},
-    3: {'size_ratio': 1.4, 'vel': 18},
-    4: {'size_ratio': 1.6, 'vel': 16},
-    5: {'size_ratio': 1.8, 'vel': 12},
-    6: {'size_ratio': 2.0, 'vel': 9},
+    3: {'size_ratio': 1.4, 'vel': 17},
+    4: {'size_ratio': 1.6, 'vel': 13},
+    5: {'size_ratio': 1.8, 'vel': 9},
+    6: {'size_ratio': 2.0, 'vel': 5},
 }
 
 COLLISION_SCORE = {
-    "WIN": 6,
-    "LOSE": -6,
-    "DRAW": -5
+    "WIN": 3,
+    "LOSE": -3,
+    "DRAW": -2
 }
 
 ASSET_IMAGE_DIR = path.join(path.dirname(__file__), "../asset/img")
@@ -202,8 +202,8 @@ PASS_OBJ = SoundProgressSchema(sound_id='pass').__dict__
 LV_UP_OBJ = SoundProgressSchema(sound_id='lv_up').__dict__
 LV_DOWN_OBJ = SoundProgressSchema(sound_id='lv_down').__dict__
 COLLISION_OBJ = SoundProgressSchema(sound_id='collision').__dict__
-INVINCIBLE_TIME = 30
-PARALYSIS_TIME = 8
+INVINCIBLE_TIME = 75
+PARALYSIS_TIME = 12
 
 # Define paths for squid images
 SQUID1_HURT_1_ID = "squid1_hurt_1"

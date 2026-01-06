@@ -778,8 +778,10 @@ class SwimmingSquidBattle(PaiaGame):
         pass
 
     def _set_food_position(self, food):
+        # 設定食物的位置
         while True:
             if len(self._food_pos_list) < 1:
+                # 如果食物位置列表為空，則重新生成食物位置列表，確保食物生成的位置是平均的
                 self._food_pos_list = divide_window_into_grid(self._food_window)
             pos = self._food_pos_list.pop()
             food.set_center_x_and_y(pos[0], pos[1])
