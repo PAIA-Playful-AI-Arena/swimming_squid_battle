@@ -147,6 +147,7 @@ class SwimmingSquidBattle(PaiaGame):
             self._frame_count_down = self._frame_limit
             self._new_food_frame = 0
             self._overtime_count = 0
+            
 
             self._status = GameStatus.GAME_ALIVE
             game_params.left = self.playground.left
@@ -425,6 +426,12 @@ class SwimmingSquidBattle(PaiaGame):
         self.set_game_state(RunningState.OPENING)
         self._current_round_num = 1
         self._winner.clear()
+        self._record1 = {
+            "player_num": get_ai_name(0),
+        }
+        self._record2 = {
+            "player_num": get_ai_name(1),
+        }
         self._init_game()
 
     def _init_game(self):
@@ -771,8 +778,10 @@ class SwimmingSquidBattle(PaiaGame):
         pass
 
     def _set_food_position(self, food):
+        # 設定食物的位置
         while True:
             if len(self._food_pos_list) < 1:
+                # 如果食物位置列表為空，則重新生成食物位置列表，確保食物生成的位置是平均的
                 self._food_pos_list = divide_window_into_grid(self._food_window)
             pos = self._food_pos_list.pop()
             food.set_center_x_and_y(pos[0], pos[1])
