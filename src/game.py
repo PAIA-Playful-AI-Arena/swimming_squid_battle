@@ -610,8 +610,8 @@ class SwimmingSquidBattle(PaiaGame):
         result.extend(
             [
                 create_text_view_data(f"{self.group_ai_dict[AINameEnum.P1.value].ai_label}", (WIDTH/2-570), 10, "#EEEEEE", "20px NotoSansTC BOLD"),
-                create_text_view_data(f"Lv{self.squid1.lv}", WIDTH/2-500, dot_y, "#EEEEEE", "20px burnfont"),
-                create_text_view_data(f"{self.squid1.score:03d}/{self._score_to_pass:03d}", (WIDTH/2-500)+30, 68, "#EEEEEE", "20px burnfont"),
+                create_text_view_data(f"Lv{self.squid1.lv}", WIDTH/2-500, dot_y, "#EEEEEE", "20px Krungthep BOLD"),
+                create_text_view_data(f"{self.squid1.score:03d}/{self._score_to_pass:03d}", (WIDTH/2-500)+30, 60, "#EEEEEE", "24px Krungthep BOLD"),
                 create_image_view_data(IMG_ID_TRANSITION_P1, x=WIDTH/2-570, y=40, width=60, height=60),
 
             ]
@@ -648,8 +648,8 @@ class SwimmingSquidBattle(PaiaGame):
         result.extend(
             [
                 create_text_view_data(f"{self.group_ai_dict[AINameEnum.P2.value].ai_label}", (WIDTH/2+600-len(self.group_ai_dict[AINameEnum.P2.value].ai_label)*15), 10, "#EEEEEE", "20px NotoSansTC BOLD"),
-                create_text_view_data(f"{self.squid2.score:03d}/{self._score_to_pass:03d}", WIDTH/2+370, 68, "#FDAFAA", "20px burnfont"),
-                create_text_view_data(f"Lv{self.squid2.lv}", WIDTH/2+300, dot_y, "#EEEEEE", "20px burnfont"),
+                create_text_view_data(f"{self.squid2.score:03d}/{self._score_to_pass:03d}", WIDTH/2+370, 60, "#FDAFAA", "24px Krungthep BOLD"),
+                create_text_view_data(f"Lv{self.squid2.lv}", WIDTH/2+300, dot_y, "#EEEEEE", "20px Krungthep BOLD"),
                 create_image_view_data(IMG_ID_TRANSITION_P2, x=WIDTH/2+510, y=40, width=60, height=60),
             ]   
         )
@@ -688,7 +688,7 @@ class SwimmingSquidBattle(PaiaGame):
         foregrounds = [
             create_image_view_data("scorebar", (WIDTH-1000)/2, 0, 1000, 150),
 
-            create_text_view_data(f"{self._frame_count_down:04d}", (WIDTH)/2-72, 50, "#EEEEEE", "48px burnfont"),
+            create_text_view_data(f"{self._frame_count_down:04d}", (WIDTH)/2-72, 40, "#EEEEEE", "54px Krungthep BOLD"),
             
         ]
         foregrounds.extend(self._p1_info)
