@@ -65,7 +65,7 @@ game = SwimmingSquidBattle(
       | FOOD_2 | 40      | 2     | 2      |
       | FOOD_3 | 50      | 4     | 4      |
       | GARBAGE_1 | 30      | -1     | 1      |
-      | GARBAGE_3 | 40      | -4     | 2      |
+      | GARBAGE_2 | 40      | -4     | 2      |
       | GARBAGE_3 | 50      | -10     | 4      |
 
    3. 食物數量會隨遊戲時間增加，直到上限。
